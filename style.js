@@ -18,6 +18,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
   },
+  listServicesScreen: {
+    flex: 1,
+    paddingHorizontal: 16,
+    backgroundColor: '#F9F9F9',
+  },
   infoArea: {
     marginTop: 100,
   },
@@ -26,5 +31,19 @@ export const styles = StyleSheet.create({
   },
   badge: {
     width: 100,
+  },
+  searchBox: {
+    marginTop: 50,
+    backgroundColor: '#F9F9F9',
+  },
+  buttonText: {
+    color: '#95C4CB',
+    fontWeight: 600,
+  },
+  statusBooking: {
+    backgroundColor: '#95C4CB',
+  },
+  statusBookingFocus: {
+    backgroundColor: 'white',
   },
 });

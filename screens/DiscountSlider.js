@@ -1,4 +1,4 @@
-import {Image} from 'native-base';
+import {Heading, Image} from 'native-base';
 import React from 'react';
 import {Dimensions, Text, View} from 'react-native';
 import Animated, {
@@ -28,10 +28,11 @@ function DiscountSlider() {
   ];
   return (
     <View>
+      <Heading fontFamily={'LobsterTwo'}>Discount</Heading>
       <Carousel
         loop
         width={width * 0.9}
-        height={100}
+        height={200}
         autoPlay={true}
         data={ListImageDiscount}
         scrollAnimationDuration={1000}

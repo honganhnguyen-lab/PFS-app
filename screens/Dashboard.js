@@ -120,21 +120,24 @@ const DashboardScreen = () => {
                   height={75}
                   width={'100%'}
                   alignItems={'center'}
-                  backgroundColor={'#9AC7CC'}
                   justifyContent={'center'}>
                   <SvgCss width={40} height={40} xml={item.icon} />
                 </Box>
-                <Stack p="4" space={3}>
-                  <Stack space={2}>
-                    <Text
-                      fontSize="xs"
-                      fontWeight="500"
-                      ml="-0.5"
-                      mt="-1"
-                      fontFamily={'WorkSans-Regular'}>
-                      {item.label}
-                    </Text>
-                  </Stack>
+                <Stack
+                  p="4"
+                  space={3}
+                  w="100%"
+                  alignItems="center"
+                  backgroundColor={'#569FA7'}>
+                  <Text
+                    fontSize="xs"
+                    fontWeight="600"
+                    color="white"
+                    ml="-0.5"
+                    mt="-1"
+                    fontFamily={'WorkSans-Regular'}>
+                    {item.label}
+                  </Text>
                 </Stack>
               </Box>
             ))}
@@ -164,22 +167,26 @@ const DashboardScreen = () => {
                 <Box
                   height={75}
                   width={'100%'}
+                  bg="white"
                   alignItems={'center'}
-                  backgroundColor={'#9AC7CC'}
                   justifyContent={'center'}>
                   <SvgCss width={40} height={40} xml={item.icon} />
                 </Box>
-                <Stack p="4" space={3}>
-                  <Stack space={2}>
-                    <Text
-                      fontSize="xs"
-                      fontWeight="500"
-                      ml="-0.5"
-                      mt="-1"
-                      fontFamily={'WorkSans-Regular'}>
-                      {item.label}
-                    </Text>
-                  </Stack>
+                <Stack
+                  p="4"
+                  space={3}
+                  w="100%"
+                  alignItems="center"
+                  backgroundColor={'#569FA7'}>
+                  <Text
+                    fontSize="xs"
+                    fontWeight="600"
+                    color="white"
+                    ml="-0.5"
+                    mt="-1"
+                    fontFamily={'WorkSans-Regular'}>
+                    {item.label}
+                  </Text>
                 </Stack>
               </Box>
             ))}
@@ -199,10 +206,10 @@ export default () => {
     <NativeBaseProvider>
       <ImageBackground
         style={styles.image}
-        source={require('../assets/Homepagese.png')}
+        source={require('../assets/Homepa.png')}
         resizeMode="cover">
         <DashboardScreen />
-        <Footer />
+        <Footer selectValue={0} />
       </ImageBackground>
     </NativeBaseProvider>
   );

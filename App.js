@@ -6,7 +6,8 @@ import Toast from 'react-native-toast-message';
 import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import DashboardScreen from './screens/Dashboard';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import ServicesList from './screens/ServicesList';
+import Booking from './screens/Booking';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,16 @@ function App() {
           <Stack.Screen
             name="Dashboard"
             component={DashboardScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Services"
+            component={ServicesList}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Booking"
+            component={Booking}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
