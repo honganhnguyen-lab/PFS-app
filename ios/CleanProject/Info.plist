@@ -11,7 +11,7 @@
 		<string>WorkSans.ttf</string>
 	</array>
 	<key>LSApplicationCategoryType</key>
-	<string/>
+	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -45,8 +45,6 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -61,5 +59,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Can we get your location ?</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Can we get your location ?</string>
 </dict>
 </plist>

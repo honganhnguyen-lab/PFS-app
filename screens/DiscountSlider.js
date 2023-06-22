@@ -23,7 +23,6 @@ function DiscountSlider() {
   const ListImageDiscount = [
     require('../assets/discount.jpg'),
     require('../assets/discount2.png'),
-    require('../assets/discount3.png'),
     require('../assets/discount4.png'),
   ];
   return (

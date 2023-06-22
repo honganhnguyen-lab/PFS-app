@@ -13,6 +13,7 @@ import {
   Circle,
   Icon,
   Stack,
+  Pressable,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,7 +21,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ImageBackground} from 'react-native';
 import {InfoBlock} from '../components/Info';
 
-import Footer from './Footer';
 import DiscountSlider from './DiscountSlider';
 import {SvgCss} from 'react-native-svg';
 import {
@@ -33,8 +33,10 @@ import {
   wifiIcon,
 } from '../assets/icon';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
 
 const DashboardScreen = () => {
+  const navigation = useNavigation();
   const ListServicesTop = [
     {
       label: 'AC Repair',
@@ -116,29 +118,33 @@ const DashboardScreen = () => {
                   backgroundColor: 'gray.50',
                 }}
                 key={index}>
-                <Box
-                  height={75}
+                <Pressable
                   width={'100%'}
-                  alignItems={'center'}
-                  justifyContent={'center'}>
-                  <SvgCss width={40} height={40} xml={item.icon} />
-                </Box>
-                <Stack
-                  p="4"
-                  space={3}
-                  w="100%"
-                  alignItems="center"
-                  backgroundColor={'#569FA7'}>
-                  <Text
-                    fontSize="xs"
-                    fontWeight="600"
-                    color="white"
-                    ml="-0.5"
-                    mt="-1"
-                    fontFamily={'WorkSans-Regular'}>
-                    {item.label}
-                  </Text>
-                </Stack>
+                  onPress={() => navigation.navigate('Appointment')}>
+                  <Box
+                    height={75}
+                    width={'100%'}
+                    alignItems={'center'}
+                    justifyContent={'center'}>
+                    <SvgCss width={40} height={40} xml={item.icon} />
+                  </Box>
+                  <Stack
+                    p="4"
+                    space={3}
+                    w="100%"
+                    alignItems="center"
+                    backgroundColor={'#569FA7'}>
+                    <Text
+                      fontSize="xs"
+                      fontWeight="600"
+                      color="white"
+                      ml="-0.5"
+                      mt="-1"
+                      fontFamily={'WorkSans-Regular'}>
+                      {item.label}
+                    </Text>
+                  </Stack>
+                </Pressable>
               </Box>
             ))}
           </HStack>
@@ -164,30 +170,32 @@ const DashboardScreen = () => {
                   backgroundColor: 'gray.50',
                 }}
                 key={index}>
-                <Box
-                  height={75}
-                  width={'100%'}
-                  bg="white"
-                  alignItems={'center'}
-                  justifyContent={'center'}>
-                  <SvgCss width={40} height={40} xml={item.icon} />
-                </Box>
-                <Stack
-                  p="4"
-                  space={3}
-                  w="100%"
-                  alignItems="center"
-                  backgroundColor={'#569FA7'}>
-                  <Text
-                    fontSize="xs"
-                    fontWeight="600"
-                    color="white"
-                    ml="-0.5"
-                    mt="-1"
-                    fontFamily={'WorkSans-Regular'}>
-                    {item.label}
-                  </Text>
-                </Stack>
+                <Pressable width={'100%'} onPress={() => console.log('hello')}>
+                  <Box
+                    height={75}
+                    width={'100%'}
+                    bg="white"
+                    alignItems={'center'}
+                    justifyContent={'center'}>
+                    <SvgCss width={40} height={40} xml={item.icon} />
+                  </Box>
+                  <Stack
+                    p="4"
+                    space={3}
+                    w="100%"
+                    alignItems="center"
+                    backgroundColor={'#569FA7'}>
+                    <Text
+                      fontSize="xs"
+                      fontWeight="600"
+                      color="white"
+                      ml="-0.5"
+                      mt="-1"
+                      fontFamily={'WorkSans-Regular'}>
+                      {item.label}
+                    </Text>
+                  </Stack>
+                </Pressable>
               </Box>
             ))}
           </HStack>
@@ -209,7 +217,6 @@ export default () => {
         source={require('../assets/Homepa.png')}
         resizeMode="cover">
         <DashboardScreen />
-        <Footer selectValue={0} />
       </ImageBackground>
     </NativeBaseProvider>
   );

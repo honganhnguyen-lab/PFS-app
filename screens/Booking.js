@@ -19,9 +19,6 @@ import {
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Footer from './Footer';
-import {acIcon} from '../assets/icon';
-import {SvgCss} from 'react-native-svg';
 import BookingUpcoming from '../components/BookingUpcoming';
 import BookingHistory from '../components/BookingHistory';
 
@@ -84,7 +81,6 @@ export default () => {
   return (
     <NativeBaseProvider>
       <BookingScreen />
-      <Footer selectValue={1} />
     </NativeBaseProvider>
   );
 };

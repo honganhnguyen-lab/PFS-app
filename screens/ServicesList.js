@@ -20,7 +20,6 @@ import {
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Footer from './Footer';
 
 const ServicesList = () => {
   const serviceFilter = [
@@ -205,7 +204,6 @@ export default () => {
   return (
     <NativeBaseProvider>
       <ServicesList />
-      <Footer selectValue={4} />
     </NativeBaseProvider>
   );
 };
