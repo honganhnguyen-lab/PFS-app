@@ -25,6 +25,7 @@ import {
 } from './assets/icon';
 import ChooseProvider from './screens/ChooseProvider';
 import DetailProvider from './screens/DetailProvider';
+import UserProfile from './screens/UserProfile';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -83,7 +84,7 @@ const HomeTab = () => {
       />
       <Tab.Screen
         name="User"
-        component={DashboardScreen}
+        component={UserProfile}
         options={() => ({
           tabBarIcon: ({focused}) => (
             <SvgCss
@@ -189,6 +190,11 @@ function App() {
           <Stack.Screen
             name="DetailProvider"
             component={DetailProvider}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="UserProfile"
+            component={UserProfile}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
