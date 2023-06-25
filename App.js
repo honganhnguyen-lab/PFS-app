@@ -26,6 +26,7 @@ import {
 import ChooseProvider from './screens/ChooseProvider';
 import DetailProvider from './screens/DetailProvider';
 import UserProfile from './screens/UserProfile';
+import NotiList from './screens/NotiList';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -83,12 +84,12 @@ const HomeTab = () => {
         })}
       />
       <Tab.Screen
-        name="User"
-        component={UserProfile}
+        name="Services"
+        component={ServicesList}
         options={() => ({
           tabBarIcon: ({focused}) => (
             <SvgCss
-              xml={focused ? personFilledIcon : personIcon}
+              xml={focused ? listFilledIcon : listIcon}
               fill="#569FA7"
               color="#569FA7"
               width={20}
@@ -105,7 +106,7 @@ const HomeTab = () => {
       />
       <Tab.Screen
         name="Notification"
-        component={DashboardScreen}
+        component={NotiList}
         options={() => ({
           tabBarIcon: ({focused}) => (
             <SvgCss
@@ -124,13 +125,14 @@ const HomeTab = () => {
           tabBarAllowFontScaling: false,
         })}
       />
+
       <Tab.Screen
-        name="Services"
-        component={ServicesList}
+        name="User"
+        component={UserProfile}
         options={() => ({
           tabBarIcon: ({focused}) => (
             <SvgCss
-              xml={focused ? listFilledIcon : listIcon}
+              xml={focused ? personFilledIcon : personIcon}
               fill="#569FA7"
               color="#569FA7"
               width={20}
@@ -195,6 +197,11 @@ function App() {
           <Stack.Screen
             name="UserProfile"
             component={UserProfile}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="NotiList"
+            component={NotiList}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
