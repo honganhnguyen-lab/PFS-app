@@ -23,6 +23,11 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: '#F9F9F9',
   },
+  detailScreen: {
+    flex: 1,
+    backgroundColor: '#F9F9F9',
+    position: 'relative',
+  },
   infoArea: {
     marginTop: 100,
   },
@@ -45,5 +50,18 @@ export const styles = StyleSheet.create({
   },
   statusBookingFocus: {
     backgroundColor: 'white',
+  },
+  backgroundImage: {
+    resizeMode: 'cover',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    zIndex: 0,
+  },
+  boxDetail: {
+    position: 'absolute',
+    top: 130,
+    left: 10,
   },
 });

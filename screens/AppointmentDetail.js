@@ -58,6 +58,11 @@ const AppointmentDetail = () => {
     setIsModalNextStep(false);
   };
 
+  const onChooseProvider = () => {
+    setIsModalNextStep(false);
+    navigation.navigate('ProviderList');
+  };
+
   const navigation = useNavigation();
   const getLocation = () => {
     Geolocation.getCurrentPosition(async info => {
@@ -201,9 +206,11 @@ const AppointmentDetail = () => {
           <Modal.Body>
             <Center>
               <SvgCss xml={chooseProvider} width={150} height={150} />
-              <Text fontWeight={600} fontSize={'18'} fontFamily={'LobsterTwo'}>
-                Do you want us to pick provider randomly ?
+              <Text fontWeight={600} fontSize={'18'}>
+                Moving to choose provider?
               </Text>
+
+              <Text> {defaultLocation}</Text>
             </Center>
           </Modal.Body>
           <Button.Group space={5} justifyContent={'center'} p={3}>
@@ -211,16 +218,11 @@ const AppointmentDetail = () => {
               variant="outline"
               colorScheme="blueGray"
               width={100}
-              onPress={() => {
-                setModalVisible(false);
-              }}>
-              No
+              onPress={onChooseProvider}>
+              No, stay
             </Button>
-            <Button
-              bgColor={'#316970'}
-              width={100}
-              onPress={updateLocationDetail}>
-              Yes
+            <Button bgColor={'#316970'} width={100} onPress={onChooseProvider}>
+              Yes, move
             </Button>
           </Button.Group>
         </Modal.Content>

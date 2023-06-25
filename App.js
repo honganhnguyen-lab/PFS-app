@@ -23,6 +23,8 @@ import {
   personFilledIcon,
   personIcon,
 } from './assets/icon';
+import ChooseProvider from './screens/ChooseProvider';
+import DetailProvider from './screens/DetailProvider';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -177,6 +179,16 @@ function App() {
           <Stack.Screen
             name="Appointment"
             component={AppointmentDetail}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="ProviderList"
+            component={ChooseProvider}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="DetailProvider"
+            component={DetailProvider}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

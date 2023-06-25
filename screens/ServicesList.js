@@ -17,9 +17,11 @@ import {
   Button,
   Avatar,
   Divider,
+  Pressable,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
 
 const ServicesList = () => {
   const serviceFilter = [
@@ -100,11 +102,14 @@ const ServicesList = () => {
         'https://lirp.cdn-website.com/8534fced395e48cc95b25597bf7cb70a/dms3rep/multi/opt/58d28b52-afd4-4f64-a02b-b5ca91a628e1-640w.jpg',
     },
   ];
+  const navigation = useNavigation();
   return (
     <View style={styles.listServicesScreen}>
       <View style={styles.searchBox}>
         <HStack justifyContent="space-between" alignItems="center" p={3}>
-          <Icon size="6" as={Ionicons} name="arrow-back-outline" />
+          <Pressable onPress={() => navigation.navigate('Dashboard')}>
+            <Icon size="6" as={Ionicons} name="arrow-back-outline" />
+          </Pressable>
           <Input
             placeholder="What do you need"
             borderRadius="10"
