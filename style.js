@@ -36,6 +36,7 @@ export const styles = StyleSheet.create({
   },
   badge: {
     width: 100,
+    textTransform: 'uppercase',
   },
   searchBox: {
     marginTop: 50,

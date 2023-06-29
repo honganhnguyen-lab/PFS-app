@@ -14,6 +14,8 @@ import {
   Icon,
   Stack,
   Pressable,
+  isEmptyObj,
+  Skeleton,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -34,8 +36,47 @@ import {
 } from '../assets/icon';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {storage} from '../storage';
+
+const SkeletonView = () => (
+  <VStack
+    w="90%"
+    maxW="400"
+    borderWidth="1"
+    space={6}
+    rounded="md"
+    alignItems="center"
+    _dark={{
+      borderColor: 'coolGray.500',
+    }}
+    _light={{
+      borderColor: 'coolGray.200',
+    }}>
+    <Skeleton h="40" />
+    <Skeleton
+      borderWidth={1}
+      borderColor="coolGray.200"
+      endColor="warmGray.50"
+      size="20"
+      rounded="full"
+      mt="-70"
+    />
+    <HStack space="2">
+      <Skeleton size="5" rounded="full" />
+      <Skeleton size="5" rounded="full" />
+      <Skeleton size="5" rounded="full" />
+      <Skeleton size="5" rounded="full" />
+      <Skeleton size="5" rounded="full" />
+    </HStack>
+    <Skeleton.Text lines={3} alignItems="center" px="12" />
+    <Skeleton mb="3" w="40" rounded="20" />
+  </VStack>
+);
 
 const DashboardScreen = () => {
+  const user = useSelector(state => state.auth.user);
+  const userDetail = user.payload;
   const navigation = useNavigation();
   const ListServicesTop = [
     {
@@ -66,11 +107,15 @@ const DashboardScreen = () => {
     },
   ];
   useEffect(() => {
-    // SomeFunction()
+    const token = storage.getString('token');
+    if (!token) {
+      navigation.navigate('Login');
+    }
   }, []);
   return (
     <View style={styles.dashboardContainer}>
-      <InfoBlock style={styles.infoArea} />
+      {!userDetail || (isEmptyObj(userDetail) && <SkeletonView />)}
+      <InfoBlock style={styles.infoArea} info={userDetail} />
       <ScrollView>
         <VStack space={4} alignItems="center" mt="6">
           <Center w="100%" h="16" bg="white" rounded="md" shadow={3}>
@@ -81,7 +126,7 @@ const DashboardScreen = () => {
               alignItems="center">
               <VStack>
                 <Text allowFontScaling={false}>Number of Appoinment</Text>
-                <Heading>6</Heading>
+                <Heading>{userDetail?.appointmentNumber}</Heading>
               </VStack>
               <Icon as={Ionicons} name="chevron-forward-outline" />
             </HStack>

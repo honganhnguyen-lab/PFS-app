@@ -19,12 +19,21 @@ import {
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import BookingUpcoming from '../components/BookingUpcoming';
-import BookingHistory from '../components/BookingHistory';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
 import {Pressable} from 'react-native';
+import {logOut} from '../redux/auth/authSlice';
+import {storage} from '../storage';
 
 const UserProfile = () => {
-  const [typeBooking, setTypeBooking] = useState(0);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const onClickLogOut = async () => {
+    await storage.clearAll();
+    await dispatch(logOut);
+    navigation.navigate('Login');
+  };
   return (
     <View style={styles.listServicesScreen}>
       <View mt={50}>
@@ -154,20 +163,22 @@ const UserProfile = () => {
               color="#569FA7"
             />
           </HStack>
-          <HStack justifyContent="space-between" alignItems="center" p={3}>
-            <HStack space={3} alignItems="center">
-              <Icon as={Ionicons} name="log-out" size="md" color="#87ADB2" />
-              <Text fontWeight={600} fontSize={14}>
-                Log out
-              </Text>
+          <Pressable onPress={onClickLogOut}>
+            <HStack justifyContent="space-between" alignItems="center" p={3}>
+              <HStack space={3} alignItems="center">
+                <Icon as={Ionicons} name="log-out" size="md" color="#87ADB2" />
+                <Text fontWeight={600} fontSize={14}>
+                  Log out
+                </Text>
+              </HStack>
+              <Icon
+                as={Ionicons}
+                name="chevron-forward-outline"
+                size="md"
+                color="#569FA7"
+              />
             </HStack>
-            <Icon
-              as={Ionicons}
-              name="chevron-forward-outline"
-              size="md"
-              color="#569FA7"
-            />
-          </HStack>
+          </Pressable>
         </VStack>
       </View>
     </View>

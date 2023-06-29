@@ -1,7 +1,8 @@
 import {HStack, Avatar, Text, VStack, Badge} from 'native-base';
 import {styles} from '../style';
 
-export const InfoBlock = () => {
+export const InfoBlock = ({info}) => {
+  console.log('info', info.name);
   return (
     <HStack style={styles.infoArea} alignItems="center">
       <Avatar
@@ -15,10 +16,10 @@ export const InfoBlock = () => {
       </Avatar>
       <VStack justifyContent="center" style={styles.textInfo}>
         <Text fontSize="xl" fontFamily={'LobsterTwo'} color={'white'}>
-          Hello, Amie
+          Hello, {info?.name}
         </Text>
         <Badge style={styles.badge} colorScheme="success">
-          CUSTOMER
+          {`${info?.role}`.toUpperCase()}
         </Badge>
       </VStack>
     </HStack>

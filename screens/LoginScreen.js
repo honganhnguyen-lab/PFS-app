@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState} from 'react';
 import {
   Box,
   Text,
@@ -13,115 +13,159 @@ import {
   NativeBaseProvider,
   Image,
   View,
-  AsyncStorage,
-  IconButton, CloseIcon, Alert,
+  IconButton,
+  CloseIcon,
+  Alert,
 } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
-import axios from "axios";
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
 import Toast from 'react-native-toast-message';
+import {storage} from '../storage';
+import {useSelector, useDispatch} from 'react-redux';
+import {setDataUser} from '../redux/auth/authSlice';
 
 const axiosConfig = axios.create({
-      baseURL: 'http://192.168.0.25:4000',
-      timeout: 30000,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
+  baseURL: 'http://192.168.1.70:4000',
+  timeout: 30000,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+});
 
 const Example = () => {
   const navigation = useNavigation();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  const onChangePhoneNumber = (value) => {
-    setPhoneNumber(value)
-  }
+  const onChangePhoneNumber = value => {
+    setPhoneNumber(value);
+  };
 
-  const onChangePassword = (value) => {
-    setPassword(value)
-  }
+  const onChangePassword = value => {
+    setPassword(value);
+  };
 
-const ToastAlert = ({ title, variant, description, isClosable, status }) => {
-  return (
-    <Alert
-      maxWidth="100%"
-      alignSelf="center"
-      flexDirection="row"
-      status={status ? status : "info"}
-      variant={variant}
-    >
-      <VStack space={1} flexShrink={1} w="100%">
-        <HStack flexShrink={1} alignItems="center" justifyContent="space-between">
-          <HStack space={2} flexShrink={1} alignItems="center">
-            <Alert.Icon />
-            <Text fontSize="md" fontWeight="medium" flexShrink={1} color={variant === "solid" ? "lightText" : variant !== "outline" ? "darkText" : null}>
-              {title}
-            </Text>
+  const ToastAlert = ({title, variant, description, isClosable, status}) => {
+    return (
+      <Alert
+        maxWidth="100%"
+        alignSelf="center"
+        flexDirection="row"
+        status={status ? status : 'info'}
+        variant={variant}>
+        <VStack space={1} flexShrink={1} w="100%">
+          <HStack
+            flexShrink={1}
+            alignItems="center"
+            justifyContent="space-between">
+            <HStack space={2} flexShrink={1} alignItems="center">
+              <Alert.Icon />
+              <Text
+                fontSize="md"
+                fontWeight="medium"
+                flexShrink={1}
+                color={
+                  variant === 'solid'
+                    ? 'lightText'
+                    : variant !== 'outline'
+                    ? 'darkText'
+                    : null
+                }>
+                {title}
+              </Text>
+            </HStack>
+            {isClosable ? (
+              <IconButton
+                variant="unstyled"
+                icon={<CloseIcon size="3" />}
+                _icon={{
+                  color: variant === 'solid' ? 'lightText' : 'darkText',
+                }}
+              />
+            ) : null}
           </HStack>
-          {isClosable ? (
-            <IconButton variant="unstyled" icon={<CloseIcon size="3" />} _icon={{
-              color: variant === "solid" ? "lightText" : "darkText"
-            }} />
-          ) : null}
-        </HStack>
-        <Text px="6" color={variant === "solid" ? "lightText" : variant !== "outline" ? "darkText" : null}>
-          {description}
-        </Text>
-      </VStack>
-    </Alert>
-  );
-};
-  
+          <Text
+            px="6"
+            color={
+              variant === 'solid'
+                ? 'lightText'
+                : variant !== 'outline'
+                ? 'darkText'
+                : null
+            }>
+            {description}
+          </Text>
+        </VStack>
+      </Alert>
+    );
+  };
+
   const onSignInButton = async () => {
-    axiosConfig.post('/api/v1/users/login', {
-      phoneNumber: phoneNumber,
-      password: password
-    })
-    .then((response) => {
+    setLoading(true);
+    axiosConfig
+      .post('/api/v1/users/login', {
+        phoneNumber: phoneNumber,
+        password: password,
+      })
+      .then(response => {
+        storage.set('token', response.data.token);
         Toast.show({
           type: 'success',
           text1: 'Account verified',
-          text2: 'Welcome to PFS 👋'
+          text2: 'Welcome to PFS 👋',
         });
-    navigation.navigate('Dashboard')
-    AsyncStorage.setItem('token', response.data.token)
 
-    })
-    .catch((error) => {
-      console.log('error', error)
-        if(error.response){
+        navigation.navigate('Home');
+
+        dispatch(setDataUser(response.data.data.user));
+      })
+      .catch(error => {
+        if (error.response) {
           console.log(error.response.data);
           Toast.show({
-          type: 'error',
-          text1: 'Wrong phone number or wrong password',
-        });
-    }
-    })
-  }
+            type: 'error',
+            text1: 'Wrong phone number or wrong password',
+          });
+        }
+      });
+    setLoading(false);
+  };
 
   return (
     <Center w="100%">
       <Box safeArea p="2" w="90%" maxW="xl">
         <VStack alignItems="center">
-        <Heading
-          size="lg"
-          fontWeight="600"
-          color="#0077C0"
-          _dark={{
-            color: 'warmGray.50',
-          }}>
-          SIGN IN
-        </Heading>
+          <Heading
+            size="lg"
+            fontWeight="600"
+            color="#0077C0"
+            _dark={{
+              color: 'warmGray.50',
+            }}>
+            SIGN IN
+          </Heading>
         </VStack>
         <VStack space={3} mt="5">
           <FormControl isRequired>
             <FormControl.Label>Phone number</FormControl.Label>
-            <Input value={phoneNumber} onChangeText={onChangePhoneNumber} keyboardType="numeric" size="xl" />
+            <Input
+              value={phoneNumber}
+              onChangeText={onChangePhoneNumber}
+              keyboardType="numeric"
+              size="xl"
+            />
           </FormControl>
           <FormControl isRequired>
             <FormControl.Label>Password</FormControl.Label>
-            <Input type="password" value={password} onChangeText={onChangePassword} size="xl"/>
+            <Input
+              type="password"
+              value={password}
+              onChangeText={onChangePassword}
+              size="xl"
+            />
             <Link
               _text={{
                 fontSize: 'xs',
@@ -133,9 +177,15 @@ const ToastAlert = ({ title, variant, description, isClosable, status }) => {
               Forget Password?
             </Link>
           </FormControl>
-          <Button mt="2" colorScheme="indigo" onPress={onSignInButton}> 
+          <Button
+            mt="2"
+            isLoading={loading}
+            spinnerPlacement="end"
+            isLoadingText="Sign in"
+            onPress={onSignInButton}>
             Sign in
           </Button>
+
           <HStack mt="6" justifyContent="center">
             <Text
               fontSize="sm"
@@ -164,7 +214,7 @@ const ToastAlert = ({ title, variant, description, isClosable, status }) => {
 export default () => {
   return (
     <NativeBaseProvider>
-      <Center flex={1} >
+      <Center flex={1}>
         <Example />
       </Center>
     </NativeBaseProvider>

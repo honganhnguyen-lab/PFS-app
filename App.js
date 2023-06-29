@@ -156,9 +156,16 @@ function App() {
     <>
       <NavigationContainer>
         <Stack.Navigator>
-          {/* <Stack.Screen name="Home" component={InitScreen} /> */}
-          {/* <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Signup" component={SignUpScreen} /> */}
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Signup"
+            component={SignUpScreen}
+            options={{headerShown: false}}
+          />
           <Stack.Screen
             name="Home"
             component={HomeTab}

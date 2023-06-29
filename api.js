@@ -1,7 +1,7 @@
-const API = "http://10.0.2.2:4000";
+const API = 'http://10.28.189.92:4000';
 
 const ApiUrl = {
-  login: 'api/v1/users/login'
-}
+  login: 'api/v1/users/login',
+};
 
-export const loginUrl = `${API/ApiUrl.login}` 
+export const loginUrl = `${API / ApiUrl.login}`;
