@@ -6,33 +6,61 @@ import {
   VStack,
   Icon,
   Avatar,
-  Stack,
   Badge,
 } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {acIcon} from '../assets/icon';
 import {SvgCss} from 'react-native-svg';
+import {appointmentStatus, defineCategory} from '../CommonType';
+import {Linking} from 'react-native';
 
 export default BookingUpcoming = ({listUpcomingAppointment}) => {
+  const onCallProvider = phone => {
+    Linking.openURL(`tel:${phone}`);
+  };
+
   return (
-    <VStack w="100%" space={5}>
+    <VStack w="100%" space={4}>
       {listUpcomingAppointment?.length > 0 &&
         listUpcomingAppointment?.map(item => {
           const infoService = item?.serviceId ?? {};
           const infoProvider = item?.providerId ?? {};
+          const renderStatusLabel = appointmentStatus.find(
+            status => status.value === item.status,
+          );
+          const renderIcon = defineCategory.find(
+            cate => cate.status === infoService.category,
+          )?.icon;
           return (
             <VStack space={2} p={2} shadow={2} bg="white" rounded="lg">
               <HStack space={3} pt={2} justifyContent="flex-start">
-                <Avatar bg="amber.500">
-                  <SvgCss width={20} height={20} xml={acIcon} />
+                <Avatar bg="amber.400">
+                  <SvgCss
+                    width={25}
+                    height={25}
+                    color="white"
+                    fill="white"
+                    xml={renderIcon}
+                  />
                 </Avatar>
                 <VStack space={2}>
                   <Text fontWeight={600} fontSize={16}>
                     {infoService.title}
                   </Text>
-                  <Text color="#6F767E" fontSize={16}>
-                    Total price: {item.totalPrice}
-                  </Text>
+                  <HStack
+                    justifyContent="flex-start"
+                    alignItems="center"
+                    space={1}>
+                    <Icon as={Ionicons} name="cash-outline" />
+                    <Text
+                      color="#6F767E"
+                      fontSize={16}
+                      style={{textAlign: 'right'}}>
+                      Price:
+                    </Text>
+                    <Text color="#6F767E" fontSize={16} fontWeight={600}>
+                      {item.totalPrice} VND
+                    </Text>
+                  </HStack>
                 </VStack>
               </HStack>
               <Divider
@@ -46,8 +74,10 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
               />
               <HStack justifyContent="space-between" mt={1}>
                 <Text>Status</Text>
-                <Badge style={{width: 100, height: 30}} colorScheme="success">
-                  {item.status}
+                <Badge
+                  style={{width: 100, height: 30}}
+                  colorScheme={renderStatusLabel.color}>
+                  {renderStatusLabel?.label ?? ''}
                 </Badge>
               </HStack>
               <HStack space={3} pt={2} justifyContent="flex-start">
@@ -65,9 +95,13 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
               </HStack>
               <HStack pt={1} justifyContent="space-between">
                 <HStack space={3}>
-                  <Avatar bg="amber.500">
-                    <SvgCss width={20} height={20} xml={acIcon} />
-                  </Avatar>
+                  <Avatar
+                    bg="#95C4CB"
+                    source={{
+                      uri: item.avatar ?? '',
+                    }}
+                  />
+
                   <VStack space={2}>
                     <Text fontWeight={600} fontSize={16}>
                       {infoProvider.name}
@@ -80,7 +114,12 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
                 <Button
                   w={100}
                   leftIcon={
-                    <Icon as={Ionicons} name="call-outline" size="sm" />
+                    <Icon
+                      as={Ionicons}
+                      name="call-outline"
+                      size="sm"
+                      onPress={onCallProvider(infoProvider.phoneNumber)}
+                    />
                   }>
                   <Text color={'white'} fontWeight={600}>
                     Call

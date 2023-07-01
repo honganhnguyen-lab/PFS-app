@@ -28,6 +28,7 @@ import {SvgCss} from 'react-native-svg';
 import {
   acIcon,
   cleanIcon,
+  personalChefIcon,
   plumberIcon,
   sofaIcon,
   teacherIcon,
@@ -102,8 +103,8 @@ const DashboardScreen = () => {
       icon: wifiIcon,
     },
     {
-      label: 'Sofa Clean',
-      icon: sofaIcon,
+      label: 'Private chef',
+      icon: personalChefIcon,
     },
   ];
   useEffect(() => {

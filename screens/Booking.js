@@ -56,7 +56,7 @@ const BookingScreen = () => {
   const [loading, setLoading] = useState(false);
   const [typeBooking, setTypeBooking] = useState(0);
   const [listUpcomingAppointment, setListUpcomingAppointment] = useState([]);
-  const [listHistoryAppointment, selectListHistoryAppointment] = useState([]);
+  const [listHistoryAppointment, setListHistoryAppointment] = useState([]);
 
   const defineStatus = {
     pending: 0,
@@ -79,7 +79,12 @@ const BookingScreen = () => {
           v.status === defineStatus.pending ||
           v.status === defineStatus.processing,
       );
+
+      const selectListHistoryAppointment = listFullAppointment?.filter(
+        v => v.status === defineStatus.reject || v.status === defineStatus.done,
+      );
       setListUpcomingAppointment(selectListUpcomingAppointment);
+      setListHistoryAppointment(selectListHistoryAppointment);
     } catch (err) {
       console.log(err);
     }
@@ -145,7 +150,9 @@ const BookingScreen = () => {
                 listUpcomingAppointment={listUpcomingAppointment}
               />
             )}
-            {typeBooking === 1 && <BookingHistory />}
+            {typeBooking === 1 && (
+              <BookingHistory listHistoryAppointment={listHistoryAppointment} />
+            )}
           </VStack>
         )}
       </ScrollView>
