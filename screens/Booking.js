@@ -16,14 +16,80 @@ import {
   Avatar,
   Stack,
   Badge,
+  Skeleton,
 } from 'native-base';
 import {styles} from '../style';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import BookingUpcoming from '../components/BookingUpcoming';
 import BookingHistory from '../components/BookingHistory';
+import {axiosConfig, bookingUri} from '../axios';
+import {useSelector, useDispatch} from 'react-redux';
+import {setListAppointment} from '../redux/auth/bookingSlice';
+
+const SkeletonLoading = () => {
+  return (
+    <Center w="100%">
+      <VStack
+        w="90%"
+        maxW="400"
+        borderWidth="1"
+        space={8}
+        overflow="hidden"
+        rounded="md"
+        _dark={{
+          borderColor: 'coolGray.500',
+        }}
+        _light={{
+          borderColor: 'coolGray.200',
+        }}>
+        <Skeleton h="40" />
+        <Skeleton.Text px="4" />
+        <Skeleton px="4" my="4" rounded="md" startColor="primary.100" />
+      </VStack>
+    </Center>
+  );
+};
 
 const BookingScreen = () => {
+  const user = useSelector(state => state.auth.user);
+  const dispatch = useDispatch();
+  const userId = user.payload?.id ?? '';
+  const [loading, setLoading] = useState(false);
   const [typeBooking, setTypeBooking] = useState(0);
+  const [listUpcomingAppointment, setListUpcomingAppointment] = useState([]);
+  const [listHistoryAppointment, selectListHistoryAppointment] = useState([]);
+
+  const defineStatus = {
+    pending: 0,
+    confirm: 1,
+    reject: 2,
+    processing: 3,
+    done: 4,
+  };
+
+  const onGetListBooking = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosConfig.get(`${bookingUri}/${userId}`);
+
+      const listFullAppointment = response.data.data.appointment;
+
+      const selectListUpcomingAppointment = listFullAppointment?.filter(
+        v =>
+          v.status === defineStatus.confirm ||
+          v.status === defineStatus.pending ||
+          v.status === defineStatus.processing,
+      );
+      setListUpcomingAppointment(selectListUpcomingAppointment);
+    } catch (err) {
+      console.log(err);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    onGetListBooking();
+  }, []);
+
   return (
     <View style={styles.listServicesScreen}>
       <View mt={50}>
@@ -62,6 +128,7 @@ const BookingScreen = () => {
                 color={typeBooking === 1 ? '#316970' : 'black'}
                 fontWeight={600}>
                 History
+                {loading}
               </Text>
             </Button>
           </HStack>
@@ -69,14 +136,23 @@ const BookingScreen = () => {
       </View>
 
       <ScrollView>
-        <VStack space={3} alignItems="center" mt="3">
-          {typeBooking === 0 && <BookingUpcoming />}
-          {typeBooking === 1 && <BookingHistory />}
-        </VStack>
+        {loading ? (
+          <SkeletonLoading />
+        ) : (
+          <VStack space={3} alignItems="center" mt="3">
+            {typeBooking === 0 && (
+              <BookingUpcoming
+                listUpcomingAppointment={listUpcomingAppointment}
+              />
+            )}
+            {typeBooking === 1 && <BookingHistory />}
+          </VStack>
+        )}
       </ScrollView>
     </View>
   );
 };
+
 export default () => {
   return (
     <NativeBaseProvider>

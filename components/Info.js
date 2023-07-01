@@ -2,7 +2,6 @@ import {HStack, Avatar, Text, VStack, Badge} from 'native-base';
 import {styles} from '../style';
 
 export const InfoBlock = ({info}) => {
-  console.log('info', info.name);
   return (
     <HStack style={styles.infoArea} alignItems="center">
       <Avatar

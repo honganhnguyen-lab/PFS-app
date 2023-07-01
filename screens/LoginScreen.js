@@ -23,15 +23,7 @@ import Toast from 'react-native-toast-message';
 import {storage} from '../storage';
 import {useSelector, useDispatch} from 'react-redux';
 import {setDataUser} from '../redux/auth/authSlice';
-
-const axiosConfig = axios.create({
-  baseURL: 'http://192.168.1.70:4000',
-  timeout: 30000,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-});
+import {axiosConfig} from '../axios';
 
 const Example = () => {
   const navigation = useNavigation();
@@ -124,7 +116,6 @@ const Example = () => {
       })
       .catch(error => {
         if (error.response) {
-          console.log(error.response.data);
           Toast.show({
             type: 'error',
             text1: 'Wrong phone number or wrong password',

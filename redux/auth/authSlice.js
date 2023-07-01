@@ -9,7 +9,6 @@ export const authSlice = createSlice({
   reducers: {
     setDataUser: (state, payload) => {
       state.user = payload;
-      console.log('..inside', state.user);
     },
     logOut: state => {
       state.user = {};

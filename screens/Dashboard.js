@@ -126,7 +126,7 @@ const DashboardScreen = () => {
               alignItems="center">
               <VStack>
                 <Text allowFontScaling={false}>Number of Appoinment</Text>
-                <Heading>{userDetail?.appointmentNumber}</Heading>
+                <Heading>{userDetail?.appointmentNumber ?? 0}</Heading>
               </VStack>
               <Icon as={Ionicons} name="chevron-forward-outline" />
             </HStack>
