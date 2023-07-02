@@ -15,26 +15,29 @@ import {SvgCss} from 'react-native-svg';
 import {styles} from '../style';
 import {appointmentStatus, defineCategory} from '../CommonType';
 
-export default BookingHistory = ({listHistoryAppointment}) => {
+export default BookingHistory = ({listHistoryAppointment, isProvider}) => {
   return (
     <VStack w="100%" space={4}>
       {listHistoryAppointment?.length > 0 &&
         listHistoryAppointment?.map(item => {
           const infoService = item?.serviceId ?? {};
           const infoProvider = item?.providerId ?? {};
+          const infoUser = item?.userId ?? {};
           const renderStatusLabel = appointmentStatus.find(
             status => status.value === item.status,
           );
-          console.log(item.status);
           const renderIcon = defineCategory.find(
             cate => cate.status === infoService.category,
           )?.icon;
           return (
             <VStack space={2} p={2} shadow={2} bg="white" rounded="lg">
               <HStack pt={2} justifyContent="space-between">
-                <Text fontWeight={600} fontSize={16}>
-                  {infoProvider.name}
-                </Text>
+                <HStack space={2}>
+                  <Icon as={Ionicons} name="person-outline" size="md" />
+                  <Text fontWeight={600} fontSize={16}>
+                    {isProvider ? infoUser.name : infoProvider.name}
+                  </Text>
+                </HStack>
                 <Badge
                   style={{width: 100, height: 30}}
                   colorScheme={renderStatusLabel.color}>
@@ -55,42 +58,63 @@ export default BookingHistory = ({listHistoryAppointment}) => {
                   <Text fontWeight={600} fontSize={16}>
                     {infoService.title}
                   </Text>
-                  <HStack justifyContent="flex-start" alignItems="center">
-                    <Icon as={Ionicons} name="cash-outline" />
+                  <HStack
+                    space={2}
+                    justifyContent="flex-start"
+                    alignItems="center">
+                    <Icon as={Ionicons} name="cash" color="#316970" />
                     <Text
                       color="#6F767E"
                       fontSize={16}
+                      fontWeight={600}
                       style={{textAlign: 'right'}}>
-                      Cost: {item.totalPrice}
+                      {item.totalPrice}
+                    </Text>
+                  </HStack>
+                  <HStack
+                    space={2}
+                    justifyContent="flex-start"
+                    alignItems="center">
+                    <Icon as={Ionicons} name="location" color="#316970" />
+                    <Text
+                      color="#6F767E"
+                      fontSize={16}
+                      fontWeight={600}
+                      style={{textAlign: 'right'}}>
+                      70 Trung Van
                     </Text>
                   </HStack>
                 </VStack>
               </HStack>
-              <Divider
-                my="2"
-                _light={{
-                  bg: 'muted.300',
-                }}
-                _dark={{
-                  bg: 'muted.50',
-                }}
-              />
-              <HStack justifyContent="space-between" alignItems="center">
-                <HStack space={2}>
-                  <Icon
-                    as={Ionicons}
-                    size={4}
-                    name="star-sharp"
-                    color="yellow.300"
+              {!isProvider && (
+                <>
+                  <Divider
+                    my="2"
+                    _light={{
+                      bg: 'muted.300',
+                    }}
+                    _dark={{
+                      bg: 'muted.50',
+                    }}
                   />
-                  <Text>{item.rating ?? 0}</Text>
-                </HStack>
-                <Button style={{backgroundColor: '#0f766e'}}>
-                  <Text color={'white'} fontWeight={600}>
-                    Re-schedule
-                  </Text>
-                </Button>
-              </HStack>
+                  <HStack justifyContent="space-between" alignItems="center">
+                    <HStack space={2}>
+                      <Icon
+                        as={Ionicons}
+                        size={4}
+                        name="star-sharp"
+                        color="yellow.300"
+                      />
+                      <Text>{item.rating ?? 0}</Text>
+                    </HStack>
+                    <Button style={{backgroundColor: '#0f766e'}}>
+                      <Text color={'white'} fontWeight={600}>
+                        Re-schedule
+                      </Text>
+                    </Button>
+                  </HStack>
+                </>
+              )}
             </VStack>
           );
         })}

@@ -13,15 +13,15 @@ import {SvgCss} from 'react-native-svg';
 import {appointmentStatus, defineCategory} from '../CommonType';
 import {Linking} from 'react-native';
 
-export default BookingUpcoming = ({listUpcomingAppointment}) => {
+export default BookingPending = ({listPendingAppointment}) => {
   const onCallProvider = phone => {
     Linking.openURL(`tel:${phone}`);
   };
 
   return (
     <VStack w="100%" space={4}>
-      {listUpcomingAppointment?.length > 0 &&
-        listUpcomingAppointment?.map(item => {
+      {listPendingAppointment?.length > 0 &&
+        listPendingAppointment?.map(item => {
           const infoService = item?.serviceId ?? {};
           const infoProvider = item?.providerId ?? {};
           const renderStatusLabel = appointmentStatus.find(
@@ -31,7 +31,13 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
             cate => cate.status === infoService.category,
           )?.icon;
           return (
-            <VStack space={2} p={2} shadow={2} bg="white" rounded="lg">
+            <VStack
+              space={2}
+              p={2}
+              shadow={2}
+              bg="white"
+              rounded="lg"
+              key={item.id}>
               <HStack space={3} pt={2} justifyContent="flex-start">
                 <Avatar bg="success.800">
                   <SvgCss
@@ -72,47 +78,38 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
                   bg: 'muted.50',
                 }}
               />
-              <HStack justifyContent="space-between" mt={1}>
-                <Text>Status</Text>
-                <Badge
-                  style={{width: 100, height: 30}}
-                  colorScheme={renderStatusLabel.color}>
-                  {renderStatusLabel?.label ?? ''}
-                </Badge>
-              </HStack>
-              <HStack space={3} pt={2} justifyContent="flex-start">
-                <Avatar bg="muted.100">
-                  <Icon as={Ionicons} name="calendar-outline" size="md" />
-                </Avatar>
+              <HStack space={3} p={2} justifyContent="flex-start">
+                <Icon as={Ionicons} name="calendar-outline" size="md" />
                 <VStack space={2}>
                   <Text fontWeight={600} fontSize={16}>
                     {item.appointmentDate} {item.appointmentStartTime}
                   </Text>
-                  <Text color="#6F767E" fontSize={16}>
-                    Schedule
+                </VStack>
+              </HStack>
+              <HStack space={3} p={2} justifyContent="flex-start">
+                <Icon as={Ionicons} name="location-outline" size="md" />
+                <VStack space={2}>
+                  <Text fontWeight={600} fontSize={16}>
+                    190 Dai La St, Hai Ba Trung district
                   </Text>
                 </VStack>
               </HStack>
-              <HStack pt={1} justifyContent="space-between">
+              <HStack p={2} justifyContent="space-between">
                 <HStack space={3}>
-                  <Avatar
-                    bg="#95C4CB"
-                    source={{
-                      uri: item.avatar && item.avatar,
-                    }}
-                  />
+                  <Icon as={Ionicons} name="person-outline" size="md" />
 
                   <VStack space={2}>
                     <Text fontWeight={600} fontSize={16}>
                       {infoProvider.name}
                     </Text>
                     <Text color="#6F767E" fontSize={16}>
-                      Service provider
+                      Customer
                     </Text>
                   </VStack>
                 </HStack>
                 <Button
                   w={100}
+                  bg="#316970"
                   leftIcon={
                     <Icon
                       as={Ionicons}
@@ -123,6 +120,31 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
                   }>
                   <Text color={'white'} fontWeight={600}>
                     Call
+                  </Text>
+                </Button>
+              </HStack>
+              <Divider
+                my="2"
+                _light={{
+                  bg: 'muted.300',
+                }}
+                _dark={{
+                  bg: 'muted.50',
+                }}
+              />
+              <HStack justifyContent="center" space={5}>
+                <Button w={120} bg="#316970">
+                  <Text color={'white'} fontWeight={600}>
+                    Accept
+                  </Text>
+                </Button>
+                <Button
+                  w={120}
+                  bg="white"
+                  variant="outline"
+                  borderColor="#316970">
+                  <Text color={'#316970'} fontWeight={600}>
+                    Decline
                   </Text>
                 </Button>
               </HStack>

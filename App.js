@@ -27,11 +27,17 @@ import ChooseProvider from './screens/ChooseProvider';
 import DetailProvider from './screens/DetailProvider';
 import UserProfile from './screens/UserProfile';
 import NotiList from './screens/NotiList';
+import {useSelector} from 'react-redux';
+import ProviderDashboardScreen from './screens/ProviderDashboard';
+import ProviderListBooking from './screens/ProviderListBooking';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeTab = () => {
+  const user = useSelector(state => state.auth.user);
+  const userDetail = user.payload;
+
   return (
     <Tab.Navigator
       screenOptions={() => ({
@@ -41,7 +47,11 @@ const HomeTab = () => {
       })}>
       <Tab.Screen
         name="Dashboard"
-        component={DashboardScreen}
+        component={
+          userDetail?.role === 'provider'
+            ? ProviderDashboardScreen
+            : DashboardScreen
+        }
         options={() => ({
           tabBarIcon: ({focused}) => (
             <SvgCss
@@ -63,7 +73,9 @@ const HomeTab = () => {
       />
       <Tab.Screen
         name="Booking"
-        component={Booking}
+        component={
+          userDetail?.role === 'provider' ? ProviderListBooking : Booking
+        }
         options={() => ({
           tabBarIcon: ({focused}) => (
             <SvgCss
@@ -152,6 +164,8 @@ const HomeTab = () => {
 };
 
 function App() {
+  const user = useSelector(state => state.auth.user);
+  const userDetail = user.payload;
   return (
     <>
       <NavigationContainer>
@@ -173,7 +187,11 @@ function App() {
           />
           <Stack.Screen
             name="Dashboard"
-            component={DashboardScreen}
+            component={
+              userDetail?.role === 'provider'
+                ? ProviderDashboardScreen
+                : DashboardScreen
+            }
             options={{headerShown: false}}
           />
           <Stack.Screen
@@ -183,7 +201,9 @@ function App() {
           />
           <Stack.Screen
             name="Booking"
-            component={Booking}
+            component={
+              userDetail?.role === 'provider' ? ProviderListBooking : Booking
+            }
             options={{headerShown: false}}
           />
           <Stack.Screen
