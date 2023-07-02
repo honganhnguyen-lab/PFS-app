@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const axiosConfig = axios.create({
-  baseURL: 'http://192.168.1.70:4000',
+  baseURL: 'http://192.168.10.21:4000',
   timeout: 30000,
   headers: {
     Accept: 'application/json',
@@ -10,4 +10,5 @@ export const axiosConfig = axios.create({
 });
 
 export const loginUri = '/api/v1/users/login';
-export const bookingUri = 'api/v1/appointments/customer';
+export const bookingUri = '/api/v1/appointments/customer';
+export const getListServicesElasticUri = '/api/v1/services/elastic';

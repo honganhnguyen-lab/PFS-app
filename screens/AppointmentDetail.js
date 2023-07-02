@@ -99,7 +99,7 @@ const AppointmentDetail = () => {
     <View style={styles.listServicesScreen}>
       <View mt={50}>
         <HStack space={3} alignItems="center" p={3}>
-          <Pressable onPress={() => navigation.navigate('Dashboard')}>
+          <Pressable onPress={() => navigation.navigate('Home')}>
             <Avatar bg="#569FA7">
               <Icon
                 as={Ionicons}

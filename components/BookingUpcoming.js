@@ -118,7 +118,7 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
                       as={Ionicons}
                       name="call-outline"
                       size="sm"
-                      onPress={onCallProvider(infoProvider.phoneNumber)}
+                      onPress={() => onCallProvider(infoProvider.phoneNumber)}
                     />
                   }>
                   <Text color={'white'} fontWeight={600}>

@@ -46,6 +46,10 @@ export const styles = StyleSheet.create({
     color: '#95C4CB',
     fontWeight: 600,
   },
+  buttonTextFocus: {
+    color: 'white',
+    fontWeight: 600,
+  },
   statusBooking: {
     backgroundColor: '#95C4CB',
   },

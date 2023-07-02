@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Box,
   Text,
@@ -18,96 +18,109 @@ import {
   Avatar,
   Divider,
   Pressable,
+  Skeleton,
+  useDisclose,
+  Actionsheet,
+  Checkbox,
+  Radio,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
+import {axiosConfig, getListServicesElasticUri} from '../axios';
+
+const SkeletonLoading = () => {
+  return (
+    <Center w="100%">
+      <VStack
+        w="90%"
+        maxW="400"
+        borderWidth="1"
+        space={8}
+        overflow="hidden"
+        rounded="md"
+        _dark={{
+          borderColor: 'coolGray.500',
+        }}
+        _light={{
+          borderColor: 'coolGray.200',
+        }}>
+        <Skeleton h="40" />
+        <Skeleton.Text px="4" />
+        <Skeleton px="4" my="4" rounded="md" startColor="primary.100" />
+      </VStack>
+    </Center>
+  );
+};
 
 const ServicesList = () => {
   const serviceFilter = [
     {
-      id: 1,
-      label: 'Filter',
-      icon: 'filter-outline',
-    },
-    {
       id: 2,
-      label: 'Sort',
-      icon: 'funnel-outline',
+      label: 'Rating',
+      icon: 'star-sharp',
+      value: 'sortRating',
     },
     {
       id: 3,
       label: 'Discount',
-      icon: 'pricetags-outline',
+      icon: 'pricetags-sharp',
+      value: 'isDiscount',
     },
     {
       id: 4,
       label: 'Nearest',
-      icon: 'location-outline',
+      icon: 'location-sharp',
+      value: 'isGeo',
     },
   ];
-  const listServices = [
-    {
-      id: 1,
-      title: 'Tutor Service',
-      rating: 4.8,
-      locationFar: '1.4km',
-      ratingComments: '2.8k',
-      picture:
-        'https://epe.brightspotcdn.com/dims4/default/95f2bfb/2147483647/strip/true/crop/2084x1414+37+0/resize/840x570!/format/webp/quality/90/?url=https%3A%2F%2Fepe-brightspot.s3.amazonaws.com%2F94%2F2d%2F8ed27aa34da0a197b1d819ec39a5%2Fteacher-tutor-student-librarian-1137620335.jpg',
-    },
-    {
-      id: 2,
-      title: 'Maid Service',
-      rating: 4.9,
-      locationFar: '3km',
-      ratingComments: '2.8k',
-      picture:
-        'https://www.gohousemaids.com/wp-content/uploads/2016/10/bigstock-Everything-Must-Be-Clean-As-A-115922414-1024x683.jpg',
-    },
-    {
-      id: 3,
-      title: 'Repair AC',
-      rating: 2.8,
-      locationFar: '3.2km',
-      ratingComments: '3',
-      picture:
-        'https://lirp.cdn-website.com/8534fced395e48cc95b25597bf7cb70a/dms3rep/multi/opt/58d28b52-afd4-4f64-a02b-b5ca91a628e1-640w.jpg',
-    },
-    {
-      id: 4,
-      title: 'Repair pump',
-      rating: 3.8,
-      locationFar: '1.4km',
-      ratingComments: '5k',
-      picture:
-        'https://lirp.cdn-website.com/8534fced395e48cc95b25597bf7cb70a/dms3rep/multi/opt/58d28b52-afd4-4f64-a02b-b5ca91a628e1-640w.jpg',
-    },
-    {
-      id: 5,
-      title: 'Repair Refridgator',
-      rating: 4.1,
-      locationFar: '10.4km',
-      ratingComments: '2k',
-      picture:
-        'https://lirp.cdn-website.com/8534fced395e48cc95b25597bf7cb70a/dms3rep/multi/opt/58d28b52-afd4-4f64-a02b-b5ca91a628e1-640w.jpg',
-    },
-    {
-      id: 6,
-      title: 'Cleaning services',
-      rating: 4.2,
-      locationFar: '8.4km',
-      ratingComments: '600',
-      picture:
-        'https://lirp.cdn-website.com/8534fced395e48cc95b25597bf7cb70a/dms3rep/multi/opt/58d28b52-afd4-4f64-a02b-b5ca91a628e1-640w.jpg',
-    },
-  ];
+
+  const [listServices, setListServices] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [filter, setFilter] = useState({
+    search: '',
+    sortRating: false,
+    sortPrice: false,
+  });
+  const [search, setSearch] = useState('');
+  const {isOpen, onOpen, onClose} = useDisclose();
+
+  const getListServices = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axiosConfig.get(getListServicesElasticUri, {
+        params: {
+          search: filter.search,
+          ...(filter.sortRating && {sortRating: filter.sortRating}),
+          ...(filter.sortPrice && {sortPrice: filter.sortPrice}),
+        },
+      });
+      setListServices(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
+  };
+
+  const onChangeFilterValue = value => {
+    setFilter({...filter, [value]: !filter[value]});
+  };
+
+  useEffect(() => {
+    getListServices();
+  }, []);
+
+  useEffect(() => {
+    getListServices();
+  }, [filter]);
+
+  useEffect;
   const navigation = useNavigation();
   return (
     <View style={styles.listServicesScreen}>
       <View style={styles.searchBox}>
         <HStack justifyContent="space-between" alignItems="center" p={3}>
-          <Pressable onPress={() => navigation.navigate('Dashboard')}>
+          <Pressable onPress={() => navigation.navigate('Home')}>
             <Icon size="6" as={Ionicons} name="arrow-back-outline" />
           </Pressable>
           <Input
@@ -116,6 +129,9 @@ const ServicesList = () => {
             fontSize="14"
             w="90%"
             variant="filled"
+            value={filter.search}
+            onChangeText={value => setFilter({...filter, search: value})}
+            onSubmitEditing={getListServices}
             InputRightElement={
               <Icon
                 m="2"
@@ -128,80 +144,171 @@ const ServicesList = () => {
             }
           />
         </HStack>
-        <HStack space={1.5} pt={2}>
+        <HStack space={1.5} pt={1}>
+          <Button
+            leftIcon={
+              <Icon name="options-outline" as={Ionicons} color="#95C4CB" />
+            }
+            variant="outline"
+            borderColor="#95C4CB"
+            color="#95C4CB"
+            disabled={isLoading}
+            size="sm"
+            onPress={onOpen}
+            borderRadius="full"
+          />
+
           {serviceFilter.map(item => (
             <Button
-              leftIcon={<Icon name={item.icon} as={Ionicons} color="#95C4CB" />}
-              variant="outline"
+              leftIcon={
+                <Icon
+                  name={item.icon}
+                  as={Ionicons}
+                  color={filter[item.value] ? 'white' : '#95C4CB'}
+                />
+              }
+              variant={filter[item.value] ? 'solid' : 'outline'}
               borderColor="#95C4CB"
-              color="#95C4CB"
-              size="xs"
+              disabled={isLoading}
+              size="sm"
               key={item.id}
+              onPress={() => onChangeFilterValue(item.value)}
               borderRadius="full">
-              <Text style={styles.buttonText}>{item.label}</Text>
+              {item.label?.length > 0 && (
+                <Text
+                  style={
+                    filter[item.value]
+                      ? styles.buttonTextFocus
+                      : styles.buttonText
+                  }>
+                  {item.label}
+                </Text>
+              )}
             </Button>
           ))}
         </HStack>
       </View>
 
       <ScrollView>
-        <VStack space={3} alignItems="center" mt="6">
-          {listServices.map(service => (
-            <HStack
-              w="100%"
-              h={120}
-              space={3}
-              rounded="lg"
-              bg="#F9F9F9"
-              shadow={2}
-              key={service.id}>
-              <Center bg="#87ADB2" p={2.5} roundedLeft="lg">
-                <Image
-                  source={{
-                    uri: service.picture,
-                  }}
-                  alt="Alternate Text"
-                  size="md"
-                  borderRadius={20}
-                />
-              </Center>
-              <VStack p={3}>
-                <Text
-                  fontWeight={600}
-                  fontSize={18}
-                  fontFamily={'WorkSans-regular'}>
-                  {service.title}
-                </Text>
-                <HStack p={2} alignItems="center">
-                  <Text>{service.locationFar}</Text>
-                  <Divider
-                    bg="#87ADB2"
-                    thickness="2"
-                    mx="2"
-                    orientation="vertical"
-                  />
-                  <Icon
-                    as={Ionicons}
-                    size={4}
-                    name="star-sharp"
-                    color="#87ADB2"
-                  />
-                  <Text>
-                    {service.rating} ({service.ratingComments})
-                  </Text>
-                </HStack>
-                <Heading
-                  fontWeight={600}
-                  fontSize={18}
-                  fontFamily={'WorkSans-regular'}
-                  color="#87ADB2">
-                  $5.00
-                </Heading>
-              </VStack>
-            </HStack>
-          ))}
-        </VStack>
+        {isLoading ? (
+          <SkeletonLoading />
+        ) : (
+          <VStack space={3} alignItems="center" mt="6">
+            {listServices?.length > 0 &&
+              listServices.map(item => {
+                const service = item._source ?? {};
+                return (
+                  <HStack
+                    w="100%"
+                    h={120}
+                    space={3}
+                    rounded="lg"
+                    bg="#F9F9F9"
+                    shadow={2}
+                    key={item._id}>
+                    <Center bg="#87ADB2" p={2}>
+                      <Image
+                        source={{
+                          uri: service.picture,
+                        }}
+                        alt="Alternate Text"
+                        size="lg"
+                      />
+                    </Center>
+                    <VStack p={3}>
+                      <Text
+                        fontWeight={600}
+                        fontSize={18}
+                        fontFamily={'WorkSans-regular'}>
+                        {service.title}
+                      </Text>
+                      <HStack p={2} alignItems="center">
+                        <Text>{service.locationFar ?? '4km'}</Text>
+                        <Divider
+                          bg="#87ADB2"
+                          thickness="2"
+                          mx="2"
+                          orientation="vertical"
+                        />
+                        <Icon
+                          as={Ionicons}
+                          size={4}
+                          name="star-sharp"
+                          color="#87ADB2"
+                        />
+                        <Text>
+                          {service.ratingsAverage ?? 0} (
+                          {service.ratingComments ?? 0})
+                        </Text>
+                      </HStack>
+                      <Heading
+                        fontWeight={600}
+                        fontSize={18}
+                        fontFamily={'WorkSans-regular'}
+                        color="#87ADB2">
+                        VND {service.price}
+                      </Heading>
+                    </VStack>
+                  </HStack>
+                );
+              })}
+          </VStack>
+        )}
       </ScrollView>
+      <Actionsheet isOpen={isOpen} onClose={onClose}>
+        <Actionsheet.Content>
+          <HStack alignItems="center" justifyContent="center" space={2}>
+            <Icon name="options-outline" as={Ionicons} />
+            <Text fontWeight={600} fontSize={18}>
+              Filter by
+            </Text>
+          </HStack>
+
+          <Actionsheet.Item>
+            <Checkbox value="one" my={2}>
+              Discount
+            </Checkbox>
+          </Actionsheet.Item>
+          <Actionsheet.Item>
+            <Checkbox value="one" my={2}>
+              Nearest
+            </Checkbox>
+          </Actionsheet.Item>
+          <Actionsheet.Item>
+            <Checkbox value="one" my={2}>
+              Rating
+            </Checkbox>
+          </Actionsheet.Item>
+          <Actionsheet.Item>
+            <Checkbox value="one" my={2}>
+              Price
+            </Checkbox>
+          </Actionsheet.Item>
+          <Actionsheet.Item>
+            <Text fontWeight="700">Categories</Text>
+          </Actionsheet.Item>
+          <Actionsheet.Item>
+            <Radio.Group name="exampleGroup">
+              <VStack w="100%" space={3} justifyContent="center">
+                <Radio value="1" my={1}>
+                  Maid Services
+                </Radio>
+
+                <Radio value="2" my={1}>
+                  Repair Services
+                </Radio>
+
+                <Radio value="3" my={1}>
+                  Clean Services
+                </Radio>
+                <Radio value="4" my={1}>
+                  Tutor Services
+                </Radio>
+              </VStack>
+            </Radio.Group>
+          </Actionsheet.Item>
+        </Actionsheet.Content>
+      </Actionsheet>
     </View>
   );
 };
