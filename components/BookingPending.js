@@ -37,7 +37,7 @@ export default BookingPending = ({listPendingAppointment}) => {
               shadow={2}
               bg="white"
               rounded="lg"
-              key={item.id}>
+              key={item._id}>
               <HStack space={3} pt={2} justifyContent="flex-start">
                 <Avatar bg="success.800">
                   <SvgCss

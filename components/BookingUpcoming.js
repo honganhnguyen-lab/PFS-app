@@ -21,7 +21,7 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
   return (
     <VStack w="100%" space={4}>
       {listUpcomingAppointment?.length > 0 &&
-        listUpcomingAppointment?.map(item => {
+        listUpcomingAppointment?.map((item, index) => {
           const infoService = item?.serviceId ?? {};
           const infoProvider = item?.providerId ?? {};
           const renderStatusLabel = appointmentStatus.find(
@@ -31,7 +31,13 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
             cate => cate.status === infoService.category,
           )?.icon;
           return (
-            <VStack space={2} p={2} shadow={2} bg="white" rounded="lg">
+            <VStack
+              space={2}
+              p={2}
+              shadow={2}
+              bg="white"
+              rounded="lg"
+              key={index}>
               <HStack space={3} pt={2} justifyContent="flex-start">
                 <Avatar bg="success.800">
                   <SvgCss

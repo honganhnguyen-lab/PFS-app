@@ -30,6 +30,8 @@ import NotiList from './screens/NotiList';
 import {useSelector} from 'react-redux';
 import ProviderDashboardScreen from './screens/ProviderDashboard';
 import ProviderListBooking from './screens/ProviderListBooking';
+import ProviderServicesList from './screens/ProviderServicesList';
+import AddNewService from './screens/AddNewService';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -97,7 +99,9 @@ const HomeTab = () => {
       />
       <Tab.Screen
         name="Services"
-        component={ServicesList}
+        component={
+          userDetail?.role === 'provider' ? ProviderServicesList : ServicesList
+        }
         options={() => ({
           tabBarIcon: ({focused}) => (
             <SvgCss
@@ -196,7 +200,11 @@ function App() {
           />
           <Stack.Screen
             name="Services"
-            component={ServicesList}
+            component={
+              userDetail?.role === 'provider'
+                ? ProviderServicesList
+                : ServicesList
+            }
             options={{headerShown: false}}
           />
           <Stack.Screen
@@ -229,6 +237,11 @@ function App() {
           <Stack.Screen
             name="NotiList"
             component={NotiList}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="AddService"
+            component={AddNewService}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

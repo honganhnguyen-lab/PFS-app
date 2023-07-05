@@ -30,7 +30,13 @@ export default BookingHistory = ({listHistoryAppointment, isProvider}) => {
             cate => cate.status === infoService.category,
           )?.icon;
           return (
-            <VStack space={2} p={2} shadow={2} bg="white" rounded="lg">
+            <VStack
+              space={2}
+              p={2}
+              shadow={2}
+              bg="white"
+              rounded="lg"
+              key={item._id}>
               <HStack pt={2} justifyContent="space-between">
                 <HStack space={2}>
                   <Icon as={Ionicons} name="person-outline" size="md" />

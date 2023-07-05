@@ -63,5 +63,9 @@
 	<string>Can we get your location ?</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Can we get your location ?</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Want to upload image</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Want to use camera</string>
 </dict>
 </plist>

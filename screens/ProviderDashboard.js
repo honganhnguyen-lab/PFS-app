@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Box,
   Text,
@@ -41,6 +41,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {storage} from '../storage';
 import {BarChartCustom} from '../components/BarChart';
+import {axiosConfig, getListServicesEachProvider} from '../axios';
 
 const SkeletonView = () => (
   <VStack
@@ -81,7 +82,25 @@ const ProviderDashboardScreen = () => {
   const user = useSelector(state => state.auth.user);
   const userDetail = user.payload;
   const navigation = useNavigation();
+  const [dataProvider, setDataProvider] = useState({});
+  const [loading, setLoading] = useState(false);
 
+  const onGetDetailProvider = async () => {
+    setLoading(true);
+    try {
+      const responseData = await axiosConfig.get(
+        `${getListServicesEachProvider}${userDetail.id}`,
+      );
+      setDataProvider(responseData.data.data.user);
+    } catch (err) {
+      console.log(err);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    onGetDetailProvider();
+  }, [userDetail]);
   return (
     <View style={styles.dashboardContainer}>
       {!userDetail || (isEmptyObj(userDetail) && <SkeletonView />)}
@@ -92,7 +111,7 @@ const ProviderDashboardScreen = () => {
             <VStack space={2} p={4} bg="white" w="47%" rounded="md">
               <HStack justifyContent="space-between" alignItems="center">
                 <Text fontSize="22px" fontWeight={700} color={'#569FA7'}>
-                  98
+                  {dataProvider.appointmentNumber}
                 </Text>
                 <Avatar bg="#E0F0F2">
                   <Icon as={Ionicons} name="search" size="md" color="#0CB7DD" />
@@ -103,7 +122,7 @@ const ProviderDashboardScreen = () => {
             <VStack space={2} p={4} bg="white" w="47%" rounded="md">
               <HStack justifyContent="space-between" alignItems="center">
                 <Text fontSize="22px" fontWeight={700} color={'#569FA7'}>
-                  15
+                  {dataProvider.services?.length ?? 0}
                 </Text>
                 <Avatar bg="#E0F0F2">
                   <Icon as={Ionicons} name="search" size="md" color="#0CB7DD" />
