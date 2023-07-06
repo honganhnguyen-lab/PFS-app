@@ -23,6 +23,10 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: '#F9F9F9',
   },
+  listAppointScreen: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
   detailScreen: {
     flex: 1,
     backgroundColor: '#F9F9F9',
@@ -65,8 +69,23 @@ export const styles = StyleSheet.create({
     zIndex: 0,
   },
   boxDetail: {
+    flexGrow: 1,
     position: 'absolute',
-    top: 130,
-    left: 10,
+  },
+  boxDetailContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 150,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  boxDiscount: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+    marginLeft: 20,
+    marginRight: 20,
   },
 });

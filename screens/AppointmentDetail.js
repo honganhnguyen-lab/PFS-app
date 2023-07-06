@@ -18,6 +18,7 @@ import {
   Pressable,
   Modal,
   FormControl,
+  useDisclose,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -30,8 +31,12 @@ import {useEffect, useState} from 'react';
 import axios from 'axios';
 import {chooseProvider} from '../assets/icon';
 import {SvgCss} from 'react-native-svg';
+import {useDispatch, useSelector} from 'react-redux';
+import {onSendLocation} from '../redux/appointment/appointmentSlice';
 
 const AppointmentDetail = () => {
+  const appointmentName = useSelector(state => state.appointment.nameServices);
+  const dispatch = useDispatch();
   const [skipPermissionRequests, setSkipPermissionRequests] = useState(false);
   const [authorizationLevel, setAuthorizationLevel] = useState('auto');
 
@@ -40,6 +45,13 @@ const AppointmentDetail = () => {
   const [locationInput, setLocationInput] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isModalNextStep, setIsModalNextStep] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [selectedDate, setSelectedDate] = useState('');
+
+  const onChangeSelectedDate = date => {
+    setSelectedDate(date);
+    setDisabled(false);
+  };
 
   const handleSizeClick = () => {
     setModalVisible(!modalVisible);
@@ -47,6 +59,12 @@ const AppointmentDetail = () => {
 
   const updateLocationDetail = () => {
     setDefaultLocation(locationInput);
+    dispatch(
+      onSendLocation({
+        coordinates: [],
+        address: locationInput,
+      }),
+    );
     setModalVisible(false);
   };
 
@@ -76,6 +94,12 @@ const AppointmentDetail = () => {
       } catch (err) {
         console.log(err);
       }
+      dispatch(
+        onSendLocation({
+          coordinates: [latitude, longtitude],
+          address: defaultLocation,
+        }),
+      );
     });
   };
 
@@ -109,7 +133,7 @@ const AppointmentDetail = () => {
               />
             </Avatar>
           </Pressable>
-          <Heading>Cleaning</Heading>
+          <Heading>{appointmentName.payload ?? ''}</Heading>
         </HStack>
         <Divider bg="#87ADB2" thickness="4" mx="2" />
       </View>
@@ -152,15 +176,19 @@ const AppointmentDetail = () => {
             </Text>
           </HStack>
           <HStack justifyContent="space-between" alignItems="center">
-            <DatePickerCustomize />
+            <DatePickerCustomize
+              selectedDate={selectedDate}
+              onChangeSelectedDate={onChangeSelectedDate}
+            />
           </HStack>
         </Stack>
         <Button
           mt={10}
-          bgColor={'#316970'}
+          bgColor={disabled ? 'grey' : '#316970'}
           width="100%"
           height={50}
           rounded={'md'}
+          disabled={disabled}
           onPress={handleNextStep}>
           Next step
         </Button>

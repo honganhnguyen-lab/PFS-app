@@ -37,8 +37,9 @@ import {
 } from '../assets/icon';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {storage} from '../storage';
+import {onSendNameServices} from '../redux/appointment/appointmentSlice';
 
 const SkeletonView = () => (
   <VStack
@@ -79,6 +80,7 @@ const DashboardScreen = () => {
   const user = useSelector(state => state.auth.user);
   const userDetail = user.payload;
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const ListServicesTop = [
     {
       label: 'AC Repair',
@@ -107,6 +109,11 @@ const DashboardScreen = () => {
       icon: personalChefIcon,
     },
   ];
+
+  const onNavigateToAppointment = label => {
+    dispatch(onSendNameServices(label));
+    navigation.navigate('Appointment');
+  };
   useEffect(() => {
     const token = storage.getString('token');
     if (!token) {
@@ -166,7 +173,7 @@ const DashboardScreen = () => {
                 key={index}>
                 <Pressable
                   width={'100%'}
-                  onPress={() => navigation.navigate('Appointment')}>
+                  onPress={() => onNavigateToAppointment(item.label)}>
                   <Box
                     height={75}
                     width={'100%'}
@@ -216,7 +223,9 @@ const DashboardScreen = () => {
                   backgroundColor: 'gray.50',
                 }}
                 key={index}>
-                <Pressable width={'100%'} onPress={() => console.log('hello')}>
+                <Pressable
+                  width={'100%'}
+                  onPress={() => onNavigateToAppointment(item.label)}>
                   <Box
                     height={75}
                     width={'100%'}

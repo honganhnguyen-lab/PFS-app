@@ -343,6 +343,8 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-webview (13.2.2):
+    - React-Core
   - React-perflogger (0.71.6)
   - React-RCTActionSheet (0.71.6):
     - React-Core/RCTActionSheetHeaders (= 0.71.6)
@@ -529,6 +531,7 @@ DEPENDENCIES:
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -618,6 +621,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-mmkv"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -698,6 +703,7 @@ SPEC CHECKSUMS:
   react-native-geolocation: 0f7fe8a4c2de477e278b0365cce27d089a8c5903
   react-native-mmkv: 725623a679fec884bf18a37400e753afb8a1b924
   react-native-safe-area-context: b8979f5eda6ed5903d4dbc885be3846ea3daa753
+  react-native-webview: b8ec89966713985111a14d6e4bf98d8b54bced0d
   React-perflogger: 43392072a5b867a504e2b4857606f8fc5a403d7f
   React-RCTActionSheet: c7b67c125bebeda9fb19fc7b200d85cb9d6899c4
   React-RCTAnimation: c2de79906f607986633a7114bee44854e4c7e2f5

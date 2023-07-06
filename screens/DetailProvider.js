@@ -24,58 +24,57 @@ import {Dimensions} from 'react-native';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {axiosConfig, getListServicesEachProvider} from '../axios';
+import {onSendDataService} from '../redux/appointment/appointmentSlice';
 
 const DetailProvider = () => {
   const navigation = useNavigation();
+  const provider = useSelector(state => state.appointment.providerId);
+  const dispatch = useDispatch();
   const {width} = Dimensions.get('window');
-  const listServiceEachProvider = [
-    {
-      id: 1,
-      title: 'Secondary tutor',
-      image:
-        'https://epe.brightspotcdn.com/dims4/default/95f2bfb/2147483647/strip/true/crop/2084x1414+37+0/resize/840x570!/format/webp/quality/90/?url=https%3A%2F%2Fepe-brightspot.s3.amazonaws.com%2F94%2F2d%2F8ed27aa34da0a197b1d819ec39a5%2Fteacher-tutor-student-librarian-1137620335.jpg',
-      price: '200.000',
-      priceDiscount: '120.000 đ',
-    },
-    {
-      id: 2,
-      title: 'High school tutor',
-      image:
-        'https://epe.brightspotcdn.com/dims4/default/95f2bfb/2147483647/strip/true/crop/2084x1414+37+0/resize/840x570!/format/webp/quality/90/?url=https%3A%2F%2Fepe-brightspot.s3.amazonaws.com%2F94%2F2d%2F8ed27aa34da0a197b1d819ec39a5%2Fteacher-tutor-student-librarian-1137620335.jpg',
-      price: '200.000 đ',
-    },
-    {
-      id: 3,
-      title: 'Elementary tutor',
-      image:
-        'https://epe.brightspotcdn.com/dims4/default/95f2bfb/2147483647/strip/true/crop/2084x1414+37+0/resize/840x570!/format/webp/quality/90/?url=https%3A%2F%2Fepe-brightspot.s3.amazonaws.com%2F94%2F2d%2F8ed27aa34da0a197b1d819ec39a5%2Fteacher-tutor-student-librarian-1137620335.jpg',
-      price: '100.000 đ',
-    },
-  ];
+  const [listServiceEachProvider, setListServiceEachProvider] = useState([]);
 
-  const listIsChosen = listServiceEachProvider.map(service => ({
-    ...service,
-    isChosen: true,
-  }));
-  const [isChosen, setIsChosen] = useState(listIsChosen);
+  const listIsChosen =
+    listServiceEachProvider?.services?.length > 0 &&
+    listServiceEachProvider?.services?.map(service => ({
+      ...service,
+      isChosen: false,
+    }));
+
+  const [isLoading, setIsLoading] = useState(false);
   const {isOpen, onOpen, onClose} = useDisclose();
+  const [serviceChoosen, setServiceChoosen] = useState({});
 
-  const onCheckAddService = serviceId => {
-    const newList = isChosen.map(item => {
-      if (item.id === serviceId) {
-        return {...item, isChosen: !item.isChosen};
-      }
-      return item;
-    });
-    setIsChosen(newList);
+  const onCheckAddService = item => {
+    setServiceChoosen({price: item.price, name: item.title});
+    dispatch(onSendDataService(item.id));
     onOpen();
   };
+
+  const getListServices = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axiosConfig.get(
+        `${getListServicesEachProvider}${provider.payload}/services`,
+      );
+      setListServiceEachProvider(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    getListServices();
+  }, [provider]);
   return (
     <View style={styles.detailScreen} bg="#CAC9C9">
       <View width={width}>
         <Image
           source={{
-            uri: 'https://epe.brightspotcdn.com/dims4/default/95f2bfb/2147483647/strip/true/crop/2084x1414+37+0/resize/840x570!/format/webp/quality/90/?url=https%3A%2F%2Fepe-brightspot.s3.amazonaws.com%2F94%2F2d%2F8ed27aa34da0a197b1d819ec39a5%2Fteacher-tutor-student-librarian-1137620335.jpg',
+            uri:
+              listServiceEachProvider?.picture ??
+              'https://epe.brightspotcdn.com/dims4/default/95f2bfb/2147483647/strip/true/crop/2084x1414+37+0/resize/840x570!/format/webp/quality/90/?url=https%3A%2F%2Fepe-brightspot.s3.amazonaws.com%2F94%2F2d%2F8ed27aa34da0a197b1d819ec39a5%2Fteacher-tutor-student-librarian-1137620335.jpg',
           }}
           style={styles.backgroundImage}
           alt="Alternate Text"
@@ -85,8 +84,9 @@ const DetailProvider = () => {
           justifyContent="space-between"
           alignItems="flex-start"
           p={2}
-          height={200}>
-          <Pressable onPress={() => navigation.navigate('Home')}>
+          height={200}
+          mt={10}>
+          <Pressable onPress={() => navigation.navigate('ProviderList')}>
             <Avatar bg="white">
               <Icon
                 as={Ionicons}
@@ -109,8 +109,11 @@ const DetailProvider = () => {
         </HStack>
       </View>
       <ScrollView style={styles.boxDetail}>
-        <Box alignItems="center" justifyContent="center">
-          <Box bg="white" width="90%" shadow={3} mb={4} rounded="lg">
+        <Box
+          style={styles.boxDetailContent}
+          alignItems="center"
+          justifyContent="center">
+          <Box bg="white" shadow={3} mb={4} rounded="lg">
             <VStack p={3} space={2}>
               <HStack justifyContent="space-between" alignItems="center">
                 <Text
@@ -118,7 +121,7 @@ const DetailProvider = () => {
                   fontSize={22}
                   color="#569FA7"
                   fontFamily={'WorkSans-regular'}>
-                  John Haukins
+                  {listServiceEachProvider?.provider?.name}
                 </Text>
                 <Icon
                   as={Ionicons}
@@ -137,8 +140,12 @@ const DetailProvider = () => {
                       name="star-sharp"
                       color="#87ADB2"
                     />
-                    <Text fontWeight={600}>4.8</Text>
-                    <Text>(46)</Text>
+                    <Text fontWeight={600}>
+                      {listServiceEachProvider?.provider?.rating ?? 4.8}
+                    </Text>
+                    <Text>
+                      ({listServiceEachProvider?.provider?.comment ?? 46})
+                    </Text>
                   </HStack>
                   <HStack alignItems="center">
                     <Icon
@@ -168,7 +175,11 @@ const DetailProvider = () => {
                       size="md"
                       color="#569FA7"
                     />
-                    <Text> 9.1 km</Text>
+                    <Text>
+                      {' '}
+                      {listServiceEachProvider?.provider?.locationFar ??
+                        '9.1km'}
+                    </Text>
                   </HStack>
                   <HStack space={1} alignItems="center">
                     <Icon as={Ionicons} name="pin" size="md" color="#569FA7" />
@@ -193,91 +204,97 @@ const DetailProvider = () => {
                   <Text fontWeight={600}>Description</Text>
                 </HStack>
                 <Text width="80%" flexWrap="wrap">
-                  Description
+                  {listServiceEachProvider?.provider?.desciption ??
+                    'Description'}
                 </Text>
               </VStack>
             </VStack>
           </Box>
         </Box>
 
-        <VStack space={12} alignItems="center" justifyContent="center">
-          <Box width="90%">
+        <VStack
+          space={12}
+          alignItems="center"
+          justifyContent="center"
+          style={styles.boxDiscount}>
+          <Box width="93%">
             <Text
               fontWeight={600}
               fontSize={22}
               fontFamily={'AtkinsonHyperlegible-regular'}>
               Current discount
             </Text>
-            {isChosen.map(item => {
-              if (item.priceDiscount) {
-                return (
-                  <HStack
-                    w="100%"
-                    justifyContent="space-evenly"
-                    mt={2}
-                    rounded="lg"
-                    alignItems="center"
-                    bg="#F9F9F9"
-                    shadow={2}
-                    key={item.id}>
-                    <Center p={2}>
-                      <Image
-                        source={{
-                          uri: item.image,
-                        }}
-                        alt="Alternate Text"
-                        size="sm"
-                      />
-                    </Center>
-                    <VStack p={2} pt={3}>
-                      <Text
-                        fontWeight={600}
-                        fontSize={16}
-                        ellipsizeMode="middle"
-                        fontFamily={'WorkSans-regular'}>
-                        {item.title}
-                      </Text>
-                      <HStack
-                        alignItems="center"
-                        space={1}
-                        width="100%"
-                        flexWrap="wrap">
-                        <Text fontWeight={600} fontSize={16} color="#569FA7">
-                          {item.priceDiscount}
-                        </Text>
-                        <Text fontSize={14} strikeThrough color="#569FA7">
-                          {item.price}
-                        </Text>
-                        <Icon
-                          as={Ionicons}
-                          name="pricetag"
+            {listIsChosen?.length > 0 &&
+              listIsChosen.map(item => {
+                if (item?.isDiscount) {
+                  return (
+                    <HStack
+                      w="100%"
+                      justifyContent="space-evenly"
+                      mt={2}
+                      rounded="lg"
+                      alignItems="center"
+                      bg="#F9F9F9"
+                      shadow={2}
+                      key={item.id}>
+                      <Center p={2}>
+                        <Image
+                          source={{
+                            uri: item.image,
+                          }}
+                          alt="Alternate Text"
                           size="sm"
-                          color="#87ADB2"
                         />
-                      </HStack>
-                    </VStack>
-                    <Pressable onPress={() => onCheckAddService(item.id)}>
-                      <Square
-                        size="35px"
-                        bg={!item.isChosen ? '#87ADB2' : 'white'}
-                        rounded="lg"
-                        borderWidth="1"
-                        borderColor={!item.isChosen ? 'white' : '#87ADB2'}>
-                        <Icon
-                          as={Ionicons}
-                          name={!item.isChosen ? 'add-sharp' : 'remove-sharp'}
-                          size="md"
-                          color={!item.isChosen ? 'white' : '#87ADB2'}
-                        />
-                      </Square>
-                    </Pressable>
-                  </HStack>
-                );
-              }
-            })}
+                      </Center>
+                      <VStack p={2} pt={3}>
+                        <Text
+                          fontWeight={600}
+                          fontSize={16}
+                          ellipsizeMode="middle"
+                          fontFamily={'WorkSans-regular'}>
+                          {item.title}
+                        </Text>
+                        <HStack
+                          alignItems="center"
+                          space={1}
+                          width="100%"
+                          flexWrap="wrap">
+                          <Text fontWeight={600} fontSize={16} color="#569FA7">
+                            {item.priceDiscount}
+                          </Text>
+                          <Text fontSize={14} strikeThrough color="#569FA7">
+                            {item.price}
+                          </Text>
+                          <Icon
+                            as={Ionicons}
+                            name="pricetag"
+                            size="sm"
+                            color="#87ADB2"
+                          />
+                        </HStack>
+                      </VStack>
+                      <Pressable onPress={() => onCheckAddService(item)}>
+                        <Square
+                          size="35px"
+                          bg={!item.isChosen ? '#87ADB2' : 'white'}
+                          rounded="lg"
+                          borderWidth="1"
+                          borderColor={!item.isChosen ? 'white' : '#87ADB2'}>
+                          <Icon
+                            as={Ionicons}
+                            name={!item.isChosen ? 'add-sharp' : 'remove-sharp'}
+                            size="md"
+                            color={!item.isChosen ? 'white' : '#87ADB2'}
+                          />
+                        </Square>
+                      </Pressable>
+                    </HStack>
+                  );
+                }
+              })}
           </Box>
 
-          <Box width="90%">
+          <Box width="93%">
             <Text
               fontWeight={600}
               fontSize={22}
@@ -285,55 +302,58 @@ const DetailProvider = () => {
               For you
             </Text>
             <HStack space={6} alignItems="center" mt={3}>
-              {isChosen.map(item => {
-                if (!item.priceDiscount) {
-                  return (
-                    <VStack space={2} width="50%" key={item.id}>
-                      <Image
-                        source={{
-                          uri: item.image,
-                        }}
-                        alt="Alternate Text"
-                        size="xl"
-                        borderRadius="md"
-                      />
-                      <Text
-                        fontSize={14}
-                        ellipsizeMode="middle"
-                        width="90%"
-                        fontFamily={'WorkSans-regular'}>
-                        {item.title}
-                      </Text>
-                      <HStack
-                        alignItems="center"
-                        space={2}
-                        width="100%"
-                        flexWrap="wrap">
-                        <Pressable onPress={() => onCheckAddService(item.id)}>
-                          <Square
-                            size="30px"
-                            bg={!item.isChosen ? '#87ADB2' : 'white'}
-                            rounded="lg"
-                            borderWidth="1"
-                            borderColor={!item.isChosen ? 'white' : '#87ADB2'}>
-                            <Icon
-                              as={Ionicons}
-                              name={
-                                !item.isChosen ? 'add-sharp' : 'remove-sharp'
-                              }
-                              size="md"
-                              color={!item.isChosen ? 'white' : '#87ADB2'}
-                            />
-                          </Square>
-                        </Pressable>
-                        <Text fontWeight={600} fontSize={14} color="#569FA7">
-                          {item.price}
+              {listIsChosen?.length > 0 &&
+                listIsChosen.map(item => {
+                  if (!item.isDiscount) {
+                    return (
+                      <VStack space={2} width="50%" key={item.id}>
+                        <Image
+                          source={{
+                            uri: item.image,
+                          }}
+                          alt="Alternate Text"
+                          size="xl"
+                          borderRadius="md"
+                        />
+                        <Text
+                          fontSize={14}
+                          ellipsizeMode="middle"
+                          width="90%"
+                          fontFamily={'WorkSans-regular'}>
+                          {item.title}
                         </Text>
-                      </HStack>
-                    </VStack>
-                  );
-                }
-              })}
+                        <HStack
+                          alignItems="center"
+                          space={2}
+                          width="100%"
+                          flexWrap="wrap">
+                          <Pressable onPress={() => onCheckAddService(item.id)}>
+                            <Square
+                              size="30px"
+                              bg={!item.isChosen ? '#87ADB2' : 'white'}
+                              rounded="lg"
+                              borderWidth="1"
+                              borderColor={
+                                !item.isChosen ? 'white' : '#87ADB2'
+                              }>
+                              <Icon
+                                as={Ionicons}
+                                name={
+                                  !item.isChosen ? 'add-sharp' : 'remove-sharp'
+                                }
+                                size="md"
+                                color={!item.isChosen ? 'white' : '#87ADB2'}
+                              />
+                            </Square>
+                          </Pressable>
+                          <Text fontWeight={600} fontSize={14} color="#569FA7">
+                            {item.price}
+                          </Text>
+                        </HStack>
+                      </VStack>
+                    );
+                  }
+                })}
             </HStack>
           </Box>
         </VStack>
@@ -347,9 +367,9 @@ const DetailProvider = () => {
             p={2}>
             <VStack space={3}>
               <Text fontWeight={600} fontSize={16} color="#569FA7">
-                120.000 d
+                {serviceChoosen.price} VND
               </Text>
-              <Text fontSize={16}>Secondary tutor</Text>
+              <Text fontSize={16}>{serviceChoosen.name}</Text>
             </VStack>
             <Button
               w={150}

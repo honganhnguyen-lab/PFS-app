@@ -2,13 +2,8 @@ import React, {useEffect, useState} from 'react';
 import DatePicker from 'react-native-modern-datepicker';
 import moment from 'moment';
 
-export const DatePickerCustomize = () => {
-  const [selectedDate, setSelectedDate] = useState('');
+export const DatePickerCustomize = ({onChangeSelectedDate}) => {
   const minDay = moment().add(1, 'days').format('YYYY/MM/DD').toString();
-  const onChangeSelectedDate = date => {
-    setSelectedDate(date);
-    console.log('date', date);
-  };
 
   useEffect(() => {}, []);
 
