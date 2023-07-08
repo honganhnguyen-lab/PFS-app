@@ -20,13 +20,16 @@ import {
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Pressable} from 'react-native';
 import {logOut} from '../redux/auth/authSlice';
 
 const UserProfile = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  const user = useSelector(state => state.auth.user);
+  const userDetail = user.payload;
 
   const onClickLogOut = async () => {
     await dispatch(logOut);
@@ -42,29 +45,29 @@ const UserProfile = () => {
         <Center w="100%" shadow={2} bg="white" p={3} rounded="lg">
           <VStack space={3} justifyContent="center" alignItems="center">
             <Avatar
-              bg="purple.600"
+              bg="#87ADB2"
               alignSelf="center"
-              size="xl"
+              size="md"
               source={{
-                uri: 'https://images.unsplash.com/photo-1510771463146-e89e6e86560e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80',
+                uri: userDetail?.avatar,
               }}>
-              RB
-              <Avatar.Badge bg="#87ADB2">
+              {userDetail?.name?.charAt(0).toUpperCase() ?? 'PFS'}
+              <Avatar.Badge bg="white">
                 <Pressable>
                   <Center>
                     <Icon
                       as={Ionicons}
                       name="create-outline"
                       size="sm"
-                      color="white"
+                      color="#87ADB2"
                     />
                   </Center>
                 </Pressable>
               </Avatar.Badge>
             </Avatar>
-            <Heading color="#87ADB2">Amie Nguyen</Heading>
+            <Heading color="#87ADB2">{userDetail?.name}</Heading>
             <Text fontWeight="600" fontSize={16}>
-              amie@gmail.com
+              {userDetail?.phoneNumber}
             </Text>
           </VStack>
         </Center>
