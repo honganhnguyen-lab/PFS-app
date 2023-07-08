@@ -39,7 +39,7 @@ import {
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import {storage} from '../storage';
+
 import {BarChartCustom} from '../components/BarChart';
 import {axiosConfig, getListServicesEachProvider} from '../axios';
 

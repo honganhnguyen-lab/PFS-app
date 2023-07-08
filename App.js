@@ -32,6 +32,7 @@ import ProviderDashboardScreen from './screens/ProviderDashboard';
 import ProviderListBooking from './screens/ProviderListBooking';
 import ProviderServicesList from './screens/ProviderServicesList';
 import AddNewService from './screens/AddNewService';
+import ProceedScreen from './screens/ProceedScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -242,6 +243,11 @@ function App() {
           <Stack.Screen
             name="AddService"
             component={AddNewService}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Proceed"
+            component={ProceedScreen}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

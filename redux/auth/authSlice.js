@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {storage} from '../../storage';
 
 export const authSlice = createSlice({
   name: 'auth',

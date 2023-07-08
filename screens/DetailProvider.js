@@ -26,7 +26,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {axiosConfig, getListServicesEachProvider} from '../axios';
-import {onSendDataService} from '../redux/appointment/appointmentSlice';
+import {
+  onChangePayment,
+  onSendDataService,
+} from '../redux/appointment/appointmentSlice';
 
 const DetailProvider = () => {
   const navigation = useNavigation();
@@ -50,6 +53,11 @@ const DetailProvider = () => {
     setServiceChoosen({price: item.price, name: item.title});
     dispatch(onSendDataService(item.id));
     onOpen();
+  };
+
+  const onProceedService = () => {
+    dispatch(onChangePayment(serviceChoosen.price));
+    navigation.navigate('Proceed');
   };
 
   const getListServices = async () => {
@@ -375,7 +383,7 @@ const DetailProvider = () => {
               w={150}
               bgColor="#238793"
               fontSize={16}
-              onPress={() => navigation.navigate('Home')}
+              onPress={onProceedService}
               rounded="lg">
               <Text color="white" fontSize={14} fontWeight={600}>
                 Proceed

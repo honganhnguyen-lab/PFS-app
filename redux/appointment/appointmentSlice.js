@@ -15,6 +15,7 @@ export const appointmentSlice = createSlice({
     serviceId: '',
     providerId: '',
     status: 0,
+    price: 0,
   },
   reducers: {
     onSendNameServices: (state, payload) => {
@@ -37,6 +38,9 @@ export const appointmentSlice = createSlice({
     onTriggerStatusAppointment: (state, payload) => {
       state.status = payload;
     },
+    onChangePayment: (state, payload) => {
+      state.price = payload;
+    },
   },
 });
 
@@ -47,6 +51,7 @@ export const {
   onSendDataProvider,
   onSendDataService,
   onTriggerStatusAppointment,
+  onChangePayment,
 } = appointmentSlice.actions;
 
 export default appointmentSlice.reducer;

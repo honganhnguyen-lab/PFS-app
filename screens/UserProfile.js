@@ -23,14 +23,12 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {Pressable} from 'react-native';
 import {logOut} from '../redux/auth/authSlice';
-import {storage} from '../storage';
 
 const UserProfile = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const onClickLogOut = async () => {
-    await storage.clearAll();
     await dispatch(logOut);
     navigation.navigate('Login');
   };

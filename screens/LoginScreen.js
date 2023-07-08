@@ -20,7 +20,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
-import {storage} from '../storage';
+
 import {useSelector, useDispatch} from 'react-redux';
 import {setDataUser} from '../redux/auth/authSlice';
 import {axiosConfig} from '../axios';
@@ -103,7 +103,6 @@ const Example = () => {
         password: password,
       })
       .then(response => {
-        storage.set('token', response.data.token);
         Toast.show({
           type: 'success',
           text1: 'Account verified',

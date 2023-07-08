@@ -23,6 +23,11 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: '#F9F9F9',
   },
+  transactionScreen: {
+    flex: 1,
+    paddingHorizontal: 16,
+    marginTop: 50,
+  },
   listAppointScreen: {
     flex: 1,
     paddingHorizontal: 16,

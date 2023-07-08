@@ -38,7 +38,7 @@ import {
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {storage} from '../storage';
+
 import {onSendNameServices} from '../redux/appointment/appointmentSlice';
 
 const SkeletonView = () => (
@@ -114,12 +114,12 @@ const DashboardScreen = () => {
     dispatch(onSendNameServices(label));
     navigation.navigate('Appointment');
   };
-  useEffect(() => {
-    const token = storage.getString('token');
-    if (!token) {
-      navigation.navigate('Login');
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = storage.getString('token');
+  //   if (!token) {
+  //     navigation.navigate('Login');
+  //   }
+  // }, []);
   return (
     <View style={styles.dashboardContainer}>
       {!userDetail || (isEmptyObj(userDetail) && <SkeletonView />)}
