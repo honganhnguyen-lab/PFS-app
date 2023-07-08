@@ -32,22 +32,79 @@ import {axiosConfig, getListServicesElasticUri} from '../axios';
 const SkeletonLoading = () => {
   return (
     <Center w="100%">
-      <VStack
-        w="90%"
-        maxW="400"
-        borderWidth="1"
-        space={8}
-        overflow="hidden"
-        rounded="md"
-        _dark={{
-          borderColor: 'coolGray.500',
-        }}
-        _light={{
-          borderColor: 'coolGray.200',
-        }}>
-        <Skeleton h="40" />
-        <Skeleton.Text px="4" />
-        <Skeleton px="4" my="4" rounded="md" startColor="primary.100" />
+      <VStack space={1}>
+        <HStack
+          w="100%"
+          borderWidth="1"
+          space={8}
+          mt="6"
+          rounded="md"
+          _dark={{
+            borderColor: 'coolGray.500',
+          }}
+          _light={{
+            borderColor: 'coolGray.200',
+          }}
+          p="4">
+          <Skeleton flex="1" h="70" rounded="md" startColor="coolGray.100" />
+          <VStack flex="3" space="4">
+            <Skeleton.Text />
+          </VStack>
+        </HStack>
+        <HStack
+          w="100%"
+          borderWidth="1"
+          space={8}
+          mt="6"
+          rounded="md"
+          _dark={{
+            borderColor: 'coolGray.500',
+          }}
+          _light={{
+            borderColor: 'coolGray.200',
+          }}
+          p="4">
+          <Skeleton flex="1" h="70" rounded="md" startColor="coolGray.100" />
+          <VStack flex="3" space="4">
+            <Skeleton.Text />
+          </VStack>
+        </HStack>
+        <HStack
+          w="100%"
+          borderWidth="1"
+          space={8}
+          mt="6"
+          rounded="md"
+          _dark={{
+            borderColor: 'coolGray.500',
+          }}
+          _light={{
+            borderColor: 'coolGray.200',
+          }}
+          p="4">
+          <Skeleton flex="1" h="70" rounded="md" startColor="coolGray.100" />
+          <VStack flex="3" space="4">
+            <Skeleton.Text />
+          </VStack>
+        </HStack>
+        <HStack
+          w="100%"
+          borderWidth="1"
+          space={8}
+          mt="6"
+          rounded="md"
+          _dark={{
+            borderColor: 'coolGray.500',
+          }}
+          _light={{
+            borderColor: 'coolGray.200',
+          }}
+          p="4">
+          <Skeleton flex="1" h="70" rounded="md" startColor="coolGray.100" />
+          <VStack flex="3" space="4">
+            <Skeleton.Text />
+          </VStack>
+        </HStack>
       </VStack>
     </Center>
   );

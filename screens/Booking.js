@@ -27,21 +27,21 @@ import {setListAppointment} from '../redux/auth/bookingSlice';
 
 const SkeletonLoading = () => {
   return (
-    <Center w="100%">
+    <Center mt={3}>
       <VStack
-        w="90%"
-        maxW="400"
+        w="100%"
         borderWidth="1"
         space={8}
         overflow="hidden"
-        rounded="md"
+        rounded="lg"
         _dark={{
           borderColor: 'coolGray.500',
         }}
         _light={{
           borderColor: 'coolGray.200',
         }}>
-        <Skeleton h="40" />
+        <Skeleton h="70" />
+
         <Skeleton.Text px="4" />
         <Skeleton px="4" my="4" rounded="md" startColor="primary.100" />
       </VStack>
