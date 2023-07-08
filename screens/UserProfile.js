@@ -47,7 +47,7 @@ const UserProfile = () => {
             <Avatar
               bg="#87ADB2"
               alignSelf="center"
-              size="md"
+              size="xl"
               source={{
                 uri: userDetail?.avatar,
               }}>

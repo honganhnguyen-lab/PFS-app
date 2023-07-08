@@ -7,7 +7,7 @@ export const InfoBlock = ({info}) => {
       <Avatar
         bg="#87ADB2"
         alignSelf="center"
-        size="xl"
+        size="lg"
         source={{
           uri: info?.avatar,
         }}>
