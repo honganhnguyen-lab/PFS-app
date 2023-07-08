@@ -205,10 +205,11 @@ const ProviderChoosing = () => {
                   </HStack>
                   <HStack space={3} alignItems="center">
                     {listServices?.length > 0 &&
-                      listServices.map(item => (
+                      listServices.map((item, index) => (
                         <VStack
                           style={{flexWrap: 'wrap'}}
-                          alignItems="flex-start">
+                          alignItems="flex-start"
+                          key={index}>
                           <Center>
                             <Image
                               source={{

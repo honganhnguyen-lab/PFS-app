@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const axiosConfig = axios.create({
-  baseURL: 'http://192.168.1.8:4000',
+  baseURL: 'http:/10.10.220.47:4000',
   timeout: 30000,
   headers: {
     Accept: 'application/json',

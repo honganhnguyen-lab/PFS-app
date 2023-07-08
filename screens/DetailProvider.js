@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {
   NativeBaseProvider,
   Image,
@@ -36,6 +36,7 @@ const DetailProvider = () => {
   const provider = useSelector(state => state.appointment.providerId);
   const dispatch = useDispatch();
   const {width} = Dimensions.get('window');
+  let isHavingDiscount;
   const [listServiceEachProvider, setListServiceEachProvider] = useState([]);
 
   const listIsChosen =
@@ -50,7 +51,8 @@ const DetailProvider = () => {
   const [serviceChoosen, setServiceChoosen] = useState({});
 
   const onCheckAddService = item => {
-    setServiceChoosen({price: item.price, name: item.title});
+    const choosenPrice = item?.isDiscount ? item.priceDiscount : item.price;
+    setServiceChoosen({price: choosenPrice, name: item.title});
     dispatch(onSendDataService(item.id));
     onOpen();
   };
@@ -75,19 +77,28 @@ const DetailProvider = () => {
   useEffect(() => {
     getListServices();
   }, [provider]);
+
+  useMemo(() => {
+    const newList =
+      listServiceEachProvider?.length > 0 &&
+      listServiceEachProvider.map(item => item?.isDiscount);
+    if (newList?.length > 0) {
+      isHavingDiscount = true;
+    }
+  }, [listIsChosen]);
   return (
-    <View style={styles.detailScreen} bg="#CAC9C9">
-      <View width={width}>
-        <Image
-          source={{
-            uri:
-              listServiceEachProvider?.picture ??
-              'https://epe.brightspotcdn.com/dims4/default/95f2bfb/2147483647/strip/true/crop/2084x1414+37+0/resize/840x570!/format/webp/quality/90/?url=https%3A%2F%2Fepe-brightspot.s3.amazonaws.com%2F94%2F2d%2F8ed27aa34da0a197b1d819ec39a5%2Fteacher-tutor-student-librarian-1137620335.jpg',
-          }}
-          style={styles.backgroundImage}
-          alt="Alternate Text"
-          borderRadius={2}
-        />
+    <ScrollView style={styles.detailScreen} width={width} bg="#CAC9C9">
+      <Image
+        source={{
+          uri:
+            listServiceEachProvider?.picture ??
+            'https://epe.brightspotcdn.com/dims4/default/95f2bfb/2147483647/strip/true/crop/2084x1414+37+0/resize/840x570!/format/webp/quality/90/?url=https%3A%2F%2Fepe-brightspot.s3.amazonaws.com%2F94%2F2d%2F8ed27aa34da0a197b1d819ec39a5%2Fteacher-tutor-student-librarian-1137620335.jpg',
+        }}
+        style={styles.backgroundImage}
+        alt="Alternate Text"
+        borderRadius={2}
+      />
+      <View style={{marginBottom: 40}}>
         <HStack
           justifyContent="space-between"
           alignItems="flex-start"
@@ -104,8 +115,8 @@ const DetailProvider = () => {
               />
             </Avatar>
           </Pressable>
-          <Pressable onPress={() => setOpen(!open)}>
-            <Avatar bg="white">
+          <Pressable onPress={onCheckAddService}>
+            <Avatar onPre bg="white">
               <Icon
                 as={Ionicons}
                 name="heart-outline"
@@ -115,8 +126,7 @@ const DetailProvider = () => {
             </Avatar>
           </Pressable>
         </HStack>
-      </View>
-      <ScrollView style={styles.boxDetail}>
+
         <Box
           style={styles.boxDetailContent}
           alignItems="center"
@@ -226,12 +236,15 @@ const DetailProvider = () => {
           justifyContent="center"
           style={styles.boxDiscount}>
           <Box width="93%">
-            <Text
-              fontWeight={600}
-              fontSize={22}
-              fontFamily={'AtkinsonHyperlegible-regular'}>
-              Current discount
-            </Text>
+            {isHavingDiscount && (
+              <Text
+                fontWeight={600}
+                fontSize={22}
+                fontFamily={'AtkinsonHyperlegible-regular'}>
+                Current discount
+              </Text>
+            )}
+
             {listIsChosen?.length > 0 &&
               listIsChosen.map(item => {
                 if (item?.isDiscount) {
@@ -335,7 +348,7 @@ const DetailProvider = () => {
                           space={2}
                           width="100%"
                           flexWrap="wrap">
-                          <Pressable onPress={() => onCheckAddService(item.id)}>
+                          <Pressable onPress={() => onCheckAddService(item)}>
                             <Square
                               size="30px"
                               bg={!item.isChosen ? '#87ADB2' : 'white'}
@@ -365,7 +378,8 @@ const DetailProvider = () => {
             </HStack>
           </Box>
         </VStack>
-      </ScrollView>
+      </View>
+
       <Actionsheet isOpen={isOpen} onClose={onClose} hideDragIndicator>
         <Actionsheet.Content borderTopRadius="0">
           <HStack
@@ -392,7 +406,7 @@ const DetailProvider = () => {
           </HStack>
         </Actionsheet.Content>
       </Actionsheet>
-    </View>
+    </ScrollView>
   );
 };
 export default () => {
