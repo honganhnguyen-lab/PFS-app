@@ -52,7 +52,6 @@ const ProceedScreen = () => {
 
   const handleMessage = event => {
     const message = event.nativeEvent.title;
-    console.log('me', message);
     if (message === 'Payment Result') {
       setTimeout(() => {
         navigation.navigate('Home');

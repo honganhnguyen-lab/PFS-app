@@ -24,6 +24,7 @@ import Toast from 'react-native-toast-message';
 import {useSelector, useDispatch} from 'react-redux';
 import {setDataUser} from '../redux/auth/authSlice';
 import {axiosConfig} from '../axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Example = () => {
   const navigation = useNavigation();
@@ -102,7 +103,7 @@ const Example = () => {
         phoneNumber: phoneNumber,
         password: password,
       })
-      .then(response => {
+      .then(async response => {
         Toast.show({
           type: 'success',
           text1: 'Account verified',
@@ -110,8 +111,8 @@ const Example = () => {
         });
 
         navigation.navigate('Home');
-
         dispatch(setDataUser(response.data.data.user));
+        await AsyncStorage.setItem('token', response.data.token);
       })
       .catch(error => {
         if (error.response) {

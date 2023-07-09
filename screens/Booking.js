@@ -24,6 +24,7 @@ import BookingHistory from '../components/BookingHistory';
 import {axiosConfig, bookingUri} from '../axios';
 import {useSelector, useDispatch} from 'react-redux';
 import {setListAppointment} from '../redux/auth/bookingSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SkeletonLoading = () => {
   return (
@@ -59,17 +60,22 @@ const BookingScreen = () => {
   const [listHistoryAppointment, setListHistoryAppointment] = useState([]);
 
   const defineStatus = {
-    pending: 0,
-    confirm: 1,
-    reject: 2,
-    processing: 3,
-    done: 4,
+    notPayYet: 0,
+    pending: 1,
+    confirm: 2,
+    reject: 3,
+    processing: 4,
+    done: 5,
   };
 
   const onGetListBooking = async () => {
+    const token = await AsyncStorage.getItem('token');
+
     setLoading(true);
     try {
-      const response = await axiosConfig.get(`${bookingUri}/${userId}`);
+      const response = await axiosConfig.get(`${bookingUri}/${userId}`, {
+        headers: {Authorization: `Bearer ${token}`},
+      });
 
       const listFullAppointment = response.data.data.appointment;
 

@@ -29,6 +29,7 @@ const ProviderChoosing = () => {
   const [value, setValue] = useState('one');
   const dispatch = useDispatch();
   const appointmentName = useSelector(state => state.appointment.nameServices);
+  const location = useSelector(state => state.appointment.location);
   const [open, setOpen] = useState(false);
   const [listProvider, setListProvider] = useState([]);
   const labelTypeServices = [
@@ -40,11 +41,14 @@ const ProviderChoosing = () => {
 
   const onGetListProvider = async () => {
     try {
-      const response = await axiosConfig.get(getListServices, {
-        params: {
-          search: appointmentName.payload,
+      const response = await axiosConfig.get(
+        `${getListServices}${location.coordinates?.join(',')}`,
+        {
+          params: {
+            search: appointmentName.payload,
+          },
         },
-      });
+      );
       setListProvider(response.data.data.services);
     } catch (err) {
       console.log(err);
@@ -64,7 +68,7 @@ const ProviderChoosing = () => {
 
   useEffect(() => {
     onGetListProvider();
-  }, [appointmentName]);
+  }, [location, appointmentName]);
   const navigation = useNavigation();
   return (
     <View style={styles.listAppointScreen}>
@@ -111,6 +115,7 @@ const ProviderChoosing = () => {
           {listProvider.map((service, index) => {
             const providerDetail = service?.provider;
             const listServices = service?.services;
+            const distanceFar = listServices[0]?.distance.toFixed(1);
             return (
               <Pressable
                 w="100%"
@@ -172,17 +177,11 @@ const ProviderChoosing = () => {
                         {functionRenderLabel(providerDetail?.category)}
                       </Text>
                       <HStack alignItems="center" space={1}>
-                        <Icon
-                          as={Ionicons}
-                          size={4}
-                          name="compass-outline"
-                          color="#87ADB2"
-                        />
-                        <Text>{providerDetail?.locationFar ?? '4km'}</Text>
+                        <Text fontSize={12}>{distanceFar ?? 0} km</Text>
                         <Divider
                           bg="#87ADB2"
                           thickness="2"
-                          mx="2"
+                          mx="1"
                           orientation="vertical"
                         />
                         <Icon
@@ -193,14 +192,6 @@ const ProviderChoosing = () => {
                         />
                         <Text>{providerDetail?.rating ?? 0}</Text>
                       </HStack>
-                      <Heading
-                        fontWeight={600}
-                        fontSize={18}
-                        mt={1}
-                        fontFamily={'WorkSans-regular'}
-                        color="#87ADB2">
-                        200.000 đ
-                      </Heading>
                     </VStack>
                   </HStack>
                   <HStack space={3} alignItems="center">
@@ -217,7 +208,7 @@ const ProviderChoosing = () => {
                               }}
                               alt="Alternate Text"
                               size="md"
-                              borderRadius={2}
+                              borderRadius={10}
                             />
                           </Center>
                           {item?.isDiscount ? (
@@ -227,25 +218,40 @@ const ProviderChoosing = () => {
                               width="100%"
                               flexWrap="wrap">
                               <Text fontWeight={600} fontSize={12}>
-                                {item?.priceDiscount}
+                                {parseFloat(item?.priceDiscount).toLocaleString(
+                                  'en-US',
+                                )}
+                                đ
                               </Text>
                               <Text fontSize={10} strikeThrough>
-                                {item?.price}
+                                {parseFloat(item?.price).toLocaleString(
+                                  'en-US',
+                                )}
+                                đ
                               </Text>
                             </HStack>
                           ) : (
                             <Text fontWeight={600} fontSize={12}>
-                              {item.price}
+                              {parseFloat(item?.price).toLocaleString('en-US')}đ
                             </Text>
                           )}
-                          <HStack space={2} alignItems="center">
+                          <HStack space={1} alignItems="center">
                             <Icon
                               as={Ionicons}
-                              size={4}
+                              size={2}
+                              name="compass-outline"
+                              color="#87ADB2"
+                            />
+
+                            <Icon
+                              as={Ionicons}
+                              size={2}
                               name="star-sharp"
                               color="#87ADB2"
                             />
-                            <Text>{item.ratingsAverage ?? 0}</Text>
+                            <Text fontSize={12}>
+                              {item.ratingsAverage ?? 0}
+                            </Text>
                           </HStack>
                           <Text fontSize={12} style={{flexWrap: 'wrap'}}>
                             {item.title}

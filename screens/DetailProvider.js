@@ -30,6 +30,7 @@ import {axiosConfig, getListServicesEachProvider} from '../axios';
 import {
   onChangePayment,
   onSendDataService,
+  registerAppointment,
 } from '../redux/appointment/appointmentSlice';
 
 const SkeletonLoading = () => {
@@ -67,6 +68,7 @@ const SkeletonLoading = () => {
 const DetailProvider = () => {
   const navigation = useNavigation();
   const provider = useSelector(state => state.appointment.providerId);
+
   const dispatch = useDispatch();
   const {width} = Dimensions.get('window');
   let isHavingDiscount;
@@ -90,8 +92,9 @@ const DetailProvider = () => {
     onOpen();
   };
 
-  const onProceedService = () => {
-    dispatch(onChangePayment(serviceChoosen.price));
+  const onProceedService = async () => {
+    await dispatch(onChangePayment(serviceChoosen.price));
+    dispatch(registerAppointment());
     navigation.navigate('Proceed');
   };
 
