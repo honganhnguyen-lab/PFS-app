@@ -271,7 +271,7 @@ const ServicesList = () => {
         ) : (
           <VStack space={3} alignItems="center" mt="6">
             {listServices?.length > 0 &&
-              listServices.map(service => {
+              listServices.map((service, index) => {
                 return (
                   <HStack
                     w="100%"
@@ -280,7 +280,7 @@ const ServicesList = () => {
                     rounded="lg"
                     bg="#F9F9F9"
                     shadow={2}
-                    key={service._id}>
+                    key={index}>
                     <Center bg="#87ADB2" p={2}>
                       <Image
                         source={{

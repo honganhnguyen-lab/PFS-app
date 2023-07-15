@@ -14,6 +14,7 @@ import {
   Divider,
   Pressable,
   PresenceTransition,
+  Button,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -73,7 +74,7 @@ const ProviderChoosing = () => {
   return (
     <View style={styles.listAppointScreen}>
       <View mt={50}>
-        <HStack justifyContent="space-between" alignItems="center" p={3}>
+        <HStack justifyContent="flex-start" alignItems="center" p={3}>
           <Pressable onPress={() => navigation.navigate('Home')}>
             <Icon
               as={Ionicons}
@@ -83,35 +84,57 @@ const ProviderChoosing = () => {
             />
           </Pressable>
           <Heading ml={2} color="#569FA7">
-            Step 2
+            Step 1
           </Heading>
-          <PresenceTransition
-            width="80%"
-            visible={open}
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-              transition: {
-                duration: 250,
-              },
-            }}>
-            <Input size="lg" w="100%" placeholder="Search provider name" />
-          </PresenceTransition>
-          <Pressable onPress={() => setOpen(!open)}>
-            <Icon
-              as={Ionicons}
-              name="search-outline"
-              size="md"
-              color="#569FA7"
-            />
-          </Pressable>
         </HStack>
         <Divider bg="#87ADB2" thickness="4" mx="2" />
+        <VStack w="100%" mt={3}>
+          <Input
+            placeholder="What do you need"
+            borderRadius="10"
+            fontSize="14"
+            w="100%"
+            bgColor="white"
+            variant="rounded"
+            InputRightElement={
+              <Icon
+                m="2"
+                mr="3"
+                size="6"
+                color="gray.400"
+                as={Ionicons}
+                name="search-sharp"
+              />
+            }
+          />
+          <HStack space={2} mt={2}>
+            <Button
+              leftIcon={
+                <Icon name="star-sharp" as={Ionicons} color="#95C4CB" />
+              }
+              variant="outline"
+              size="sm"
+              borderColor="#95C4CB"
+              bgColor="white"
+              borderRadius="full">
+              <Text color="#95C4CB">Rating</Text>
+            </Button>
+            <Button
+              leftIcon={
+                <Icon name="pricetags-sharp" as={Ionicons} color="#95C4CB" />
+              }
+              variant="outline"
+              size="sm"
+              borderColor="#95C4CB"
+              bgColor="white"
+              borderRadius="full">
+              <Text color="#95C4CB">Discount</Text>
+            </Button>
+          </HStack>
+        </VStack>
       </View>
       <ScrollView>
-        <VStack space={3} alignItems="center" mt="6">
+        <VStack space={3} alignItems="center" mt="3">
           {listProvider.map((service, index) => {
             const providerDetail = service?.provider;
             const listServices = service?.services;

@@ -51,7 +51,7 @@ export default BookingHistory = ({listHistoryAppointment, isProvider}) => {
                 </Badge>
               </HStack>
               <HStack space={3} pt={2}>
-                <Avatar bg="amber.400">
+                <Avatar bg="#238793">
                   <SvgCss
                     width={25}
                     height={25}

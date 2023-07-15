@@ -85,14 +85,3 @@ export default () => {
     </NativeBaseProvider>
   );
 };
-
-{
-  /* {!transUrl ? (
-        <Example />
-      ) : (
-        <Center width={width}>
-          <Text>Hello</Text>
-          {/* <Text>{transUrl}</Text> */
-}
-// </Center>
-//

@@ -134,7 +134,7 @@ const AppointmentDetail = () => {
               />
             </Avatar>
           </Pressable>
-          <Heading>{appointmentName.payload ?? ''}</Heading>
+          <Heading>Final step</Heading>
         </HStack>
         <Divider bg="#87ADB2" thickness="4" mx="2" />
       </View>
@@ -232,113 +232,7 @@ const AppointmentDetail = () => {
         overlayVisible>
         <Modal.Content m={3}>
           <Modal.CloseButton />
-          <Modal.Body>
-            <Center>
-              <SvgCss xml={chooseProvider} width={150} height={150} />
-              <Text fontWeight={600} fontSize={'18'}>
-                Pick timeline
-              </Text>
-              <Text>Morning</Text>
-              <HStack space={2}>
-                <Pressable>
-                  <Square
-                    width={20}
-                    height={10}
-                    borderWidth={1}
-                    borderColor={'#316970'}>
-                    09:00
-                  </Square>
-                </Pressable>
-                <Pressable>
-                  <Square
-                    width={20}
-                    height={10}
-                    borderWidth={1}
-                    borderColor={'#316970'}>
-                    10:00
-                  </Square>
-                </Pressable>
-                <Pressable>
-                  <Square
-                    width={20}
-                    height={10}
-                    borderWidth={1}
-                    borderColor={'#316970'}>
-                    11:00
-                  </Square>
-                </Pressable>
-              </HStack>
-              <Text>Afternoon</Text>
-              <HStack space={2}>
-                <Pressable>
-                  <Square
-                    width={20}
-                    height={10}
-                    borderWidth={1}
-                    borderColor={'#316970'}>
-                    14:00
-                  </Square>
-                </Pressable>
-                <Pressable>
-                  <Square
-                    width={20}
-                    height={10}
-                    borderWidth={1}
-                    borderColor={'#316970'}>
-                    15:00
-                  </Square>
-                </Pressable>
-                <Pressable>
-                  <Square
-                    width={20}
-                    height={10}
-                    borderWidth={1}
-                    borderColor={'#316970'}>
-                    16:00
-                  </Square>
-                </Pressable>
-                <Pressable>
-                  <Square
-                    width={20}
-                    height={10}
-                    borderWidth={1}
-                    borderColor={'#316970'}>
-                    17:00
-                  </Square>
-                </Pressable>
-              </HStack>
-              <Text>Evening</Text>
-              <HStack space={2}>
-                <Pressable>
-                  <Square
-                    width={20}
-                    height={10}
-                    borderWidth={1}
-                    borderColor={'#316970'}>
-                    18:00
-                  </Square>
-                </Pressable>
-                <Pressable>
-                  <Square
-                    width={20}
-                    height={10}
-                    borderWidth={1}
-                    borderColor={'#316970'}>
-                    19:00
-                  </Square>
-                </Pressable>
-                <Pressable>
-                  <Square
-                    width={20}
-                    height={10}
-                    borderWidth={1}
-                    borderColor={'#316970'}>
-                    20:00
-                  </Square>
-                </Pressable>
-              </HStack>
-            </Center>
-          </Modal.Body>
+          <Modal.Body></Modal.Body>
           <Button.Group space={5} justifyContent={'center'} p={3}>
             <Button
               variant="outline"

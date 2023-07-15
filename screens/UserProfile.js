@@ -45,7 +45,7 @@ const UserProfile = () => {
         <Center w="100%" shadow={2} bg="white" p={3} rounded="lg">
           <VStack space={3} justifyContent="center" alignItems="center">
             <Avatar
-              bg="#87ADB2"
+              bg="#238793"
               alignSelf="center"
               size="xl"
               source={{

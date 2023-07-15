@@ -93,9 +93,9 @@ const DetailProvider = () => {
   };
 
   const onProceedService = async () => {
-    await dispatch(onChangePayment(serviceChoosen.price));
-    dispatch(registerAppointment());
-    navigation.navigate('Proceed');
+    dispatch(onChangePayment(serviceChoosen.price));
+    // dispatch(registerAppointment());
+    navigation.navigate('Appointment');
   };
 
   const getListServices = async () => {
@@ -390,10 +390,10 @@ const DetailProvider = () => {
                     listIsChosen.map(item => {
                       if (!item.isDiscount) {
                         return (
-                          <VStack space={2} width="50%" key={item.id}>
+                          <VStack space={1} width="50%" key={item.id}>
                             <Image
                               source={{
-                                uri: item.image,
+                                uri: item.picture,
                               }}
                               alt="Alternate Text"
                               size="xl"

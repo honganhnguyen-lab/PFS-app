@@ -113,7 +113,7 @@ const DashboardScreen = () => {
 
   const onNavigateToAppointment = label => {
     dispatch(onSendNameServices(label));
-    navigation.navigate('Appointment');
+    navigation.navigate('ProviderList');
   };
   // useEffect(() => {
   //   const token = storage.getString('token');

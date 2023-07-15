@@ -39,7 +39,7 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
               rounded="lg"
               key={index}>
               <HStack space={3} pt={2} justifyContent="flex-start">
-                <Avatar bg="success.800">
+                <Avatar bg="#238793">
                   <SvgCss
                     width={25}
                     height={25}
