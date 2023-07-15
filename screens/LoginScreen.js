@@ -25,6 +25,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import {setDataUser} from '../redux/auth/authSlice';
 import {axiosConfig} from '../axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ImageBackground} from 'react-native';
+import {styles} from '../style';
 
 const Example = () => {
   const navigation = useNavigation();
@@ -128,40 +130,39 @@ const Example = () => {
   return (
     <Center w="100%">
       <Box safeArea p="2" w="90%" maxW="xl">
-        <VStack alignItems="center">
-          <Heading
-            size="lg"
-            fontWeight="600"
-            color="#0077C0"
-            _dark={{
-              color: 'warmGray.50',
-            }}>
-            SIGN IN
-          </Heading>
-        </VStack>
         <VStack space={3} mt="5">
           <FormControl isRequired>
-            <FormControl.Label>Phone number</FormControl.Label>
+            <FormControl.Label>
+              <Text style={{color: '#238793', fontSize: 14, fontWeight: 600}}>
+                Phone number
+              </Text>
+            </FormControl.Label>
             <Input
               value={phoneNumber}
               onChangeText={onChangePhoneNumber}
               keyboardType="numeric"
-              size="xl"
+              size="2xl"
+              variant="rounded"
             />
           </FormControl>
           <FormControl isRequired>
-            <FormControl.Label>Password</FormControl.Label>
+            <FormControl.Label>
+              <Text style={{color: '#238793', fontSize: 14, fontWeight: 600}}>
+                Password
+              </Text>
+            </FormControl.Label>
             <Input
               type="password"
               value={password}
               onChangeText={onChangePassword}
-              size="xl"
+              size="2xl"
+              variant="rounded"
             />
             <Link
               _text={{
                 fontSize: 'xs',
                 fontWeight: '500',
-                color: 'indigo.500',
+                color: '#238793',
               }}
               alignSelf="flex-end"
               mt="1">
@@ -170,6 +171,9 @@ const Example = () => {
           </FormControl>
           <Button
             mt="2"
+            bgColor="#238793"
+            rounded="xl"
+            size="lg"
             isLoading={loading}
             spinnerPlacement="end"
             isLoadingText="Sign in"
@@ -188,7 +192,7 @@ const Example = () => {
             </Text>
             <Link
               _text={{
-                color: 'indigo.500',
+                color: '#238793',
                 fontWeight: 'medium',
                 fontSize: 'sm',
               }}
@@ -205,9 +209,14 @@ const Example = () => {
 export default () => {
   return (
     <NativeBaseProvider>
-      <Center flex={1}>
-        <Example />
-      </Center>
+      <ImageBackground
+        style={styles.image}
+        source={require('../assets/SignIn.png')}
+        resizeMode="cover">
+        <Center flex={1}>
+          <Example />
+        </Center>
+      </ImageBackground>
     </NativeBaseProvider>
   );
 };

@@ -177,6 +177,12 @@ const ProviderChoosing = () => {
                         {functionRenderLabel(providerDetail?.category)}
                       </Text>
                       <HStack alignItems="center" space={1}>
+                        <Icon
+                          as={Ionicons}
+                          size={4}
+                          name="compass-outline"
+                          color="#87ADB2"
+                        />
                         <Text fontSize={12}>{distanceFar ?? 0} km</Text>
                         <Divider
                           bg="#87ADB2"
@@ -236,13 +242,6 @@ const ProviderChoosing = () => {
                             </Text>
                           )}
                           <HStack space={1} alignItems="center">
-                            <Icon
-                              as={Ionicons}
-                              size={2}
-                              name="compass-outline"
-                              color="#87ADB2"
-                            />
-
                             <Icon
                               as={Ionicons}
                               size={2}

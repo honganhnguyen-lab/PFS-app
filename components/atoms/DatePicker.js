@@ -9,7 +9,7 @@ export const DatePickerCustomize = ({onChangeSelectedDate}) => {
 
   return (
     <DatePicker
-      mode="datepicker"
+      mode="calendar"
       onSelectedChange={onChangeSelectedDate}
       minimumDate={`${minDay} 10:30`}
       minuteInterval={10}

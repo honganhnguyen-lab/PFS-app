@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {
   Box,
   Text,
@@ -28,6 +28,7 @@ import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import {axiosConfig, getListServicesElasticUri} from '../axios';
+import Geolocation from '@react-native-community/geolocation';
 
 const SkeletonLoading = () => {
   return (
@@ -138,37 +139,55 @@ const ServicesList = () => {
     search: '',
     sortRating: false,
     sortPrice: false,
+    isGeo: false,
   });
-  const [search, setSearch] = useState('');
-  const {isOpen, onOpen, onClose} = useDisclose();
+  const [skipPermissionRequests, setSkipPermissionRequests] = useState(false);
+  const [authorizationLevel, setAuthorizationLevel] = useState('auto');
+  const [locationProvider, setLocationProvider] = useState('auto');
 
-  const getListServices = async () => {
-    setIsLoading(true);
-    try {
-      const response = await axiosConfig.get(getListServicesElasticUri, {
-        params: {
-          search: filter.search,
-          ...(filter.sortRating && {sortRating: filter.sortRating}),
-          ...(filter.sortPrice && {sortPrice: filter.sortPrice}),
-        },
-      });
-      setListServices(response.data);
-    } catch (err) {
-      console.log(err);
-    }
-    setIsLoading(false);
+  const {isOpen, onOpen, onClose} = useDisclose();
+  const getLocation = () => {
+    Geolocation.getCurrentPosition(async info => {
+      const latitude = info.coords.latitude;
+      const longtitude = info.coords.longitude;
+      setIsLoading(true);
+      try {
+        const response = await axiosConfig.get(getListServicesElasticUri, {
+          params: {
+            search: filter.search,
+            ...(filter.sortRating && {sortRating: filter.sortRating}),
+            ...(filter.sortPrice && {sortPrice: filter.sortPrice}),
+            lat: latitude,
+            lon: longtitude,
+            ...(filter.isGeo && {isGeo: filter.isGeo}),
+          },
+        });
+        setListServices(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+      setIsLoading(false);
+    });
   };
+
+  useEffect(() => {
+    Geolocation.setRNConfiguration({
+      skipPermissionRequests,
+      authorizationLevel,
+      locationProvider,
+    });
+  }, [skipPermissionRequests, authorizationLevel, locationProvider]);
+
+  useEffect(() => {
+    getLocation();
+  }, []);
 
   const onChangeFilterValue = value => {
     setFilter({...filter, [value]: !filter[value]});
   };
 
-  useEffect(() => {
-    getListServices();
-  }, []);
-
-  useEffect(() => {
-    getListServices();
+  useMemo(() => {
+    getLocation();
   }, [filter]);
 
   useEffect;
@@ -188,7 +207,7 @@ const ServicesList = () => {
             variant="filled"
             value={filter.search}
             onChangeText={value => setFilter({...filter, search: value})}
-            onSubmitEditing={getListServices}
+            onSubmitEditing={getLocation}
             InputRightElement={
               <Icon
                 m="2"
@@ -252,8 +271,7 @@ const ServicesList = () => {
         ) : (
           <VStack space={3} alignItems="center" mt="6">
             {listServices?.length > 0 &&
-              listServices.map(item => {
-                const service = item._source ?? {};
+              listServices.map(service => {
                 return (
                   <HStack
                     w="100%"
@@ -262,7 +280,7 @@ const ServicesList = () => {
                     rounded="lg"
                     bg="#F9F9F9"
                     shadow={2}
-                    key={item._id}>
+                    key={service._id}>
                     <Center bg="#87ADB2" p={2}>
                       <Image
                         source={{

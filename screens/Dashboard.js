@@ -40,6 +40,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {onSendNameServices} from '../redux/appointment/appointmentSlice';
+import {OutstandingProvider} from '../components/OutstandingProvider';
 
 const SkeletonView = () => (
   <VStack
@@ -139,13 +140,7 @@ const DashboardScreen = () => {
               <Icon as={Ionicons} name="chevron-forward-outline" />
             </HStack>
           </Center>
-          <Center w="100%" height={150} bg="white" rounded="md" shadow={3}>
-            <VStack>
-              <Text allowFontScaling={false} fontFamily={'LobsterTwo'}>
-                Outstanding Provider
-              </Text>
-            </VStack>
-          </Center>
+          <OutstandingProvider />
         </VStack>
         <VStack justifyContent="flex-start" mt="4" space={3}>
           <Heading fontFamily={'LobsterTwo'}>Services</Heading>
