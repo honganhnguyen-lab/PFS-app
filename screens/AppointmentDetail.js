@@ -79,9 +79,9 @@ const AppointmentDetail = () => {
     setModalVisible(!modalVisible);
   };
 
-  const handleNextStep = () => {
-    dispatch(registerAppointment());
-    // navigation.navigate('Proceed');
+  const handleNextStep = async () => {
+    await dispatch(registerAppointment());
+    navigation.navigate('Proceed');
   };
 
   const onMoveToNextStep = () => {

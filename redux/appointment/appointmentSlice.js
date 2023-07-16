@@ -4,28 +4,31 @@ import {axiosConfig} from '../../axios';
 
 export const registerAppointment = createAsyncThunk(
   'appointmentSlice/registerAppointment',
-  async (payload, {getState}) => {
+  async (payload, {getState, dispatch}) => {
+    const {appointment, auth} = getState();
+    const userId = auth?.user?.payload.id;
+    const requestData = {
+      location: appointment.location,
+      appointmentDate: appointment.appointmentDate,
+      appointmentStartTime: appointment.appointmentTime,
+      appointmentEndTime: appointment.appointmentEndTime,
+      serviceId: appointment.serviceId,
+      providerId: appointment.providerId,
+      userId: userId,
+      status: appointment.status,
+      price: appointment.price,
+    };
     try {
-      const {appointment, auth} = getState();
-
-      const userId = auth?.user?.payload.id;
-      console.log('auth', userId);
-      const requestData = {
-        location: appointment.location,
-        appointmentDate: appointment.appointmentDate,
-        appointmentStartTime: appointment.appointmentTime,
-        appointmentEndTime: appointment.appointmentEndTime,
-        serviceId: appointment.serviceId,
-        providerId: appointment.providerId,
-        userId: userId,
-        status: appointment.status,
-        price: appointment.price,
-      };
-
-      await axiosConfig.post('/api/v1/appointments', requestData);
+      const setAPIData = await axiosConfig.post(
+        '/api/v1/appointments',
+        requestData,
+      );
+      const appointmentId = setAPIData.data?.data.newAppointmentId;
+      dispatch(updateAppointmentId(appointmentId));
     } catch (error) {
       console.log('err', error);
     }
+    console.log('uar');
   },
 );
 
@@ -45,6 +48,7 @@ export const appointmentSlice = createSlice({
     providerId: '',
     status: 0,
     price: 0,
+    appointmentId: 0,
   },
   reducers: {
     onSendNameServices: (state, payload) => {
@@ -74,6 +78,10 @@ export const appointmentSlice = createSlice({
     onChangePayment: (state, payload) => {
       state.price = payload.payload;
     },
+    updateAppointmentId: (state, action) => {
+      state.appointmentId = action.payload;
+      console.log('appointmentId', action.payload);
+    },
   },
   extraReducers: builder => {
     builder
@@ -83,7 +91,8 @@ export const appointmentSlice = createSlice({
       })
       .addCase(registerAppointment.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;
+        state.appointmentId = action.payload;
+        console.log('action', action);
       })
       .addCase(registerAppointment.rejected, (state, action) => {
         state.isLoading = false;
@@ -101,6 +110,7 @@ export const {
   onTriggerStatusAppointment,
   onChangePayment,
   onSendAppointmentEndTime,
+  updateAppointmentId,
 } = appointmentSlice.actions;
 
 export default appointmentSlice.reducer;

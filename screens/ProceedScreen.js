@@ -25,6 +25,7 @@ const Example = () => {
 
 const ProceedScreen = () => {
   const price = useSelector(state => state.appointment.price);
+  const appointmentId = useSelector(state => state.appointment.appointmentId);
   const [transUrl, setTransUrl] = useState('');
   const navigation = useNavigation();
   const {width} = Dimensions.get('window');
@@ -34,6 +35,7 @@ const ProceedScreen = () => {
         amount: Number(price) ?? 0,
         bankCode: 'VNBANK',
         language: 'vn',
+        appointmentId,
       });
       setTransUrl(response.data);
     } catch (err) {
@@ -43,7 +45,7 @@ const ProceedScreen = () => {
 
   useEffect(() => {
     getTransactionUrl();
-  }, []);
+  }, [price, appointmentId]);
 
   const webViewRef = useRef(null);
   const INJECTED_JAVASCRIPT = `(function() {

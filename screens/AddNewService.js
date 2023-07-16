@@ -26,11 +26,12 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 const AddNewService = () => {
   const defineStatus = {
-    pending: 0,
-    confirm: 1,
-    reject: 2,
-    processing: 3,
-    done: 4,
+    notPayYet: 0,
+    pending: 1,
+    confirm: 2,
+    reject: 3,
+    processing: 4,
+    done: 5,
   };
 
   const takePhoto = () => {};
