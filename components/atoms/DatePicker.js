@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import DatePicker from 'react-native-modern-datepicker';
 import moment from 'moment';
+import TimeInterval from 'react-native-clock-interval';
 
 export const DatePickerCustomize = ({onChangeSelectedDate}) => {
   const minDay = moment().add(1, 'days').format('YYYY/MM/DD').toString();
@@ -9,7 +10,6 @@ export const DatePickerCustomize = ({onChangeSelectedDate}) => {
 
   return (
     <DatePicker
-      mode="calendar"
       onSelectedChange={onChangeSelectedDate}
       minimumDate={`${minDay} 10:30`}
       minuteInterval={10}
@@ -20,6 +20,16 @@ export const DatePickerCustomize = ({onChangeSelectedDate}) => {
         textSecondaryColor: '#569FA7',
         borderColor: '#569FA7',
       }}
+    />
+  );
+};
+
+export const TimePickerCustomize = ({handleTimeChange}) => {
+  return (
+    <DatePicker
+      mode="time"
+      minuteInterval={3}
+      onTimeChange={handleTimeChange}
     />
   );
 };

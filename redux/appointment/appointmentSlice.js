@@ -1,25 +1,30 @@
 import {createSlice, createSelector, createAsyncThunk} from '@reduxjs/toolkit';
 import moment from 'moment';
+import {axiosConfig} from '../../axios';
 
 export const registerAppointment = createAsyncThunk(
   'appointmentSlice/registerAppointment',
   async (payload, {getState}) => {
     try {
-      // Access data from the Redux state
-      const {dataAppointment} = getState().appointmentSlice;
-      console.log('data', dataAppointment);
+      const {appointment, auth} = getState();
 
-      // Use the data as needed in the API request payload
+      const userId = auth?.user?.payload.id;
+      console.log('auth', userId);
       const requestData = {
-        ...payload,
-        someData,
+        location: appointment.location,
+        appointmentDate: appointment.appointmentDate,
+        appointmentStartTime: appointment.appointmentTime,
+        appointmentEndTime: appointment.appointmentEndTime,
+        serviceId: appointment.serviceId,
+        providerId: appointment.providerId,
+        userId: userId,
+        status: appointment.status,
+        price: appointment.price,
       };
-      console.log('request', requestData);
 
-      // const response = await axiosConfig.post('/api/endpoint', requestData);
-      // return response.data;
+      await axiosConfig.post('/api/v1/appointments', requestData);
     } catch (error) {
-      throw new Error(error.response.data.message);
+      console.log('err', error);
     }
   },
 );
@@ -35,6 +40,7 @@ export const appointmentSlice = createSlice({
     },
     appointmentDate: '',
     appointmentTime: '',
+    appointmentEndTime: '',
     serviceId: '',
     providerId: '',
     status: 0,
@@ -49,20 +55,24 @@ export const appointmentSlice = createSlice({
       state.location.address = payload.payload.address;
     },
     onSendAppointmentDateTime: (state, payload) => {
-      state.appointmentDate = moment(payload, 'YYYY/MM/DD');
-      state.appointmentTime = moment(payload, 'HH:mm:ss');
+      const convertedPayload = moment(payload.payload, 'YYYY/MM/DD HH:mm');
+      state.appointmentDate = moment(convertedPayload).format('YYYY/MM/DD');
+      state.appointmentTime = moment(convertedPayload).format('HH:mm');
     },
     onSendDataProvider: (state, payload) => {
-      state.providerId = payload;
+      state.providerId = payload.payload;
     },
     onSendDataService: (state, payload) => {
-      state.serviceId = payload.serviceId;
+      state.serviceId = payload.payload;
+    },
+    onSendAppointmentEndTime: (state, payload) => {
+      state.appointmentEndTime = payload.payload;
     },
     onTriggerStatusAppointment: (state, payload) => {
-      state.status = payload;
+      state.status = payload.payload;
     },
     onChangePayment: (state, payload) => {
-      state.price = payload;
+      state.price = payload.payload;
     },
   },
   extraReducers: builder => {
@@ -90,6 +100,7 @@ export const {
   onSendDataService,
   onTriggerStatusAppointment,
   onChangePayment,
+  onSendAppointmentEndTime,
 } = appointmentSlice.actions;
 
 export default appointmentSlice.reducer;

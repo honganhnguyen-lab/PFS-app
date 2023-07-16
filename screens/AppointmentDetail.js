@@ -25,52 +25,63 @@ import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {useNavigation} from '@react-navigation/native';
-import {DatePickerCustomize} from '../components/atoms/DatePicker';
+import {
+  DatePickerCustomize,
+  TimePickerCustomize,
+} from '../components/atoms/DatePicker';
 
-import Geolocation from '@react-native-community/geolocation';
 import {useEffect, useState} from 'react';
-import axios from 'axios';
-import {chooseProvider} from '../assets/icon';
-import {SvgCss} from 'react-native-svg';
 import {useDispatch, useSelector} from 'react-redux';
-import {onSendLocation} from '../redux/appointment/appointmentSlice';
+
+import moment from 'moment';
+import {
+  registerAppointment,
+  onSendAppointmentEndTime,
+  onSendAppointmentDateTime,
+} from '../redux/appointment/appointmentSlice';
 
 const AppointmentDetail = () => {
-  const appointmentName = useSelector(state => state.appointment.nameServices);
   const dispatch = useDispatch();
-  const [skipPermissionRequests, setSkipPermissionRequests] = useState(false);
-  const [authorizationLevel, setAuthorizationLevel] = useState('auto');
-
-  const [locationProvider, setLocationProvider] = useState('auto');
-  const [defaultLocation, setDefaultLocation] = useState('');
-  const [locationInput, setLocationInput] = useState('');
+  const location = useSelector(state => state.appointment.location);
+  const [locationInput, setLocationInput] = useState(location?.address ?? '');
   const [modalVisible, setModalVisible] = useState(false);
   const [isModalNextStep, setIsModalNextStep] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [selectedDate, setSelectedDate] = useState('');
+  const [endTime, setEndTime] = useState('');
 
   const onChangeSelectedDate = date => {
-    setSelectedDate(date);
-    setDisabled(false);
+    const dateObj = moment(date, 'YYYY/MM/DD HH:mm');
+    const convertedTime = parseInt(dateObj.hour(), 10);
+    if (convertedTime < 8) {
+      alert('Please choose time after 8AM');
+    } else if (convertedTime > 21) {
+      alert('Please choose time before 8PM');
+    } else {
+      setSelectedDate(date);
+      dispatch(onSendAppointmentDateTime(date));
+    }
+  };
+
+  const handleTimeChange = time => {
+    const convertedTime = parseInt(time.toString(), 10);
+    const startTime = moment(selectedDate, 'YYYY/MM/DD HH:mm');
+    const convertedStartTime = parseInt(startTime.hour(), 10);
+    if (convertedTime < convertedStartTime) {
+      alert('Please choose time after start time');
+    } else {
+      setEndTime(time);
+      dispatch(onSendAppointmentEndTime(time));
+    }
   };
 
   const handleSizeClick = () => {
     setModalVisible(!modalVisible);
   };
 
-  const updateLocationDetail = () => {
-    setDefaultLocation(locationInput);
-    dispatch(
-      onSendLocation({
-        coordinates: [],
-        address: locationInput,
-      }),
-    );
-    setModalVisible(false);
-  };
-
   const handleNextStep = () => {
-    setIsModalNextStep(!modalVisible);
+    dispatch(registerAppointment());
+    // navigation.navigate('Proceed');
   };
 
   const onMoveToNextStep = () => {
@@ -81,50 +92,30 @@ const AppointmentDetail = () => {
     setIsModalNextStep(false);
     navigation.navigate('ProviderList');
   };
-
-  const navigation = useNavigation();
-  const getLocation = () => {
-    Geolocation.getCurrentPosition(async info => {
-      const latitude = info.coords.latitude;
-      const longtitude = info.coords.longitude;
-      try {
-        const locationData = await axios.get(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${longtitude},${latitude}.json?access_token=pk.eyJ1IjoicXVhbnplbjgiLCJhIjoiY2xqNnB1bG5qMGVmODNzbzVhbmlydWI4YyJ9.-5blwlT5oWlIINJKW_ERzQ`,
-        );
-        setDefaultLocation(locationData.data?.features[0]?.place_name ?? '');
-      } catch (err) {
-        console.log(err);
-      }
-      dispatch(
-        onSendLocation({
-          coordinates: [latitude, longtitude],
-          address: defaultLocation,
-        }),
-      );
-    });
+  const updateLocationDetail = location => {
+    setLocationInput(location);
+    dispatch(
+      onSendLocation({
+        address: defaultLocation,
+      }),
+    );
   };
 
-  useEffect(() => {
-    Geolocation.setRNConfiguration({
-      skipPermissionRequests,
-      authorizationLevel,
-      locationProvider,
-    });
-  }, [skipPermissionRequests, authorizationLevel, locationProvider]);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    getLocation();
-  }, []);
-
-  useEffect(() => {
-    setLocationInput('');
-  }, [modalVisible]);
+    if (selectedDate && endTime && locationInput) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [selectedDate, endTime, locationInput]);
 
   return (
     <View style={styles.listServicesScreen}>
       <View mt={50}>
         <HStack space={3} alignItems="center" p={3}>
-          <Pressable onPress={() => navigation.navigate('Home')}>
+          <Pressable onPress={() => navigation.navigate('DetailProvider')}>
             <Avatar bg="#569FA7">
               <Icon
                 as={Ionicons}
@@ -138,69 +129,83 @@ const AppointmentDetail = () => {
         </HStack>
         <Divider bg="#87ADB2" thickness="4" mx="2" />
       </View>
-      <VStack space={3} alignItems="center" mt="5">
-        <Stack
-          w="100%"
-          shadow={2}
-          bg="white"
-          pt={4}
-          p={2}
-          rounded="lg"
-          space={2}>
-          <HStack justifyContent="flex-start" space={2} alignItems="center">
-            <Icon as={Ionicons} name="location" color="#87ADB2" />
-            <Text fontWeight={600} fontSize={14}>
-              LOCATION
-            </Text>
-          </HStack>
-          <HStack justifyContent="space-between" alignItems="center">
-            <Text style={{flexWrap: 'wrap', width: '75%'}}>
-              {defaultLocation}
-            </Text>
-            <Button bgColor={'#316970'} onPress={handleSizeClick}>
-              Change
-            </Button>
-          </HStack>
-        </Stack>
-        <Stack
-          w="100%"
-          shadow={2}
-          bg="white"
-          pt={4}
-          p={2}
-          rounded="lg"
-          space={2}>
-          <HStack justifyContent="flex-start" space={2} alignItems="center">
-            <Icon as={Ionicons} name="calendar-outline" color="#87ADB2" />
-            <Text fontWeight={600} fontSize={14}>
-              SCHEDULE
-            </Text>
-          </HStack>
-          <HStack justifyContent="space-between" alignItems="center">
-            <DatePickerCustomize
-              selectedDate={selectedDate}
-              onChangeSelectedDate={onChangeSelectedDate}
-            />
-          </HStack>
-        </Stack>
-        <Button
-          mt={10}
-          bgColor={disabled ? 'grey' : '#316970'}
-          width="100%"
-          height={50}
-          rounded={'md'}
-          disabled={disabled}
-          onPress={handleNextStep}>
-          Next step
-        </Button>
-      </VStack>
+      <ScrollView>
+        <VStack space={3} alignItems="center" mt="5">
+          <Stack
+            w="100%"
+            shadow={3}
+            bg="white"
+            pt={4}
+            p={2}
+            rounded="lg"
+            space={2}>
+            <HStack justifyContent="flex-start" space={2} alignItems="center">
+              <Icon as={Ionicons} name="location" color="#87ADB2" />
+              <Text fontWeight={600} fontSize={14}>
+                LOCATION
+              </Text>
+            </HStack>
+            <HStack justifyContent="space-between" alignItems="center">
+              <Text style={{flexWrap: 'wrap', width: '75%'}}>
+                {locationInput}
+              </Text>
+              <Button bgColor={'#316970'} onPress={handleSizeClick}>
+                Change
+              </Button>
+            </HStack>
+          </Stack>
+          <Stack
+            w="100%"
+            shadow={3}
+            bg="white"
+            pt={4}
+            p={2}
+            rounded="lg"
+            space={2}>
+            <HStack justifyContent="flex-start" space={2} alignItems="center">
+              <Icon as={Ionicons} name="calendar-outline" color="#87ADB2" />
+              <Text fontWeight={600} fontSize={14}>
+                SCHEDULE
+              </Text>
+            </HStack>
+            <HStack justifyContent="space-between" alignItems="center">
+              <DatePickerCustomize
+                selectedDate={selectedDate}
+                onChangeSelectedDate={onChangeSelectedDate}
+              />
+            </HStack>
+          </Stack>
+          <Stack w="100%" shadow={3} bg="white" pt={4} p={2} rounded="lg">
+            <HStack justifyContent="flex-start" space={2} alignItems="center">
+              <Icon as={Ionicons} name="calendar-outline" color="#87ADB2" />
+              <Text fontWeight={600} fontSize={14}>
+                END TIME
+              </Text>
+            </HStack>
+            <TimePickerCustomize handleTimeChange={handleTimeChange} />
+          </Stack>
+          <Button
+            mt={10}
+            bgColor={disabled ? 'grey' : '#316970'}
+            width="100%"
+            height={50}
+            rounded={'md'}
+            disabled={disabled}
+            onPress={handleNextStep}>
+            Procceed
+          </Button>
+        </VStack>
+      </ScrollView>
       <Modal isOpen={modalVisible} onClose={setModalVisible} size={'lg'}>
         <Modal.Content maxH="212">
           <Modal.CloseButton />
           <Modal.Header>Change Location</Modal.Header>
           <Modal.Body>
-            <FormControl.Label>Location</FormControl.Label>
-            <Input value={locationInput} onChangeText={setLocationInput} />
+            <Input
+              value={locationInput}
+              onChangeText={setLocationInput}
+              size="lg"
+            />
           </Modal.Body>
           <Modal.Footer>
             <Button.Group space={2}>
@@ -217,34 +222,6 @@ const AppointmentDetail = () => {
               </Button>
             </Button.Group>
           </Modal.Footer>
-        </Modal.Content>
-      </Modal>
-      <Modal
-        isOpen={isModalNextStep}
-        onClose={onMoveToNextStep}
-        size={'xl'}
-        _backdrop={{
-          _dark: {
-            bg: 'muted.600',
-          },
-          bg: 'muted.600',
-        }}
-        overlayVisible>
-        <Modal.Content m={3}>
-          <Modal.CloseButton />
-          <Modal.Body></Modal.Body>
-          <Button.Group space={5} justifyContent={'center'} p={3}>
-            <Button
-              variant="outline"
-              colorScheme="blueGray"
-              width={100}
-              onPress={onMoveToNextStep}>
-              Cancel
-            </Button>
-            <Button bgColor={'#316970'} width={100} onPress={onChooseProvider}>
-              Confirm
-            </Button>
-          </Button.Group>
         </Modal.Content>
       </Modal>
     </View>

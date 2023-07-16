@@ -31,7 +31,7 @@ const ProceedScreen = () => {
   const getTransactionUrl = async () => {
     try {
       const response = await axiosConfig.post(getTransaction, {
-        amount: Number(price?.payload) ?? 0,
+        amount: Number(price) ?? 0,
         bankCode: 'VNBANK',
         language: 'vn',
       });

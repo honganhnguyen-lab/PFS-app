@@ -88,13 +88,12 @@ const DetailProvider = () => {
   const onCheckAddService = item => {
     const choosenPrice = item?.isDiscount ? item.priceDiscount : item.price;
     setServiceChoosen({price: choosenPrice, name: item.title});
-    dispatch(onSendDataService(item.id));
+    dispatch(onSendDataService(item._id));
     onOpen();
   };
 
   const onProceedService = async () => {
     dispatch(onChangePayment(serviceChoosen.price));
-    // dispatch(registerAppointment());
     navigation.navigate('Appointment');
   };
 
@@ -102,7 +101,7 @@ const DetailProvider = () => {
     setIsLoading(true);
     try {
       const response = await axiosConfig.get(
-        `${getListServicesEachProvider}${provider.payload}/services`,
+        `${getListServicesEachProvider}${provider}/services`,
       );
       setListServiceEachProvider(response.data.data);
     } catch (err) {

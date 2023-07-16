@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Box,
   Text,
@@ -19,12 +19,23 @@ import {
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import Geolocation from '@react-native-community/geolocation';
+import {useDispatch, useSelector} from 'react-redux';
 import {ImageBackground} from 'react-native';
-import {InfoBlock} from '../components/Info';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+
+import {SvgCss} from 'react-native-svg';
 
 import DiscountSlider from './DiscountSlider';
-import {SvgCss} from 'react-native-svg';
+import {InfoBlock} from '../components/Info';
+import {OutstandingProvider} from '../components/OutstandingProvider';
+import {
+  onSendLocation,
+  onSendNameServices,
+} from '../redux/appointment/appointmentSlice';
+
 import {
   acIcon,
   cleanIcon,
@@ -35,12 +46,6 @@ import {
   tutorIcon,
   wifiIcon,
 } from '../assets/icon';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {useNavigation} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
-
-import {onSendNameServices} from '../redux/appointment/appointmentSlice';
-import {OutstandingProvider} from '../components/OutstandingProvider';
 
 const SkeletonView = () => (
   <VStack
@@ -82,6 +87,10 @@ const DashboardScreen = () => {
   const userDetail = user.payload;
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [skipPermissionRequests, setSkipPermissionRequests] = useState(false);
+  const [authorizationLevel, setAuthorizationLevel] = useState('auto');
+  const [locationProvider, setLocationProvider] = useState('auto');
+
   const ListServicesTop = [
     {
       label: 'AC Repair',
@@ -115,12 +124,40 @@ const DashboardScreen = () => {
     dispatch(onSendNameServices(label));
     navigation.navigate('ProviderList');
   };
-  // useEffect(() => {
-  //   const token = storage.getString('token');
-  //   if (!token) {
-  //     navigation.navigate('Login');
-  //   }
-  // }, []);
+  const getLocation = () => {
+    Geolocation.getCurrentPosition(async info => {
+      const latitude = info.coords.latitude;
+      const longtitude = info.coords.longitude;
+      let address = '';
+      try {
+        const locationData = await axios.get(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${longtitude},${latitude}.json?access_token=pk.eyJ1IjoicXVhbnplbjgiLCJhIjoiY2xqNnB1bG5qMGVmODNzbzVhbmlydWI4YyJ9.-5blwlT5oWlIINJKW_ERzQ`,
+        );
+        address = locationData.data?.features[0]?.place_name ?? '';
+      } catch (err) {
+        console.log(err);
+      }
+      dispatch(
+        onSendLocation({
+          coordinates: [latitude, longtitude],
+          address,
+        }),
+      );
+    });
+  };
+
+  useEffect(() => {
+    Geolocation.setRNConfiguration({
+      skipPermissionRequests,
+      authorizationLevel,
+      locationProvider,
+    });
+  }, [skipPermissionRequests, authorizationLevel, locationProvider]);
+
+  useEffect(() => {
+    getLocation();
+  }, []);
+
   return (
     <View style={styles.dashboardContainer}>
       {!userDetail || (isEmptyObj(userDetail) && <SkeletonView />)}
