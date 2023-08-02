@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const axiosConfig = axios.create({
-  baseURL: 'http:/192.168.8.251:4000',
+  baseURL: 'http://192.168.1.2:4000',
   timeout: 30000,
   headers: {
     Accept: 'application/json',
@@ -17,3 +17,4 @@ export const getListServicesEachProvider = '/api/v1/users/';
 export const getListServices = '/api/v1/services/distances/';
 export const getTransaction = '/api/v1/transaction/create_payment_url';
 export const registerAppointment = '/api/v1/appointments';
+export const uploadService = 'api/v1/services/upload-picture';

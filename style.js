@@ -14,6 +14,14 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: '#000000c0',
   },
+  addNewText: {
+    textAlign: 'center',
+    fontSize: 16,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
   dashboardContainer: {
     flex: 1,
     paddingHorizontal: 16,

@@ -185,6 +185,7 @@ const ServicesList = () => {
   const onChangeFilterValue = value => {
     setFilter({...filter, [value]: !filter[value]});
   };
+  const convertAmount = amount => amount.toLocaleString();
 
   useMemo(() => {
     getLocation();
@@ -281,7 +282,7 @@ const ServicesList = () => {
                     bg="#F9F9F9"
                     shadow={2}
                     key={index}>
-                    <Center bg="#87ADB2" p={2}>
+                    <Center p={2}>
                       <Image
                         source={{
                           uri: service.picture,
@@ -321,7 +322,7 @@ const ServicesList = () => {
                         fontSize={18}
                         fontFamily={'WorkSans-regular'}
                         color="#87ADB2">
-                        VND {service.price}
+                        VND {convertAmount(service.price)}
                       </Heading>
                     </VStack>
                   </HStack>
