@@ -166,7 +166,7 @@ export default () => {
     <NativeBaseProvider>
       <ImageBackground
         style={styles.image}
-        source={require('../assets/Homepaki.png')}
+        source={require('../assets/Homepagefinal.png')}
         resizeMode="cover">
         <ProviderDashboardScreen />
       </ImageBackground>

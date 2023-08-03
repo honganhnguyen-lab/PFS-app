@@ -39,6 +39,7 @@ import {
 import {
   acIcon,
   cleanIcon,
+  nannyIcon,
   personalChefIcon,
   plumberIcon,
   sofaIcon,
@@ -46,6 +47,7 @@ import {
   tutorIcon,
   wifiIcon,
 } from '../assets/icon';
+import {RenderAdver} from '../components/RenderAdver';
 
 const SkeletonView = () => (
   <VStack
@@ -90,26 +92,29 @@ const DashboardScreen = () => {
   const [skipPermissionRequests, setSkipPermissionRequests] = useState(false);
   const [authorizationLevel, setAuthorizationLevel] = useState('auto');
   const [locationProvider, setLocationProvider] = useState('auto');
+  const [address, setAddress] = useState('');
 
   const ListServicesTop = [
     {
-      label: 'AC Repair',
+      label: 'AC repair',
       icon: acIcon,
     },
     {
       label: 'Tutor',
-      icon: teacherIcon,
+      icon: tutorIcon,
     },
+  ];
+  const ListSecondService = [
     {
       label: 'Cleaning',
       icon: cleanIcon,
     },
+    {
+      label: 'Nanny',
+      icon: nannyIcon,
+    },
   ];
   const ListServicesBottom = [
-    {
-      label: 'Plumber',
-      icon: plumberIcon,
-    },
     {
       label: 'Wifi Repair',
       icon: wifiIcon,
@@ -117,6 +122,23 @@ const DashboardScreen = () => {
     {
       label: 'Private chef',
       icon: personalChefIcon,
+    },
+  ];
+  const popularService = [
+    {
+      label: 'AC repair',
+      image: '',
+      rating: '4.5',
+      providerName: 'William',
+      price: '400000',
+    },
+    {
+      label: 'AC repair',
+      image:
+        'https://5.imimg.com/data5/SELLER/Default/2023/7/323414708/VN/KN/UF/12889775/huawei-onu-wifi-router-repair-service.jpg',
+      rating: '4.2',
+      providerName: 'Jennifer',
+      price: '700000',
     },
   ];
 
@@ -128,14 +150,15 @@ const DashboardScreen = () => {
     Geolocation.getCurrentPosition(async info => {
       const latitude = info.coords.latitude;
       const longtitude = info.coords.longitude;
-      let address = '';
+
       try {
         const locationData = await axios.get(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${longtitude},${latitude}.json?access_token=pk.eyJ1IjoicXVhbnplbjgiLCJhIjoiY2xqNnB1bG5qMGVmODNzbzVhbmlydWI4YyJ9.-5blwlT5oWlIINJKW_ERzQ`,
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${longtitude},${latitude}.json?access_token=pk.eyJ1IjoicXVhbnplbjgiLCJhIjoiY2xrcXJmcjN2MXAzYzNlcGxld2lyMTU1MyJ9.PmJmE5O1pyUlzIvAuWXs_g`,
         );
-        address = locationData.data?.features[0]?.place_name ?? '';
+        const address = locationData.data?.features[0]?.place_name ?? '';
+        setAddress(address);
       } catch (err) {
-        console.log(err);
+        console.log('err', err);
       }
       dispatch(
         onSendLocation({
@@ -161,136 +184,128 @@ const DashboardScreen = () => {
   return (
     <View style={styles.dashboardContainer}>
       {!userDetail || (isEmptyObj(userDetail) && <SkeletonView />)}
-      <InfoBlock style={styles.infoArea} info={userDetail} />
+      <InfoBlock style={styles.infoArea} info={userDetail} address={address} />
       <ScrollView>
-        <VStack space={4} alignItems="center" mt="6">
-          <Center w="100%" h="16" bg="white" rounded="md" shadow={3}>
-            <HStack
-              w="100%"
-              justifyContent="space-between"
-              padding="3"
-              alignItems="center">
-              <VStack>
-                <Text allowFontScaling={false}>Number of Appoinment</Text>
-                <Heading>{userDetail?.appointmentNumber ?? 0}</Heading>
-              </VStack>
-              <Icon as={Ionicons} name="chevron-forward-outline" />
-            </HStack>
-          </Center>
-          <OutstandingProvider />
-        </VStack>
-        <VStack justifyContent="flex-start" mt="4" space={3}>
-          <Heading fontFamily={'LobsterTwo'}>Services</Heading>
-          <HStack space={3} justifyContent="space-evenly">
-            {ListServicesTop.map((item, index) => (
-              <Box
-                width={110}
-                rounded="lg"
-                overflow="hidden"
-                borderColor="coolGray.200"
-                borderWidth="1"
-                alignItems={'center'}
-                justifyContent={'center'}
-                _dark={{
-                  borderColor: 'coolGray.600',
-                  backgroundColor: 'gray.700',
-                }}
-                _web={{
-                  shadow: 2,
-                  borderWidth: 0,
-                }}
-                _light={{
-                  backgroundColor: 'gray.50',
-                }}
-                key={index}>
-                <Pressable
-                  width={'100%'}
-                  onPress={() => onNavigateToAppointment(item.label)}>
-                  <Box
-                    height={75}
-                    width={'100%'}
-                    alignItems={'center'}
-                    justifyContent={'center'}>
-                    <SvgCss width={40} height={40} xml={item.icon} />
-                  </Box>
-                  <Stack
-                    p="4"
-                    space={3}
-                    w="100%"
-                    alignItems="center"
-                    backgroundColor={'#569FA7'}>
-                    <Text
-                      fontSize="xs"
-                      fontWeight="600"
-                      color="white"
-                      ml="-0.5"
-                      mt="-1"
-                      fontFamily={'WorkSans-Regular'}>
-                      {item.label}
-                    </Text>
-                  </Stack>
-                </Pressable>
-              </Box>
-            ))}
-          </HStack>
-          <HStack space={3} justifyContent="space-evenly">
-            {ListServicesBottom.map((item, index) => (
-              <Box
-                width={110}
-                rounded="lg"
-                overflow="hidden"
-                borderColor="coolGray.200"
-                borderWidth="1"
-                alignItems={'center'}
-                justifyContent={'center'}
-                _dark={{
-                  borderColor: 'coolGray.600',
-                  backgroundColor: 'gray.700',
-                }}
-                _web={{
-                  shadow: 2,
-                  borderWidth: 0,
-                }}
-                _light={{
-                  backgroundColor: 'gray.50',
-                }}
-                key={index}>
-                <Pressable
-                  width={'100%'}
-                  onPress={() => onNavigateToAppointment(item.label)}>
-                  <Box
-                    height={75}
-                    width={'100%'}
-                    bg="white"
-                    alignItems={'center'}
-                    justifyContent={'center'}>
-                    <SvgCss width={40} height={40} xml={item.icon} />
-                  </Box>
-                  <Stack
-                    p="4"
-                    space={3}
-                    w="100%"
-                    alignItems="center"
-                    backgroundColor={'#569FA7'}>
-                    <Text
-                      fontSize="xs"
-                      fontWeight="600"
-                      color="white"
-                      ml="-0.5"
-                      mt="-1"
-                      fontFamily={'WorkSans-Regular'}>
-                      {item.label}
-                    </Text>
-                  </Stack>
-                </Pressable>
-              </Box>
-            ))}
-          </HStack>
-        </VStack>
-        <VStack mt={4}>
+        <VStack mt={2}>
           <GestureHandlerRootView>
             <DiscountSlider />
           </GestureHandlerRootView>
+        </VStack>
+        <VStack justifyContent="flex-start" mt="2" space={3}>
+          <Text fontSize={16} color={'#559FA7'} fontWeight={600}>
+            Services
+          </Text>
+          <HStack space={2} justifyContent="space-evenly">
+            {ListServicesTop.map((item, index) => (
+              <Pressable
+                onPress={() => onNavigateToAppointment(item.label)}
+                key={index}>
+                <Box
+                  width={170}
+                  height={50}
+                  rounded="lg"
+                  bg="#559FA7"
+                  overflow="hidden"
+                  borderColor="#559FA7"
+                  borderWidth="1"
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                  onPress={() => onNavigateToAppointment(item.label)}>
+                  <HStack space={3} alignItems="center">
+                    <Box alignItems={'center'} justifyContent={'center'}>
+                      <SvgCss
+                        width={25}
+                        height={25}
+                        xml={item.icon}
+                        fill="black"
+                      />
+                    </Box>
+                    <Text fontSize={14} fontWeight="600" color="white">
+                      {item.label}
+                    </Text>
+                  </HStack>
+                </Box>
+              </Pressable>
+            ))}
+          </HStack>
+          <HStack space={2} justifyContent="space-evenly">
+            {ListSecondService.map((item, index) => (
+              <Pressable
+                onPress={() => onNavigateToAppointment(item.label)}
+                key={index}>
+                <Box
+                  width={170}
+                  height={50}
+                  rounded="lg"
+                  overflow="hidden"
+                  bgColor="#559FA7"
+                  borderColor="#559FA7"
+                  borderWidth="1"
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                  onPress={() => onNavigateToAppointment(item.label)}>
+                  <HStack space={3} alignItems="center">
+                    <Box alignItems={'center'} justifyContent={'center'}>
+                      <SvgCss
+                        width={25}
+                        height={25}
+                        xml={item.icon}
+                        fill="white"
+                      />
+                    </Box>
+                    <Text fontSize={14} fontWeight="600" color="white">
+                      {item.label}
+                    </Text>
+                  </HStack>
+                </Box>
+              </Pressable>
+            ))}
+          </HStack>
+          <HStack space={2} justifyContent="space-evenly">
+            {ListServicesBottom.map((item, index) => (
+              <Pressable
+                onPress={() => onNavigateToAppointment(item.label)}
+                key={index}>
+                <Box
+                  width={170}
+                  height={50}
+                  rounded="lg"
+                  overflow="hidden"
+                  bg="#559FA7"
+                  borderColor="white"
+                  borderWidth="1"
+                  alignItems={'center'}
+                  justifyContent={'center'}
+                  onPress={() => onNavigateToAppointment(item.label)}>
+                  <HStack space={3} alignItems="center">
+                    <Box alignItems={'center'} justifyContent={'center'}>
+                      <SvgCss
+                        width={25}
+                        height={25}
+                        xml={item.icon}
+                        fill="black"
+                      />
+                    </Box>
+                    <Text fontSize={14} fontWeight="600" color="white">
+                      {item.label}
+                    </Text>
+                  </HStack>
+                </Box>
+              </Pressable>
+            ))}
+          </HStack>
+        </VStack>
+        <VStack justifyContent="flex-start" mt="4" space={3}>
+          <Text fontSize={16} color={'#559FA7'} fontWeight={700}>
+            Popular services
+          </Text>
+          <RenderAdver detail={popularService} />
+        </VStack>
+        <VStack justifyContent="flex-start" mt="2" space={3}>
+          <Text fontSize={16} color={'#559FA7'} fontWeight={700}>
+            Recommend for you
+          </Text>
+          <RenderAdver detail={popularService} />
         </VStack>
       </ScrollView>
     </View>
@@ -301,7 +316,7 @@ export default () => {
     <NativeBaseProvider>
       <ImageBackground
         style={styles.image}
-        source={require('../assets/Homepaki.png')}
+        source={require('../assets/Homepagefinal.png')}
         resizeMode="cover">
         <DashboardScreen />
       </ImageBackground>

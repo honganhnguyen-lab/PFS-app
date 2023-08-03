@@ -28,7 +28,6 @@ export const registerAppointment = createAsyncThunk(
     } catch (error) {
       console.log('err', error);
     }
-    console.log('uar');
   },
 );
 
@@ -80,7 +79,6 @@ export const appointmentSlice = createSlice({
     },
     updateAppointmentId: (state, action) => {
       state.appointmentId = action.payload;
-      console.log('appointmentId', action.payload);
     },
   },
   extraReducers: builder => {
@@ -92,7 +90,6 @@ export const appointmentSlice = createSlice({
       .addCase(registerAppointment.fulfilled, (state, action) => {
         state.isLoading = false;
         state.appointmentId = action.payload;
-        console.log('action', action);
       })
       .addCase(registerAppointment.rejected, (state, action) => {
         state.isLoading = false;

@@ -20,14 +20,9 @@ function DiscountSlider() {
     '#F5D399',
     '#F1F1F1',
   ];
-  const ListImageDiscount = [
-    require('../assets/discount.jpg'),
-    require('../assets/discount2.png'),
-    require('../assets/discount4.png'),
-  ];
+  const ListImageDiscount = [require('../assets/discount5.png')];
   return (
     <View>
-      <Heading fontFamily={'LobsterTwo'}>Discount</Heading>
       <Carousel
         loop
         width={width * 0.9}
@@ -134,7 +129,7 @@ const CustomItem = ({source}) => {
       <Animated.Image
         source={source}
         resizeMode="cover"
-        style={{width: '100%', height: '100%'}}
+        style={{width: '100%', height: '100%', objectFit: 'contain'}}
       />
     </Animated.View>
   );

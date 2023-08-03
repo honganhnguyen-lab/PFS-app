@@ -1,27 +1,37 @@
-import {HStack, Avatar, Text, VStack, Badge} from 'native-base';
+import {HStack, Avatar, Text, VStack, Icon} from 'native-base';
 import {styles} from '../style';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export const InfoBlock = ({info}) => {
+export const InfoBlock = ({info, address}) => {
   return (
-    <HStack style={styles.infoArea} alignItems="center">
+    <HStack
+      style={styles.infoArea}
+      alignItems="center"
+      justifyContent="space-between">
+      <HStack
+        justifyContent="center"
+        alignItems="center"
+        space={4}
+        style={styles.textInfo}>
+        <Icon as={Ionicons} name="location-outline" color="black" />
+        <VStack>
+          <Text fontSize={12} color="#559FA7" fontWeight="600">
+            My location
+          </Text>
+          <Text fontSize={12} fontWeight="600" width="80%">
+            {address}
+          </Text>
+        </VStack>
+      </HStack>
       <Avatar
         bg="#87ADB2"
         alignSelf="center"
-        size="lg"
+        size="md"
         source={{
           uri: info?.avatar,
         }}>
         {info?.name?.charAt(0).toUpperCase() ?? 'PFS'}
-        <Avatar.Badge bg="green.500" />
       </Avatar>
-      <VStack justifyContent="center" style={styles.textInfo}>
-        <Text fontSize="xl" fontFamily={'LobsterTwo'} color={'white'}>
-          Hello, {info?.name}
-        </Text>
-        <Badge style={styles.badge} colorScheme="success">
-          {`${info?.role}`.toUpperCase()}
-        </Badge>
-      </VStack>
     </HStack>
   );
 };
