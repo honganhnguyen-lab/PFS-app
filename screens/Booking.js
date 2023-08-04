@@ -92,7 +92,7 @@ const BookingScreen = () => {
       setListUpcomingAppointment(selectListUpcomingAppointment);
       setListHistoryAppointment(selectListHistoryAppointment);
     } catch (err) {
-      console.log(err);
+      console.log('this', err);
     }
     setLoading(false);
   };

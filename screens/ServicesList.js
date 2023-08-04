@@ -118,18 +118,21 @@ const ServicesList = () => {
       label: 'Rating',
       icon: 'star-sharp',
       value: 'sortRating',
+      color: '#FFC107',
     },
     {
       id: 3,
       label: 'Discount',
       icon: 'pricetags-sharp',
       value: 'isDiscount',
+      color: '#FF6C6C',
     },
     {
       id: 4,
       label: 'Nearest',
       icon: 'location-sharp',
       value: 'isGeo',
+      color: '#0077E5',
     },
   ];
 
@@ -196,15 +199,27 @@ const ServicesList = () => {
   return (
     <View style={styles.listServicesScreen}>
       <View style={styles.searchBox}>
-        <HStack justifyContent="space-between" alignItems="center" p={3}>
+        <HStack
+          space={6}
+          alignItems="center"
+          p={3}
+          bgColor="#559FA7"
+          mt={50}
+          mb={1}>
           <Pressable onPress={() => navigation.navigate('Home')}>
-            <Icon size="6" as={Ionicons} name="arrow-back-outline" />
+            <Icon
+              size="4"
+              as={Ionicons}
+              name="chevron-back-outline"
+              color="white"
+            />
           </Pressable>
           <Input
             placeholder="What do you need"
-            borderRadius="10"
+            borderRadius="5"
             fontSize="14"
-            w="90%"
+            height={9}
+            w="80%"
             variant="filled"
             value={filter.search}
             onChangeText={value => setFilter({...filter, search: value})}
@@ -221,13 +236,19 @@ const ServicesList = () => {
             }
           />
         </HStack>
-        <HStack space={1.5} pt={1}>
+      </View>
+      <View style={styles.filterIcon}>
+        <HStack
+          space={1.5}
+          pt={3}
+          pb={1}
+          alignItems="center"
+          justifyContent="center">
           <Button
             leftIcon={
               <Icon name="options-outline" as={Ionicons} color="#95C4CB" />
             }
             variant="outline"
-            borderColor="#95C4CB"
             color="#95C4CB"
             disabled={isLoading}
             size="sm"
@@ -241,11 +262,10 @@ const ServicesList = () => {
                 <Icon
                   name={item.icon}
                   as={Ionicons}
-                  color={filter[item.value] ? 'white' : '#95C4CB'}
+                  color={filter[item.value] ? 'white' : item.color}
                 />
               }
               variant={filter[item.value] ? 'solid' : 'outline'}
-              borderColor="#95C4CB"
               disabled={isLoading}
               size="sm"
               key={item.id}
@@ -264,24 +284,32 @@ const ServicesList = () => {
             </Button>
           ))}
         </HStack>
+        <Divider
+          my="2"
+          _light={{
+            bg: '#DDDDEE',
+          }}
+          _dark={{
+            bg: '#DDDDEE',
+          }}
+        />
       </View>
 
       <ScrollView>
         {isLoading ? (
           <SkeletonLoading />
         ) : (
-          <VStack space={3} alignItems="center" mt="6">
+          <VStack space={3} alignItems="center">
             {listServices?.length > 0 &&
               listServices.map((service, index) => {
                 return (
                   <HStack
                     w="100%"
-                    h={120}
                     space={3}
                     rounded="lg"
-                    bg="#F9F9F9"
-                    shadow={2}
-                    key={index}>
+                    key={index}
+                    borderBottomColor={'#DDDDEE'}
+                    borderBottomWidth={1}>
                     <Center p={2}>
                       <Image
                         source={{
@@ -291,11 +319,8 @@ const ServicesList = () => {
                         size="lg"
                       />
                     </Center>
-                    <VStack p={3}>
-                      <Text
-                        fontWeight={600}
-                        fontSize={18}
-                        fontFamily={'WorkSans-regular'}>
+                    <VStack p={3} w="100%">
+                      <Text fontWeight={600} fontSize={16} w="80%">
                         {service.title}
                       </Text>
                       <HStack p={2} alignItems="center">
@@ -310,20 +335,16 @@ const ServicesList = () => {
                           as={Ionicons}
                           size={4}
                           name="star-sharp"
-                          color="#87ADB2"
+                          color="#FFC107"
                         />
                         <Text>
                           {service.ratingsAverage ?? 0} (
                           {service.ratingComments ?? 0})
                         </Text>
                       </HStack>
-                      <Heading
-                        fontWeight={600}
-                        fontSize={18}
-                        fontFamily={'WorkSans-regular'}
-                        color="#87ADB2">
+                      <Text fontSize={18}>
                         VND {convertAmount(service.price)}
-                      </Heading>
+                      </Text>
                     </VStack>
                   </HStack>
                 );

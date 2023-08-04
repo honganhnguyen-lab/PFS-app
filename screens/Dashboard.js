@@ -185,7 +185,7 @@ const DashboardScreen = () => {
     <View style={styles.dashboardContainer}>
       {!userDetail || (isEmptyObj(userDetail) && <SkeletonView />)}
       <InfoBlock style={styles.infoArea} info={userDetail} address={address} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <VStack mt={2}>
           <GestureHandlerRootView>
             <DiscountSlider />
@@ -301,7 +301,7 @@ const DashboardScreen = () => {
           </Text>
           <RenderAdver detail={popularService} />
         </VStack>
-        <VStack justifyContent="flex-start" mt="2" space={3}>
+        <VStack justifyContent="flex-start" mt={4} space={3}>
           <Text fontSize={16} color={'#559FA7'} fontWeight={700}>
             Recommend for you
           </Text>

@@ -28,8 +28,7 @@ export const styles = StyleSheet.create({
   },
   listServicesScreen: {
     flex: 1,
-    paddingHorizontal: 16,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: 'white',
   },
   transactionScreen: {
     flex: 1,
@@ -56,8 +55,11 @@ export const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   searchBox: {
-    marginTop: 50,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: '#559FA7',
+  },
+  filterIcon: {
+    backgroundColor: 'white',
+    borderBottom: '1px solid #DDDDEE',
   },
   buttonText: {
     color: '#95C4CB',

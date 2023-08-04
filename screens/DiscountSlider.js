@@ -51,7 +51,7 @@ function DiscountSlider() {
             width: 100,
             alignSelf: 'center',
           }}>
-          {colors.map((backgroundColor, index) => {
+          {/* {colors.map((backgroundColor, index) => {
             return (
               <PaginationItem
                 backgroundColor={backgroundColor}
@@ -62,7 +62,7 @@ function DiscountSlider() {
                 length={colors.length}
               />
             );
-          })}
+          })} */}
         </View>
       )}
     </View>
