@@ -26,8 +26,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
   },
+  listServicesCustomerScreen: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   listServicesScreen: {
     flex: 1,
+    padding: 16,
     backgroundColor: 'white',
   },
   transactionScreen: {
@@ -48,7 +53,7 @@ export const styles = StyleSheet.create({
     marginTop: 100,
   },
   textInfo: {
-    paddingLeft: 10,
+    padding: 10,
   },
   badge: {
     width: 100,

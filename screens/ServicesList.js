@@ -197,7 +197,7 @@ const ServicesList = () => {
   useEffect;
   const navigation = useNavigation();
   return (
-    <View style={styles.listServicesScreen}>
+    <View style={styles.listServicesCustomerScreen}>
       <View style={styles.searchBox}>
         <HStack
           space={6}
@@ -299,7 +299,7 @@ const ServicesList = () => {
         {isLoading ? (
           <SkeletonLoading />
         ) : (
-          <VStack space={3} alignItems="center">
+          <VStack space={3} alignItems="center" p={2}>
             {listServices?.length > 0 &&
               listServices.map((service, index) => {
                 return (

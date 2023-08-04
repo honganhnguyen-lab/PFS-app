@@ -17,6 +17,7 @@ import {
   isEmptyObj,
   Skeleton,
   Avatar,
+  Button,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -42,6 +43,7 @@ import {useSelector} from 'react-redux';
 
 import {BarChartCustom} from '../components/BarChart';
 import {axiosConfig, getListServicesEachProvider} from '../axios';
+import {ProviderTimeRange} from '../components/ProviderTimeRange';
 
 const SkeletonView = () => (
   <VStack
@@ -107,10 +109,13 @@ const ProviderDashboardScreen = () => {
       <InfoBlock style={styles.infoArea} info={userDetail} />
       <ScrollView>
         <VStack space={1} mt="7">
+          <Text fontSize={16} color={'#559FA7'} fontWeight={600}>
+            Overview
+          </Text>
           <HStack justifyContent="space-between" p={3} shadow={2}>
             <VStack space={2} p={4} bg="white" w="47%" rounded="md">
               <HStack justifyContent="space-between" alignItems="center">
-                <Text fontSize="22px" fontWeight={700} color={'#569FA7'}>
+                <Text fontSize="20px" fontWeight={700} color={'#569FA7'}>
                   {dataProvider.appointmentNumber}
                 </Text>
                 <Avatar bg="#E0F0F2">
@@ -121,7 +126,7 @@ const ProviderDashboardScreen = () => {
             </VStack>
             <VStack space={2} p={4} bg="white" w="47%" rounded="md">
               <HStack justifyContent="space-between" alignItems="center">
-                <Text fontSize="22px" fontWeight={700} color={'#569FA7'}>
+                <Text fontSize="20px" fontWeight={700} color={'#569FA7'}>
                   {dataProvider.services?.length ?? 0}
                 </Text>
                 <Avatar bg="#E0F0F2">
@@ -134,7 +139,7 @@ const ProviderDashboardScreen = () => {
           <HStack justifyContent="space-between" p={3} shadow={2}>
             <VStack space={2} p={4} bg="white" w="47%" rounded="md">
               <HStack justifyContent="space-between" alignItems="center">
-                <Text fontSize="22px" fontWeight={700} color={'#569FA7'}>
+                <Text fontSize="20px" fontWeight={700} color={'#569FA7'}>
                   1
                 </Text>
                 <Avatar bg="#E0F0F2" size="md">
@@ -156,7 +161,22 @@ const ProviderDashboardScreen = () => {
             </VStack>
           </HStack>
         </VStack>
-        <BarChartCustom />
+        <VStack space={3} mt="5">
+          <HStack justifyContent={'space-between'} pl={2} pr={2}>
+            <Text fontSize={16} color={'#559FA7'} fontWeight={600}>
+              Default Schedule
+            </Text>
+            <Button bgColor="#559FA7">Change</Button>
+          </HStack>
+
+          <ProviderTimeRange />
+        </VStack>
+        <VStack space={3} mt="5">
+          <Text fontSize={16} color={'#559FA7'} fontWeight={600}>
+            Chart
+          </Text>
+          <BarChartCustom />
+        </VStack>
       </ScrollView>
     </View>
   );
