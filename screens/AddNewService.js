@@ -28,6 +28,7 @@ import {Pressable} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Formik} from 'formik';
 import {useNavigation} from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
 const AddNewService = () => {
   const takePhoto = () => {
@@ -70,9 +71,17 @@ const AddNewService = () => {
           },
         },
       );
-      console.log('Upload success:', response.data);
+      Toast.show({
+        type: 'success',
+        text1: 'Updated success',
+      });
+      navigation.navigate('Services');
     } catch (error) {
       console.error('Upload failed:', error);
+      Toast.show({
+        type: 'error',
+        text1: err,
+      });
     }
   };
 
@@ -128,6 +137,7 @@ const AddNewService = () => {
                   accessibilityLabel="Choose Service"
                   placeholder="Enter..."
                   size="xl"
+                  fontSize={14}
                   value={values.category}
                   onValueChange={handleChange('category')}
                   bgColor="#EEEEEE"
@@ -148,6 +158,7 @@ const AddNewService = () => {
                   variant="filled"
                   bgColor="#EEEEEE"
                   size="2xl"
+                  fontSize={14}
                   value={values.title}
                   onChangeText={handleChange('title')}
                   onBlur={handleBlur('title')}
@@ -158,6 +169,7 @@ const AddNewService = () => {
                 <TextArea
                   h={20}
                   totalLines={5}
+                  fontSize={14}
                   value={values.description}
                   onChangeText={handleChange('description')}
                   onBlur={handleBlur('description')}
@@ -196,6 +208,7 @@ const AddNewService = () => {
                   variant="filled"
                   bgColor="#EEEEEE"
                   size="2xl"
+                  fontSize={14}
                   value={values.price}
                   onChangeText={handleChange('price')}
                   onBlur={handleBlur('price')}
@@ -206,6 +219,7 @@ const AddNewService = () => {
                   variant="filled"
                   bgColor="#EEEEEE"
                   size="2xl"
+                  fontSize={14}
                   value={values.priceDiscount}
                   onChangeText={handleChange('priceDiscount')}
                   onBlur={handleBlur('priceDiscount')}

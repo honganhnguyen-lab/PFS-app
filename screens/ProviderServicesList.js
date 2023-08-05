@@ -26,6 +26,7 @@ import {
   Badge,
   Fab,
 } from 'native-base';
+
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
@@ -40,7 +41,7 @@ import {SvgCss} from 'react-native-svg';
 
 const SkeletonLoading = () => {
   return (
-    <Center w="100%">
+    <Center w="100%" p={3}>
       <VStack
         w="90%"
         maxW="400"
@@ -76,7 +77,8 @@ const ProviderServicesList = () => {
       const response = await axiosConfig.get(
         `${getListServicesEachProvider}${userDetail.id}/services`,
       );
-      setListServices(response.data.data.service);
+      console.log(response.data.data.services);
+      setListServices(response.data.data.services);
     } catch (err) {
       console.log(err);
     }
@@ -97,12 +99,13 @@ const ProviderServicesList = () => {
   useEffect;
   const navigation = useNavigation();
   return (
-    <View style={styles.listServicesScreen}>
+    <View style={styles.listServicesCustomerScreen}>
       <View style={styles.searchBox}>
         <HStack
           space={2}
           justifyContent="space-between"
           alignItems="center"
+          mt={50}
           p={3}>
           <Pressable onPress={() => navigation.navigate('Home')}>
             <Icon size="6" as={Ionicons} name="arrow-back-outline" />
@@ -135,77 +138,117 @@ const ProviderServicesList = () => {
         {isLoading ? (
           <SkeletonLoading />
         ) : (
-          <VStack space={3} mt="6">
+          <VStack space={3} mt="6" p={3}>
             {listServices?.length > 0 &&
-              listServices
-                .reduce((result, item, index) => {
-                  if (index % 2 === 0) {
-                    result.push([item]);
-                  } else {
-                    result[result.length - 1].push(item);
-                  }
-                  return result;
-                }, [])
-                .map((item, index) => {
-                  const renderIcon = defineCategory.find(
-                    cate => cate.status === item[index].category,
-                  )?.icon;
-                  return (
-                    <HStack space={2} key={index}>
-                      <VStack
-                        w="50%"
-                        space={3}
-                        rounded="lg"
-                        bg="#F9F9F9"
-                        shadow={2}>
-                        <Center bg="#87ADB2" p={2}>
-                          <Badge
-                            style={{position: 'absolute', top: 0, left: 5}}
-                            bg="white"
-                            color="#316970">
-                            <SvgCss
-                              width={25}
-                              height={25}
-                              color="#316970"
-                              fill="#316970"
-                              xml={renderIcon}
-                            />
-                          </Badge>
-                          <Badge
-                            style={{position: 'absolute', bottom: 0, right: 0}}
-                            bg="#316970"
-                            color="white">
-                            <Text color="white">${item[index].price}</Text>
-                          </Badge>
-                          <Image
-                            source={{
-                              uri: item[index].picture,
-                            }}
-                            alt="Alternate Text"
-                            size="lg"
-                          />
-                        </Center>
-                        <VStack p={3}>
-                          <Text
-                            fontWeight={600}
-                            fontSize={16}
-                            fontFamily={'WorkSans-regular'}>
-                            {item[index].title}
-                          </Text>
-                          <HStack pt={2} alignItems="center">
-                            <Icon
-                              as={Ionicons}
-                              size={4}
-                              name="star-sharp"
-                              color="#87ADB2"
-                            />
-                            <Text>4.8</Text>
+              listServices.map((item, index) => {
+                const renderIcon = defineCategory.find(
+                  cate => cate.status === item?.category,
+                )?.icon;
+                console.log(item.picture);
+                return (
+                  <HStack space={2} key={index} w="100%">
+                    <VStack
+                      space={3}
+                      rounded="lg"
+                      bg="#F9F9F9"
+                      shadow={2}
+                      flex={1}>
+                      <Center>
+                        <Badge
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            zIndex: 20,
+                          }}
+                          rounded="md">
+                          <HStack space={4}>
+                            <Pressable>
+                              <Icon
+                                as={Ionicons}
+                                name="pencil-outline"
+                                color="#316970"
+                                size="md"
+                              />
+                            </Pressable>
+                            <Pressable>
+                              <Icon
+                                as={Ionicons}
+                                color="#316970"
+                                name="trash-outline"
+                                size="md"
+                              />
+                            </Pressable>
                           </HStack>
-                        </VStack>
+                        </Badge>
+                        <Badge
+                          style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            right: 0,
+                            zIndex: 20,
+                          }}
+                          bg="#316970"
+                          color="white"
+                          rounded="md">
+                          <Text color="white" fontSize={12} fontWeight={700}>
+                            {item.price?.toLocaleString()} VND/hour
+                          </Text>
+                        </Badge>
+                        <Box w="100%">
+                          {item.picture?.length > 0 ? (
+                            <Box w="100%">
+                              <Image
+                                resizeMode="cover"
+                                source={{uri: item.picture}}
+                                alt="Alternate Text"
+                                size="xl"
+                                style={{
+                                  width: '100%',
+                                  marginTop: 10,
+                                }}
+                              />
+                            </Box>
+                          ) : (
+                            <Box w="100%" bg="white">
+                              <Image
+                                resizeMode="contain"
+                                source={require('../assets/no-image.jpeg')}
+                                alt="Alternate Text"
+                                size="xl"
+                                style={{
+                                  width: '100%',
+                                  marginTop: 10,
+                                }}
+                              />
+                            </Box>
+                          )}
+                        </Box>
+                      </Center>
+                      <VStack p={3}>
+                        <Text
+                          fontWeight={600}
+                          fontSize={16}
+                          fontFamily={'WorkSans-regular'}>
+                          {item.title}
+                        </Text>
+                        <Text fontSize={12} fontFamily={'WorkSans-regular'}>
+                          Des: {item.description}
+                        </Text>
+                        <HStack pt={2} alignItems="center">
+                          <Icon
+                            as={Ionicons}
+                            size={4}
+                            name="star-sharp"
+                            color="#87ADB2"
+                          />
+                          <Text>4.8</Text>
+                        </HStack>
                       </VStack>
-                    </HStack>
-                  );
-                })}
+                    </VStack>
+                  </HStack>
+                );
+              })}
           </VStack>
         )}
       </ScrollView>

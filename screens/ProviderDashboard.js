@@ -122,6 +122,7 @@ const ProviderDashboardScreen = () => {
         text1: err,
       });
     }
+    onGetDetailProvider();
     setModalVisible(false);
     setLoading(false);
   };

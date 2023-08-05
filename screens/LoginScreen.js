@@ -142,6 +142,7 @@ const Example = () => {
               onChangeText={onChangePhoneNumber}
               keyboardType="numeric"
               size="2xl"
+              fontSize={16}
               variant="rounded"
             />
           </FormControl>
@@ -156,6 +157,7 @@ const Example = () => {
               value={password}
               onChangeText={onChangePassword}
               size="2xl"
+              fontSize={16}
               variant="rounded"
             />
             <Link
