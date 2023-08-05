@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import {
   Box,
   Text,
@@ -18,25 +18,18 @@ import {
   Skeleton,
   Avatar,
   Button,
+  Modal,
+  FormControl,
+  Input,
+  Select,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
 
 import {ImageBackground} from 'react-native';
 import {InfoBlock} from '../components/Info';
 
-import DiscountSlider from './DiscountSlider';
-import {SvgCss} from 'react-native-svg';
-import {
-  acIcon,
-  cleanIcon,
-  personalChefIcon,
-  plumberIcon,
-  sofaIcon,
-  teacherIcon,
-  tutorIcon,
-  wifiIcon,
-} from '../assets/icon';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
@@ -44,6 +37,7 @@ import {useSelector} from 'react-redux';
 import {BarChartCustom} from '../components/BarChart';
 import {axiosConfig, getListServicesEachProvider} from '../axios';
 import {ProviderTimeRange} from '../components/ProviderTimeRange';
+import TimeSlider from '../components/TimeSlider';
 
 const SkeletonView = () => (
   <VStack
@@ -86,6 +80,12 @@ const ProviderDashboardScreen = () => {
   const navigation = useNavigation();
   const [dataProvider, setDataProvider] = useState({});
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [weekCategory, setWeekCategory] = useState('weekday');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const initialRef = useRef(null);
+  const finalRef = useRef(null);
 
   const onGetDetailProvider = async () => {
     setLoading(true);
@@ -100,6 +100,31 @@ const ProviderDashboardScreen = () => {
     setLoading(false);
   };
 
+  const updateDefaultSchedule = async () => {
+    setLoading(true);
+    const setAPIData = {
+      weeklySchedule: weekCategory,
+      timeRange: `${startTime}-${endTime}`,
+    };
+    try {
+      await axiosConfig.patch(
+        `${getListServicesEachProvider}${userDetail.id}`,
+        setAPIData,
+      );
+      Toast.show({
+        type: 'success',
+        text1: 'Updated success',
+      });
+    } catch (err) {
+      console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: err,
+      });
+    }
+    setModalVisible(false);
+    setLoading(false);
+  };
   useEffect(() => {
     onGetDetailProvider();
   }, [userDetail]);
@@ -107,7 +132,7 @@ const ProviderDashboardScreen = () => {
     <View style={styles.dashboardContainer}>
       {!userDetail || (isEmptyObj(userDetail) && <SkeletonView />)}
       <InfoBlock style={styles.infoArea} info={userDetail} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <VStack space={1} mt="7">
           <Text fontSize={16} color={'#559FA7'} fontWeight={600}>
             Overview
@@ -166,10 +191,79 @@ const ProviderDashboardScreen = () => {
             <Text fontSize={16} color={'#559FA7'} fontWeight={600}>
               Default Schedule
             </Text>
-            <Button bgColor="#559FA7">Change</Button>
+            <Button
+              bgColor="#559FA7"
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              Change
+            </Button>
           </HStack>
-
-          <ProviderTimeRange />
+          <Modal
+            isOpen={modalVisible}
+            onClose={() => setModalVisible(false)}
+            initialFocusRef={initialRef}
+            finalFocusRef={finalRef}>
+            <Modal.Content>
+              <Modal.CloseButton />
+              <Modal.Header>Change Default Schedule</Modal.Header>
+              <Modal.Body>
+                <FormControl>
+                  <FormControl.Label>Weekly schedule</FormControl.Label>
+                  <Select
+                    minWidth="200"
+                    accessibilityLabel="Choose Service"
+                    placeholder="Enter..."
+                    size="xl"
+                    value={weekCategory}
+                    onValueChange={value => setWeekCategory(value)}
+                    bgColor="#EEEEEE"
+                    mt="1">
+                    <Select.Item label="Weekday(Mon-Fri)" value="weekday" />
+                    <Select.Item label="Weekend(Sat, Sun)" value="weekend" />
+                    <Select.Item label="Full week" value="fullweek" />
+                  </Select>
+                </FormControl>
+                <FormControl mt="3" pl={1}>
+                  <TimeSlider
+                    title="Start time"
+                    onTimeChanged={time => setStartTime(time)}
+                    minimumValue={14}
+                    maximumValue={20}
+                    initialTime="07:00"
+                  />
+                </FormControl>
+                <FormControl mt="3" pl={1}>
+                  <TimeSlider
+                    title="End time"
+                    onTimeChanged={time => setEndTime(time)}
+                    minimumValue={14}
+                    initialTime="07:00"
+                  />
+                </FormControl>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button.Group space={2}>
+                  <Button
+                    variant="ghost"
+                    colorScheme="blueGray"
+                    onPress={() => {
+                      setModalVisible(false);
+                    }}>
+                    Cancel
+                  </Button>
+                  <Button
+                    bgColor="#559FA7"
+                    onPress={() => {
+                      updateDefaultSchedule();
+                    }}>
+                    Save
+                  </Button>
+                </Button.Group>
+              </Modal.Footer>
+            </Modal.Content>
+          </Modal>
+          <ProviderTimeRange dataProvider={dataProvider} />
         </VStack>
         <VStack space={3} mt="5">
           <Text fontSize={16} color={'#559FA7'} fontWeight={600}>

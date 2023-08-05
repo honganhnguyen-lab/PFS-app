@@ -8,14 +8,44 @@ import {
   Avatar,
   Badge,
 } from 'native-base';
+import {useSelector} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SvgCss} from 'react-native-svg';
 import {appointmentStatus, defineCategory} from '../CommonType';
 import {Linking} from 'react-native';
+import Toast from 'react-native-toast-message';
+import {axiosConfig, getListServicesEachProvider} from '../axios';
 
 export default BookingPending = ({listPendingAppointment}) => {
+  const user = useSelector(state => state.auth.user);
+  const userDetail = user.payload;
   const onCallProvider = phone => {
     Linking.openURL(`tel:${phone}`);
+  };
+
+  const updateStatusAppointment = async value => {
+    setLoading(true);
+    const setAPIData = {
+      status: value,
+    };
+    try {
+      await axiosConfig.patch(
+        `${getListServicesEachProvider}${userDetail.id}`,
+        setAPIData,
+      );
+      Toast.show({
+        type: 'success',
+        text1: 'Updated success',
+      });
+    } catch (err) {
+      console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: err,
+      });
+    }
+    setModalVisible(false);
+    setLoading(false);
   };
 
   return (
@@ -133,7 +163,10 @@ export default BookingPending = ({listPendingAppointment}) => {
                 }}
               />
               <HStack justifyContent="center" space={5}>
-                <Button w={120} bg="#316970">
+                <Button
+                  w={120}
+                  bg="#316970"
+                  onPress={() => updateStatusAppointment(2)}>
                   <Text color={'white'} fontWeight={600}>
                     Accept
                   </Text>
@@ -142,7 +175,8 @@ export default BookingPending = ({listPendingAppointment}) => {
                   w={120}
                   bg="white"
                   variant="outline"
-                  borderColor="#316970">
+                  borderColor="#316970"
+                  onPress={() => updateStatusAppointment(3)}>
                   <Text color={'#316970'} fontWeight={600}>
                     Decline
                   </Text>

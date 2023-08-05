@@ -12,6 +12,7 @@ export const DatePickerCustomize = ({onChangeSelectedDate}) => {
     <DatePicker
       onSelectedChange={onChangeSelectedDate}
       minimumDate={`${minDay} 10:30`}
+      mode="calendar"
       minuteInterval={10}
       options={{
         textHeaderColor: '#569FA7',

@@ -2,9 +2,23 @@ import {HStack, View, Text, VStack, Icon, Select, Input} from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export const ProviderTimeRange = () => {
+export const ProviderTimeRange = ({dataProvider}) => {
   const enableScroll = () => this.setState({scrollEnabled: true});
   const disableScroll = () => this.setState({scrollEnabled: false});
+  const weekSche = dataProvider?.weeklySchedule;
+  const timeRange = dataProvider?.timeRange;
+  const [start, end] = timeRange?.length > 0 ? timeRange.split('-') : '';
+  const renderTextSchedule = () => {
+    switch (weekSche) {
+      case 'weekday':
+        return 'Mon-Fri';
+      case 'weekend':
+        return 'Sat-Sun';
+      case 'fullweek':
+        return 'Mon-Sun';
+      default:
+    }
+  };
   return (
     <VStack>
       <HStack
@@ -14,11 +28,12 @@ export const ProviderTimeRange = () => {
         style={styles.textInfo}>
         <Input
           placeholder=""
-          value="Mon-Fri"
+          value={renderTextSchedule()}
           borderRadius="10"
           fontSize="16"
           fontWeight={600}
           variant="filled"
+          isDisabled
           InputLeftElement={
             <Icon
               m="2"
@@ -32,7 +47,6 @@ export const ProviderTimeRange = () => {
         />
       </HStack>
       <HStack
-        mt={2}
         justifyContent="space-between"
         w="100%"
         space={2}
@@ -43,11 +57,12 @@ export const ProviderTimeRange = () => {
           </Text>
           <Input
             placeholder=""
-            value="09:00"
+            value={start}
             borderRadius="10"
             fontSize="16"
             fontWeight={600}
             variant="filled"
+            isDisabled
             InputLeftElement={
               <Icon
                 m="2"
@@ -66,10 +81,11 @@ export const ProviderTimeRange = () => {
           </Text>
           <Input
             placeholder=""
-            value="16:00"
+            value={end}
             borderRadius="10"
             fontSize="16"
             fontWeight={600}
+            isDisabled
             variant="filled"
             InputLeftElement={
               <Icon

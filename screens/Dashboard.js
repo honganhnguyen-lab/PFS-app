@@ -156,16 +156,16 @@ const DashboardScreen = () => {
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${longtitude},${latitude}.json?access_token=pk.eyJ1IjoicXVhbnplbjgiLCJhIjoiY2xrcXJmcjN2MXAzYzNlcGxld2lyMTU1MyJ9.PmJmE5O1pyUlzIvAuWXs_g`,
         );
         const address = locationData.data?.features[0]?.place_name ?? '';
+        dispatch(
+          onSendLocation({
+            coordinates: [latitude, longtitude],
+            address,
+          }),
+        );
         setAddress(address);
       } catch (err) {
         console.log('err', err);
       }
-      dispatch(
-        onSendLocation({
-          coordinates: [latitude, longtitude],
-          address,
-        }),
-      );
     });
   };
 

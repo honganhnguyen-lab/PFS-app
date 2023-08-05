@@ -39,40 +39,34 @@ import {
   onSendAppointmentEndTime,
   onSendAppointmentDateTime,
 } from '../redux/appointment/appointmentSlice';
+import TimeSlider from '../components/TimeSlider';
 
 const AppointmentDetail = () => {
   const dispatch = useDispatch();
   const location = useSelector(state => state.appointment.location);
+
   const [locationInput, setLocationInput] = useState(location?.address ?? '');
   const [modalVisible, setModalVisible] = useState(false);
   const [isModalNextStep, setIsModalNextStep] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [selectedDate, setSelectedDate] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState('');
 
   const onChangeSelectedDate = date => {
-    const dateObj = moment(date, 'YYYY/MM/DD HH:mm');
-    const convertedTime = parseInt(dateObj.hour(), 10);
-    if (convertedTime < 8) {
-      alert('Please choose time after 8AM');
-    } else if (convertedTime > 21) {
-      alert('Please choose time before 8PM');
-    } else {
-      setSelectedDate(date);
-      dispatch(onSendAppointmentDateTime(date));
-    }
+    setSelectedDate(date);
+    dispatch(onSendAppointmentDateTime(date));
   };
 
-  const handleTimeChange = time => {
-    const convertedTime = parseInt(time.toString(), 10);
-    const startTime = moment(selectedDate, 'YYYY/MM/DD HH:mm');
-    const convertedStartTime = parseInt(startTime.hour(), 10);
-    if (convertedTime < convertedStartTime) {
-      alert('Please choose time after start time');
-    } else {
-      setEndTime(time);
-      dispatch(onSendAppointmentEndTime(time));
+  const timeStringToNumber = () => {
+    if (startTime?.length > 0) {
+      return 0;
     }
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const convertedValue = totalMinutes + 7 * 60;
+
+    return convertedValue;
   };
 
   const handleSizeClick = () => {
@@ -179,10 +173,21 @@ const AppointmentDetail = () => {
             <HStack justifyContent="flex-start" space={2} alignItems="center">
               <Icon as={Ionicons} name="calendar-outline" color="#87ADB2" />
               <Text fontWeight={600} fontSize={14}>
-                END TIME
+                APPOINTMENT TIME
               </Text>
             </HStack>
-            <TimePickerCustomize handleTimeChange={handleTimeChange} />
+            <TimeSlider
+              onTimeChanged={time => setStartTime(time)}
+              title="Start time"
+              initialTime="06:00"
+              minimumValue={14}
+            />
+
+            <TimeSlider
+              onTimeChanged={time => setEndTime(time)}
+              title="End time"
+              initialTime="12:00"
+            />
           </Stack>
           <Button
             mt={10}

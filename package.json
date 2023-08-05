@@ -11,6 +11,7 @@
     "debug": "open 'rndebugger://set-debugger-loc?host=localhost&port=8081'"
   },
   "dependencies": {
+    "@react-native-assets/slider": "^7.0.2",
     "@react-native-async-storage/async-storage": "^1.19.0",
     "@react-native-community/art": "^1.2.0",
     "@react-native-community/geolocation": "^3.0.6",
