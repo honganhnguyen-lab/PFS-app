@@ -144,7 +144,6 @@ const ProviderServicesList = () => {
                 const renderIcon = defineCategory.find(
                   cate => cate.status === item?.category,
                 )?.icon;
-                console.log(item.picture);
                 return (
                   <HStack space={2} key={index} w="100%">
                     <VStack

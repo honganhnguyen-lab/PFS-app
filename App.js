@@ -173,7 +173,7 @@ function App() {
   const userDetail = user.payload;
   return (
     <>
-      <NavigationContainer>
+      <NavigationContainer screenOptions={{unmountOnBlur: true}}>
         <Stack.Navigator>
           <Stack.Screen
             name="Home"

@@ -48,45 +48,18 @@ import {
   wifiIcon,
 } from '../assets/icon';
 import {RenderAdver} from '../components/RenderAdver';
+import {axiosConfig, getListServicesEachProvider} from '../axios';
 
 const SkeletonView = () => (
-  <VStack
-    w="90%"
-    maxW="400"
-    borderWidth="1"
-    space={6}
-    rounded="md"
-    alignItems="center"
-    _dark={{
-      borderColor: 'coolGray.500',
-    }}
-    _light={{
-      borderColor: 'coolGray.200',
-    }}>
-    <Skeleton h="40" />
-    <Skeleton
-      borderWidth={1}
-      borderColor="coolGray.200"
-      endColor="warmGray.50"
-      size="20"
-      rounded="full"
-      mt="-70"
-    />
-    <HStack space="2">
-      <Skeleton size="5" rounded="full" />
-      <Skeleton size="5" rounded="full" />
-      <Skeleton size="5" rounded="full" />
-      <Skeleton size="5" rounded="full" />
-      <Skeleton size="5" rounded="full" />
-    </HStack>
-    <Skeleton.Text lines={3} alignItems="center" px="12" />
-    <Skeleton mb="3" w="40" rounded="20" />
-  </VStack>
+  <HStack space="2" justifyContent="space-between">
+    <Skeleton size="15" />
+    <Skeleton size="5" rounded="full" />
+  </HStack>
 );
 
 const DashboardScreen = () => {
   const user = useSelector(state => state.auth.user);
-  const userDetail = user.payload;
+  const [userDetail, setUserDetail] = useState({});
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [skipPermissionRequests, setSkipPermissionRequests] = useState(false);
@@ -169,6 +142,17 @@ const DashboardScreen = () => {
     });
   };
 
+  const getDetailProfile = async () => {
+    try {
+      const detailProfileUser = await axiosConfig.get(
+        `api/v1/users/${user.payload.id}`,
+      );
+      setUserDetail(detailProfileUser.data.data.user);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     Geolocation.setRNConfiguration({
       skipPermissionRequests,
@@ -179,7 +163,8 @@ const DashboardScreen = () => {
 
   useEffect(() => {
     getLocation();
-  }, []);
+    getDetailProfile();
+  }, [user]);
 
   return (
     <View style={styles.dashboardContainer}>

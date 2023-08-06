@@ -1,10 +1,11 @@
 import axios from 'axios';
 
 export const axiosConfig = axios.create({
-  baseURL: 'http://pfs.try0.xyz',
+  baseURL: 'https://pfs.try0.xyz',
+  // baseURL: 'http://172.19.201.151:4000',
   timeout: 30000,
   headers: {
-    Accept: 'application/json',
+    Accept: '*/*',
     'Content-Type': 'application/json',
   },
 });

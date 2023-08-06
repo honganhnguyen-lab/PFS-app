@@ -36,7 +36,7 @@ export const InfoBlock = ({info, address}) => {
         alignSelf="center"
         size="md"
         source={{
-          uri: info?.avatar,
+          uri: info ? info.photo : '',
         }}>
         {info?.name?.charAt(0).toUpperCase() ?? 'PFS'}
       </Avatar>

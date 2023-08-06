@@ -11,6 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		56AFAAB4E9264070A269B1EE /* WorkSans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4016835997A5438D9A84692D /* WorkSans.ttf */; };
+		A34A35FE2A7E77AC00200616 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		A3E6CE9F2A3D5AFB00DFD8F1 /* AtkinsonHyperlegible.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F739A7E840C4FD282C2AFB5 /* AtkinsonHyperlegible.ttf */; };
 		A3E6CEA02A3D5B0000DFD8F1 /* LobsterTwo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BED28C7C656F44188D6762D1 /* LobsterTwo.ttf */; };
 		A3E6CEA12A3D5B0400DFD8F1 /* WorkSans.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4016835997A5438D9A84692D /* WorkSans.ttf */; };
@@ -305,6 +306,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3E6CEA12A3D5B0400DFD8F1 /* WorkSans.ttf in Resources */,
+				A34A35FE2A7E77AC00200616 /* Images.xcassets in Resources */,
 				A3E6CEA02A3D5B0000DFD8F1 /* LobsterTwo.ttf in Resources */,
 				A3E6CE9F2A3D5AFB00DFD8F1 /* AtkinsonHyperlegible.ttf in Resources */,
 			);
