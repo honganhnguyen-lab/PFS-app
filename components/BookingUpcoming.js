@@ -20,10 +20,12 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
 
   return (
     <VStack w="100%" space={4}>
-      {listUpcomingAppointment?.length > 0 &&
+      {listUpcomingAppointment &&
+        listUpcomingAppointment.length > 0 &&
         listUpcomingAppointment?.map((item, index) => {
           const infoService = item?.serviceId ?? {};
           const infoProvider = item?.providerId ?? {};
+          const infoCustomer = item?.customerId ?? {};
           const renderStatusLabel = appointmentStatus.find(
             status => status.value === item.status,
           );
@@ -39,15 +41,12 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
               rounded="lg"
               key={index}>
               <HStack space={3} pt={2} justifyContent="flex-start">
-                <Avatar bg="#238793">
-                  <SvgCss
-                    width={25}
-                    height={25}
-                    color="white"
-                    fill="white"
-                    xml={renderIcon}
-                  />
-                </Avatar>
+                <Avatar
+                  bg="#238793"
+                  source={{
+                    uri: infoService.picture,
+                  }}
+                />
                 <VStack space={2}>
                   <Text fontWeight={600} fontSize={16}>
                     {infoService.title}

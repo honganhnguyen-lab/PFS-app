@@ -33,6 +33,7 @@ import ProviderListBooking from './screens/ProviderListBooking';
 import ProviderServicesList from './screens/ProviderServicesList';
 import AddNewService from './screens/AddNewService';
 import ProceedScreen from './screens/ProceedScreen';
+import UpdateService from './screens/UpdateService';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -241,9 +242,18 @@ function App() {
             options={{headerShown: false}}
           />
           <Stack.Screen
-            name="AddService"
+            name="Add New Service"
             component={AddNewService}
+            options={{headerShown: true}}
+          />
+          <Stack.Screen
+            name="UpdateService"
+            component={UpdateService}
             options={{headerShown: false}}
+            getId={({params}) => {
+              console.log({params});
+              return params.screenId;
+            }}
           />
           <Stack.Screen
             name="Proceed"

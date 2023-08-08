@@ -25,6 +25,7 @@ import {axiosConfig, bookingUri, listBookingProviderUri} from '../axios';
 import {useSelector, useDispatch} from 'react-redux';
 import {setListAppointment} from '../redux/auth/bookingSlice';
 import BookingPending from '../components/BookingPending';
+import {useIsFocused} from '@react-navigation/native';
 
 const SkeletonLoading = () => {
   return (
@@ -54,6 +55,7 @@ const ProviderBookingScreen = () => {
   const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
   const userId = user.payload?.id ?? '';
+  const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
   const [typeBooking, setTypeBooking] = useState(0);
   const [listUpcomingAppointment, setListUpcomingAppointment] = useState([]);
@@ -99,8 +101,11 @@ const ProviderBookingScreen = () => {
   };
 
   useEffect(() => {
-    onGetListBooking();
-  }, []);
+    if (isFocused) {
+      onGetListBooking();
+      console.log('hello');
+    }
+  }, [isFocused]);
 
   return (
     <View style={styles.listServicesScreen}>

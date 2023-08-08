@@ -50,7 +50,8 @@ export default BookingPending = ({listPendingAppointment}) => {
 
   return (
     <VStack w="100%" space={4}>
-      {listPendingAppointment?.length > 0 &&
+      {listPendingAppointment &&
+        listPendingAppointment?.length > 0 &&
         listPendingAppointment?.map(item => {
           const infoService = item?.serviceId ?? {};
           const infoProvider = item?.providerId ?? {};
@@ -69,15 +70,7 @@ export default BookingPending = ({listPendingAppointment}) => {
               rounded="lg"
               key={item._id}>
               <HStack space={3} pt={2} justifyContent="flex-start">
-                <Avatar bg="success.800">
-                  <SvgCss
-                    width={25}
-                    height={25}
-                    color="white"
-                    fill="white"
-                    xml={renderIcon}
-                  />
-                </Avatar>
+                <Avatar bg="success.800"></Avatar>
                 <VStack space={2}>
                   <Text fontWeight={600} fontSize={16}>
                     {infoService.title}

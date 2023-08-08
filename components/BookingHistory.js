@@ -18,7 +18,8 @@ import {appointmentStatus, defineCategory} from '../CommonType';
 export default BookingHistory = ({listHistoryAppointment, isProvider}) => {
   return (
     <VStack w="100%" space={4}>
-      {listHistoryAppointment?.length > 0 &&
+      {listHistoryAppointment &&
+        listHistoryAppointment?.length > 0 &&
         listHistoryAppointment?.map(item => {
           const infoService = item?.serviceId ?? {};
           const infoProvider = item?.providerId ?? {};
@@ -51,15 +52,7 @@ export default BookingHistory = ({listHistoryAppointment, isProvider}) => {
                 </Badge>
               </HStack>
               <HStack space={3} pt={2}>
-                <Avatar bg="#238793">
-                  <SvgCss
-                    width={25}
-                    height={25}
-                    color="white"
-                    fill="white"
-                    xml={renderIcon}
-                  />
-                </Avatar>
+                <Avatar bg="#238793"></Avatar>
                 <VStack space={2}>
                   <Text fontWeight={600} fontSize={16}>
                     {infoService.title}

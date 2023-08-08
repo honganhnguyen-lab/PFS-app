@@ -79,7 +79,7 @@ const UserProfile = () => {
       height: 400,
       cropping: true,
     }).then(image => {
-      setAvatar(image);
+      setAvatar(image.path);
       setShowModal(true);
       onClose();
     });
@@ -121,16 +121,15 @@ const UserProfile = () => {
       });
       setShowModal(false);
     } catch (err) {
-      console.log('error upload avatar', err);
+      console.log('error upload avatar', err, err.message);
       Toast.show({
         type: 'error',
-        text1: err,
+        text1: 'Upload fail',
       });
     }
     setIsLoading(false);
   };
   const getDetailProfile = async () => {
-    console.log(user.payload.id);
     try {
       const detailProfileUser = await axiosConfig.get(
         `api/v1/users/${user.payload.id}`,

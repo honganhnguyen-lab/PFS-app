@@ -15,7 +15,6 @@ import {
   Select,
   CheckIcon,
   TextArea,
-  Checkbox,
   Actionsheet,
   Image,
 } from 'native-base';
@@ -30,11 +29,14 @@ import {Formik} from 'formik';
 import {useNavigation} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 
-const AddNewService = () => {
+const UpdateService = ({route}) => {
+  const user = useSelector(state => state.auth.user);
+  const userDetail = user.payload;
+  const screenId = route.params.serviceId;
   const takePhoto = () => {
     ImagePicker.openCamera({
-      width: 800,
-      height: 400,
+      width: 1600,
+      height: 900,
       cropping: true,
     }).then(image => {
       setImageUrl(image.path);
@@ -42,8 +44,8 @@ const AddNewService = () => {
   };
   const choosePhoto = () => {
     ImagePicker.openPicker({
-      width: 800,
-      height: 400,
+      width: 1600,
+      height: 900,
       cropping: true,
     }).then(async image => {
       setIsOpen(false);
@@ -55,35 +57,46 @@ const AddNewService = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
+  const [detailService, setDetailService] = useState({});
   const onClose = () => {
     setIsOpen(false);
   };
+  const getDetailService = async () => {
+    try {
+      const detail = await axiosConfig.get(`api/v1/services/${screenId}`);
+      setDetailService(detail.data.data.service);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  const createNewService = async values => {
+  const UpdateService = async values => {
     setIsLoading(true);
     const formData = new FormData();
     formData.append('image', {
       uri: imageUrl,
       type: 'image/*',
-      name: `${values.providerId} - ${values.title}`,
+      name: `services=${screenId}`,
     });
     formData.append('title', values.title);
     formData.append('description', values.description);
     formData.append('category', values.category);
     formData.append('price', values.price);
     formData.append('priceDiscount', values.priceDiscount);
-    formData.append('providerId', values.providerId);
+    formData.append('providerId', userDetail.id);
     try {
-      await axiosConfig.post('api/v1/services', formData, {
+      await axiosConfig.patch(`api/v1/services/${screenId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Add the content type header for FormData
         },
       });
+      console.log('formData', formData);
       Toast.show({
         type: 'success',
         text1: 'Updated success',
       });
-      navigation.navigate('Services');
+
+      navigation.navigate('Home', {screen: 'Services'});
     } catch (error) {
       console.error('Upload failed:', error.message);
       Toast.show({
@@ -94,46 +107,57 @@ const AddNewService = () => {
     setIsLoading(false);
   };
 
+  useEffect(() => {
+    getDetailService();
+  }, [screenId]);
+
+  useEffect(() => {
+    setImageUrl(detailService?.picture ?? '');
+  }, [detailService]);
+
   return (
     <View style={styles.listServicesScreen}>
-      <View>
+      <View mt={50}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: 16,
+            marginBottom: 10,
+          }}>
+          <Pressable
+            onPress={() => navigation.navigate('Home')}
+            style={{position: 'absolute', left: 0}}>
+            <Icon size="6" as={Ionicons} name="arrow-back-outline" />
+          </Pressable>
+
+          <Text
+            style={{
+              flex: 1,
+              textAlign: 'center',
+              fontSize: 18,
+              fontWeight: 600,
+            }}>
+            Update Service
+          </Text>
+        </View>
+        <Divider bg="#F1F1F1" thickness="2" mx="2" />
         <ScrollView>
           <Formik
+            enableReinitialize={true}
             initialValues={{
-              category: '',
-              title: '',
-              description: '',
-              image: '',
-              price: '',
-              priceDiscount: '',
-              providerId: '6485d103e299ea61cf412742',
+              category: detailService.category,
+              title: detailService.title,
+              description: detailService.description,
+              price: `${detailService.price}`,
+              priceDiscount: detailService.priceDiscount
+                ? `${detailService.priceDiscount}`
+                : '',
             }}
-            onSubmit={values => createNewService(values)}>
+            onSubmit={values => UpdateService(values)}>
             {({handleChange, handleBlur, handleSubmit, values}) => (
               <VStack space={3} mt={5}>
-                <Text>Choose categories</Text>
-                <Select
-                  minWidth="200"
-                  accessibilityLabel="Choose Service"
-                  placeholder="Enter..."
-                  size="xl"
-                  fontSize={14}
-                  padding={3}
-                  variant="outline"
-                  value={values.category}
-                  onValueChange={handleChange('category')}
-                  _selectedItem={{
-                    bg: 'teal.600',
-                    endIcon: <CheckIcon size={2} />,
-                  }}
-                  mt="1">
-                  <Select.Item label="Private Chef" value="0" />
-                  <Select.Item label="Cleaning" value="1" />
-                  <Select.Item label="AC Repair" value="2" />
-                  <Select.Item label="Nanny" value="3" />
-                  <Select.Item label="Tutor" value="4" />
-                  <Select.Item label="Wifi Repair" value="5" />
-                </Select>
                 <Text>Title</Text>
                 <Input
                   variant="outline"
@@ -163,8 +187,8 @@ const AddNewService = () => {
                 <Pressable onPress={() => setIsOpen(true)}>
                   <Center
                     w="100%"
-                    minHeight={20}
-                    height={170}
+                    // minHeight={20}
+                    // height={170}
                     style={{
                       borderStyle: 'dashed',
                       borderWidth: 1,
@@ -173,14 +197,15 @@ const AddNewService = () => {
                     p={3}>
                     {imageUrl ? (
                       <Image
+                        resizeMode="contain"
                         source={{
                           uri: imageUrl,
                         }}
                         alt="Alternate Text"
                         style={{
                           width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
+                          height: 170,
+                          // objectFit: 'cover',
                           borderRadius: 4,
                         }}
                       />
@@ -222,7 +247,7 @@ const AddNewService = () => {
                   onPress={handleSubmit}
                   spinnerPlacement="end"
                   isLoadingText="Sign in">
-                  Submit
+                  Update
                 </Button>
               </VStack>
             )}
@@ -261,10 +286,10 @@ const AddNewService = () => {
   );
 };
 
-export default () => {
+export default ({route}) => {
   return (
     <NativeBaseProvider>
-      <AddNewService />
+      <UpdateService route={route} />
     </NativeBaseProvider>
   );
 };

@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
 import {
-  Box,
   Text,
   Center,
   NativeBaseProvider,
@@ -10,12 +9,7 @@ import {
   Button,
   VStack,
   ScrollView,
-  Icon,
-  Input,
   Heading,
-  Avatar,
-  Stack,
-  Badge,
   Skeleton,
 } from 'native-base';
 import {styles} from '../style';
@@ -25,6 +19,7 @@ import {axiosConfig, bookingUri} from '../axios';
 import {useSelector, useDispatch} from 'react-redux';
 import {setListAppointment} from '../redux/auth/bookingSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useIsFocused} from '@react-navigation/native';
 
 const SkeletonLoading = () => {
   return (
@@ -52,7 +47,8 @@ const SkeletonLoading = () => {
 
 const BookingScreen = () => {
   const user = useSelector(state => state.auth.user);
-  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+
   const userId = user.payload?.id ?? '';
   const [loading, setLoading] = useState(false);
   const [typeBooking, setTypeBooking] = useState(0);
@@ -82,7 +78,6 @@ const BookingScreen = () => {
       const selectListUpcomingAppointment = listFullAppointment?.filter(
         v =>
           v.status === defineStatus.confirm ||
-          v.status === defineStatus.pending ||
           v.status === defineStatus.processing,
       );
 
@@ -98,8 +93,11 @@ const BookingScreen = () => {
   };
 
   useEffect(() => {
-    onGetListBooking();
-  }, []);
+    if (isFocused) {
+      onGetListBooking();
+      console.log('hello');
+    }
+  }, [isFocused]);
 
   return (
     <View style={styles.listServicesScreen}>
