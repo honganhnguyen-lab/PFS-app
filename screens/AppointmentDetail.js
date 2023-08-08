@@ -84,7 +84,7 @@ const AppointmentDetail = () => {
 
   const onChooseProvider = () => {
     setIsModalNextStep(false);
-    navigation.navigate('ProviderList');
+    navigation.navigate('List Provider');
   };
   const updateLocationDetail = location => {
     setLocationInput(location);
@@ -119,20 +119,20 @@ const AppointmentDetail = () => {
               />
             </Avatar>
           </Pressable>
-          <Heading>Final step</Heading>
+          <Heading>Booking</Heading>
         </HStack>
-        <Divider bg="#87ADB2" thickness="4" mx="2" />
+        <Divider bg="#F5F5F5" thickness="2" mx="2" />
       </View>
       <ScrollView>
         <VStack space={3} alignItems="center" mt="5">
           <Stack
             w="100%"
-            shadow={3}
             bg="white"
-            pt={4}
             p={2}
             rounded="lg"
-            space={2}>
+            space={2}
+            borderBottomColor="#F5F5F5"
+            borderBottomWidth={1}>
             <HStack justifyContent="flex-start" space={2} alignItems="center">
               <Icon as={Ionicons} name="location" color="#87ADB2" />
               <Text fontWeight={600} fontSize={14}>
@@ -144,18 +144,18 @@ const AppointmentDetail = () => {
                 {locationInput}
               </Text>
               <Button bgColor={'#316970'} onPress={handleSizeClick}>
-                Change
+                <Icon as={Ionicons} name="pencil" color="white" />
               </Button>
             </HStack>
           </Stack>
           <Stack
             w="100%"
-            shadow={3}
             bg="white"
-            pt={4}
             p={2}
             rounded="lg"
-            space={2}>
+            space={2}
+            borderBottomColor="#F5F5F5"
+            borderBottomWidth={1}>
             <HStack justifyContent="flex-start" space={2} alignItems="center">
               <Icon as={Ionicons} name="calendar-outline" color="#87ADB2" />
               <Text fontWeight={600} fontSize={14}>
@@ -169,7 +169,13 @@ const AppointmentDetail = () => {
               />
             </HStack>
           </Stack>
-          <Stack w="100%" shadow={3} bg="white" pt={4} p={2} rounded="lg">
+          <Stack
+            w="100%"
+            bg="white"
+            p={2}
+            rounded="lg"
+            borderBottomColor="#F5F5F5"
+            borderBottomWidth={1}>
             <HStack justifyContent="flex-start" space={2} alignItems="center">
               <Icon as={Ionicons} name="calendar-outline" color="#87ADB2" />
               <Text fontWeight={600} fontSize={14}>
@@ -197,7 +203,7 @@ const AppointmentDetail = () => {
             rounded={'md'}
             disabled={disabled}
             onPress={handleNextStep}>
-            Procceed
+            Booking now
           </Button>
         </VStack>
       </ScrollView>

@@ -32,6 +32,7 @@ import {
   onSendDataService,
   registerAppointment,
 } from '../redux/appointment/appointmentSlice';
+import {ProviderTimeRange} from '../components/ProviderTimeRange';
 
 const SkeletonLoading = () => {
   return (
@@ -65,62 +66,37 @@ const SkeletonLoading = () => {
   );
 };
 
-const DetailProvider = () => {
+const DetailProvider = ({route}) => {
   const navigation = useNavigation();
-  const provider = useSelector(state => state.appointment.providerId);
+  const serviceId = useSelector(state => state.appointment.serviceId);
+  const distanceFar = route && route.params ? route.params.distance : '';
 
   const dispatch = useDispatch();
   const {width} = Dimensions.get('window');
-  let isHavingDiscount;
-  const [listServiceEachProvider, setListServiceEachProvider] = useState([]);
-
-  const listIsChosen =
-    listServiceEachProvider?.services?.length > 0 &&
-    listServiceEachProvider?.services?.map(service => ({
-      ...service,
-      isChosen: false,
-    }));
+  const [detailService, setDetailService] = useState({});
 
   const [isLoading, setIsLoading] = useState(false);
-  const {isOpen, onOpen, onClose} = useDisclose();
   const [serviceChoosen, setServiceChoosen] = useState({});
-
-  const onCheckAddService = item => {
-    const choosenPrice = item?.isDiscount ? item.priceDiscount : item.price;
-    setServiceChoosen({price: choosenPrice, name: item.title});
-    dispatch(onSendDataService(item._id));
-    onOpen();
-  };
 
   const onProceedService = async () => {
     dispatch(onChangePayment(serviceChoosen.price));
     navigation.navigate('Appointment');
   };
 
-  const getListServices = async () => {
+  const getDetailService = async () => {
     setIsLoading(true);
     try {
-      const response = await axiosConfig.get(
-        `${getListServicesEachProvider}${provider}/services`,
-      );
-      setListServiceEachProvider(response.data.data);
+      const response = await axiosConfig.get(`/api/v1/services/${serviceId}`);
+      setDetailService(response.data.data.service);
     } catch (err) {
       console.log(err);
     }
     setIsLoading(false);
   };
   useEffect(() => {
-    getListServices();
-  }, [provider]);
+    getDetailService();
+  }, [serviceId]);
 
-  useMemo(() => {
-    const newList =
-      listServiceEachProvider?.length > 0 &&
-      listServiceEachProvider.map(item => item?.isDiscount);
-    if (newList?.length > 0) {
-      isHavingDiscount = true;
-    }
-  }, [listIsChosen]);
   return (
     <ScrollView style={styles.detailScreen} width={width} bg="#CAC9C9">
       {isLoading ? (
@@ -129,22 +105,20 @@ const DetailProvider = () => {
         <View>
           <Image
             source={{
-              uri:
-                listServiceEachProvider?.picture ??
-                'https://epe.brightspotcdn.com/dims4/default/95f2bfb/2147483647/strip/true/crop/2084x1414+37+0/resize/840x570!/format/webp/quality/90/?url=https%3A%2F%2Fepe-brightspot.s3.amazonaws.com%2F94%2F2d%2F8ed27aa34da0a197b1d819ec39a5%2Fteacher-tutor-student-librarian-1137620335.jpg',
+              uri: detailService.picture,
             }}
             style={styles.backgroundImage}
             alt="Alternate Text"
             borderRadius={2}
           />
-          <View style={{marginBottom: 40}}>
+          <View style={{marginBottom: 40, width: '100%'}}>
             <HStack
               justifyContent="space-between"
               alignItems="flex-start"
               p={2}
               height={200}
               mt={10}>
-              <Pressable onPress={() => navigation.navigate('ProviderList')}>
+              <Pressable onPress={() => navigation.navigate('List Provider')}>
                 <Avatar bg="white">
                   <Icon
                     as={Ionicons}
@@ -154,7 +128,7 @@ const DetailProvider = () => {
                   />
                 </Avatar>
               </Pressable>
-              <Pressable onPress={onCheckAddService}>
+              <Pressable>
                 <Avatar bg="white">
                   <Icon
                     as={Ionicons}
@@ -170,301 +144,140 @@ const DetailProvider = () => {
               style={styles.boxDetailContent}
               alignItems="center"
               justifyContent="center">
-              <Box bg="white" shadow={3} mb={4} rounded="lg">
-                <VStack p={3} space={2}>
-                  <HStack justifyContent="space-between" alignItems="center">
-                    <Text
-                      fontWeight={600}
-                      fontSize={22}
-                      color="#569FA7"
-                      fontFamily={'WorkSans-regular'}>
-                      {listServiceEachProvider?.provider?.name}
+              <VStack
+                bg="white"
+                width="100%"
+                space={2}
+                borderTopLeftRadius={40}
+                borderTopRightRadius={40}
+                p={6}
+                rounded="lg">
+                <HStack justifyContent="space-between" alignItems="center">
+                  <HStack space={3} alignItems="center">
+                    <Avatar
+                      bg="#238793"
+                      alignSelf="center"
+                      size="md"
+                      source={{
+                        uri: detailService?.providerId?.photo,
+                      }}
+                    />
+                    <Text fontSize={16} fontWeight={600}>
+                      {detailService?.providerId?.name}
                     </Text>
+                  </HStack>
+                  <HStack space={3} alignItems="center">
                     <Icon
                       as={Ionicons}
-                      name="chevron-forward-outline"
-                      size="md"
-                      color="#569FA7"
+                      size={5}
+                      name="call-sharp"
+                      color="#87ADB2"
                     />
+                    <Text fontSize={16} fontWeight={600}>
+                      {detailService?.providerId?.phoneNumber}
+                    </Text>
                   </HStack>
-                  <Divider bg="#87ADB2" thickness="1" mt={2} />
-                  <HStack
-                    justifyContent="space-between"
-                    alignItems="center"
-                    p={2}>
-                    <HStack space={4} alignItems="center">
-                      <HStack alignItems="center" space={1}>
-                        <Icon
-                          as={Ionicons}
-                          size={4}
-                          name="star-sharp"
-                          color="#87ADB2"
-                        />
-                        <Text fontWeight={600}>
-                          {listServiceEachProvider?.provider?.rating ?? 4.8}
-                        </Text>
-                        <Text>
-                          ({listServiceEachProvider?.provider?.comment ?? 46})
-                        </Text>
-                      </HStack>
-                      <HStack alignItems="center">
-                        <Icon
-                          as={Ionicons}
-                          size={4}
-                          name="chatbubble-ellipses-outline"
-                          color="#87ADB2"
-                        />
-                        <Text fontSize={12}> Comment and rating</Text>
-                      </HStack>
-                    </HStack>
-                    <Icon
-                      as={Ionicons}
-                      name="chevron-forward-outline"
-                      size="md"
-                      color="#569FA7"
-                      style={{justifyContent: 'flex-end'}}
-                    />
-                  </HStack>
-                  <Divider bg="#87ADB2" thickness="1" mt={2} />
-                  <HStack
-                    justifyContent="space-between"
-                    alignItems="center"
-                    p={2}>
-                    <VStack>
-                      <HStack space={1} alignItems="center">
-                        <Icon
-                          as={Ionicons}
-                          name="location"
-                          size="md"
-                          color="#569FA7"
-                        />
-                        <Text>
-                          {' '}
-                          {listServiceEachProvider?.provider?.locationFar ??
-                            '9.1km'}
-                        </Text>
-                      </HStack>
-                      <HStack space={1} alignItems="center">
-                        <Icon
-                          as={Ionicons}
-                          name="pin"
-                          size="md"
-                          color="#569FA7"
-                        />
-                        <Text flexWrap="wrap" width="80%">
-                          91 Nguyen Chi Thanh, Ha Dong District, Ha Noi
-                        </Text>
-                      </HStack>
-                    </VStack>
-                    <Icon
-                      as={Ionicons}
-                      name="chevron-forward"
-                      size="md"
-                      color="#569FA7"
-                      style={{justifyContent: 'flex-end'}}
-                    />
-                  </HStack>
-                  <Divider bg="#87ADB2" thickness="1" mt={2} />
-                  <VStack space={2} p={2}>
-                    <HStack space={2}>
+                </HStack>
+                <HStack
+                  w="100%"
+                  space={1}
+                  rounded="lg"
+                  justifyContent="space-between"
+                  alignItems="center">
+                  <VStack w="80%">
+                    <Text fontWeight={600} fontSize={16} w="80%">
+                      {detailService.title}
+                    </Text>
+                    <HStack p={2} alignItems="center">
                       <Icon
                         as={Ionicons}
-                        name="eye"
-                        size="md"
-                        color="#569FA7"
+                        size={4}
+                        name="star-sharp"
+                        color="#FFC107"
                       />
-
-                      <Text fontWeight={600}>Description</Text>
+                      <Text>
+                        {detailService.ratingsAverage ?? 0} (
+                        {detailService.ratingComments ?? 0})
+                      </Text>
                     </HStack>
-                    <Text width="80%" flexWrap="wrap">
-                      {listServiceEachProvider?.provider?.desciption ??
-                        'Description'}
-                    </Text>
                   </VStack>
-                </VStack>
-              </Box>
+                  <Text fontSize={12} fontWeight={600}>
+                    {detailService.price?.toLocaleString()}VND
+                  </Text>
+                </HStack>
+              </VStack>
             </Box>
-
             <VStack
-              space={12}
+              space={2}
               alignItems="center"
               justifyContent="center"
               style={styles.boxDiscount}>
-              <Box width="93%">
-                {isHavingDiscount && (
-                  <Text
-                    fontWeight={600}
-                    fontSize={22}
-                    fontFamily={'AtkinsonHyperlegible-regular'}>
-                    Current discount
+              <Box
+                width="100%"
+                p={3}
+                borderBottomColor="#F5F5F5"
+                borderBottomWidth={1}>
+                <VStack space={1}>
+                  <HStack space={3} alignItems="center">
+                    <Icon
+                      as={Ionicons}
+                      name="location"
+                      size="md"
+                      color="#559FA7"
+                    />
+                    <Text fontSize={18} fontWeight={600}>
+                      Location
+                    </Text>
+                  </HStack>
+                  <Text pl={8} fontSize={16}>
+                    {distanceFar} km
                   </Text>
-                )}
-
-                {listIsChosen?.length > 0 &&
-                  listIsChosen.map(item => {
-                    if (item?.isDiscount) {
-                      return (
-                        <HStack
-                          w="100%"
-                          justifyContent="space-evenly"
-                          mt={2}
-                          rounded="lg"
-                          alignItems="center"
-                          bg="#F9F9F9"
-                          shadow={2}
-                          key={item.id}>
-                          <Center p={2}>
-                            <Image
-                              source={{
-                                uri: item.image,
-                              }}
-                              alt="Alternate Text"
-                              size="sm"
-                            />
-                          </Center>
-                          <VStack p={2} pt={3}>
-                            <Text
-                              fontWeight={600}
-                              fontSize={16}
-                              ellipsizeMode="middle"
-                              fontFamily={'WorkSans-regular'}>
-                              {item.title}
-                            </Text>
-                            <HStack
-                              alignItems="center"
-                              space={1}
-                              width="100%"
-                              flexWrap="wrap">
-                              <Text
-                                fontWeight={600}
-                                fontSize={16}
-                                color="#569FA7">
-                                {item.priceDiscount}
-                              </Text>
-                              <Text fontSize={14} strikeThrough color="#569FA7">
-                                {item.price}
-                              </Text>
-                              <Icon
-                                as={Ionicons}
-                                name="pricetag"
-                                size="sm"
-                                color="#87ADB2"
-                              />
-                            </HStack>
-                          </VStack>
-                          <Pressable onPress={() => onCheckAddService(item)}>
-                            <Square
-                              size="35px"
-                              bg={!item.isChosen ? '#87ADB2' : 'white'}
-                              rounded="lg"
-                              borderWidth="1"
-                              borderColor={
-                                !item.isChosen ? 'white' : '#87ADB2'
-                              }>
-                              <Icon
-                                as={Ionicons}
-                                name={
-                                  !item.isChosen ? 'add-sharp' : 'remove-sharp'
-                                }
-                                size="md"
-                                color={!item.isChosen ? 'white' : '#87ADB2'}
-                              />
-                            </Square>
-                          </Pressable>
-                        </HStack>
-                      );
-                    }
-                  })}
+                  <Text pl={8} pr={6} fontSize={14}>
+                    {detailService?.location?.address}
+                  </Text>
+                </VStack>
               </Box>
-
-              <Box width="93%">
-                <Text
-                  fontWeight={600}
-                  fontSize={22}
-                  fontFamily={'AtkinsonHyperlegible-regular'}>
-                  For you
-                </Text>
-                <HStack space={6} alignItems="center" mt={3}>
-                  {listIsChosen?.length > 0 &&
-                    listIsChosen.map(item => {
-                      if (!item.isDiscount) {
-                        return (
-                          <VStack space={1} width="50%" key={item.id}>
-                            <Image
-                              source={{
-                                uri: item.picture,
-                              }}
-                              alt="Alternate Text"
-                              size="xl"
-                              borderRadius="md"
-                            />
-                            <Text
-                              fontSize={14}
-                              ellipsizeMode="middle"
-                              width="90%"
-                              fontFamily={'WorkSans-regular'}>
-                              {item.title}
-                            </Text>
-                            <HStack
-                              alignItems="center"
-                              space={2}
-                              width="100%"
-                              flexWrap="wrap">
-                              <Pressable
-                                onPress={() => onCheckAddService(item)}>
-                                <Square
-                                  size="30px"
-                                  bg={!item.isChosen ? '#87ADB2' : 'white'}
-                                  rounded="lg"
-                                  borderWidth="1"
-                                  borderColor={
-                                    !item.isChosen ? 'white' : '#87ADB2'
-                                  }>
-                                  <Icon
-                                    as={Ionicons}
-                                    name={
-                                      !item.isChosen
-                                        ? 'add-sharp'
-                                        : 'remove-sharp'
-                                    }
-                                    size="md"
-                                    color={!item.isChosen ? 'white' : '#87ADB2'}
-                                  />
-                                </Square>
-                              </Pressable>
-                              <Text
-                                fontWeight={600}
-                                fontSize={14}
-                                color="#569FA7">
-                                {item.price}
-                              </Text>
-                            </HStack>
-                          </VStack>
-                        );
-                      }
-                    })}
+              <Box
+                width="100%"
+                p={3}
+                borderBottomColor="#F5F5F5"
+                borderBottomWidth={1}>
+                <VStack space={1}>
+                  <HStack space={3} alignItems="center">
+                    <Icon
+                      as={Ionicons}
+                      name="chatbubble"
+                      size="md"
+                      color="#559FA7"
+                    />
+                    <Text fontSize={18} fontWeight={600}>
+                      Description
+                    </Text>
+                  </HStack>
+                  <Text pl={8} pr={6} fontSize={14}>
+                    {detailService?.description}
+                  </Text>
+                </VStack>
+              </Box>
+              <VStack width="100%" p={3}>
+                <HStack space={3} alignItems="center">
+                  <Icon
+                    as={Ionicons}
+                    name="calendar"
+                    size="md"
+                    color="#559FA7"
+                  />
+                  <Text fontSize={18} fontWeight={600}>
+                    Schedule
+                  </Text>
                 </HStack>
-              </Box>
-            </VStack>
-          </View>
-        </View>
-      )}
-
-      <Actionsheet isOpen={isOpen} onClose={onClose} hideDragIndicator>
-        <Actionsheet.Content borderTopRadius="0">
-          <HStack
-            width="100%"
-            justifyContent="space-between"
-            alignItems="center"
-            p={2}>
-            <VStack space={3}>
-              <Text fontWeight={600} fontSize={16} color="#569FA7">
-                {serviceChoosen.price} VND
-              </Text>
-              <Text fontSize={16}>{serviceChoosen.name}</Text>
+                <ProviderTimeRange dataProvider={detailService?.providerId} />
+              </VStack>
             </VStack>
             <Button
-              w={150}
+              w="90%"
+              m={5}
+              alignItems="center"
               bgColor="#238793"
               fontSize={16}
               onPress={onProceedService}
@@ -473,16 +286,16 @@ const DetailProvider = () => {
                 Proceed
               </Text>
             </Button>
-          </HStack>
-        </Actionsheet.Content>
-      </Actionsheet>
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 };
-export default () => {
+export default ({route}) => {
   return (
     <NativeBaseProvider>
-      <DetailProvider />
+      <DetailProvider route={route} />
     </NativeBaseProvider>
   );
 };

@@ -15,6 +15,7 @@ import {
   Pressable,
   PresenceTransition,
   Button,
+  Avatar,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -23,6 +24,7 @@ import {axiosConfig, getListServices} from '../axios';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   onSendDataProvider,
+  onSendDataService,
   onSendDataServiceAndProvider,
 } from '../redux/appointment/appointmentSlice';
 
@@ -62,9 +64,12 @@ const ProviderChoosing = () => {
     );
   };
 
-  const onMoveToChooseService = id => {
-    navigation.navigate('DetailProvider');
-    dispatch(onSendDataProvider(id));
+  const onMoveToChooseService = (id, distance) => {
+    console.log('distance', distance);
+    navigation.navigate('DetailProvider', {
+      distance: distance,
+    });
+    dispatch(onSendDataService(id));
   };
 
   useEffect(() => {
@@ -73,27 +78,15 @@ const ProviderChoosing = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.listAppointScreen}>
-      <View mt={50}>
-        <HStack justifyContent="flex-start" alignItems="center" p={3}>
-          <Pressable onPress={() => navigation.navigate('Home')}>
-            <Icon
-              as={Ionicons}
-              name="arrow-back-outline"
-              size="lg"
-              color="#569FA7"
-            />
-          </Pressable>
-          <Heading ml={2} color="#569FA7">
-            Step 1
-          </Heading>
-        </HStack>
-        <Divider bg="#87ADB2" thickness="4" mx="2" />
+      <View>
         <VStack w="100%" mt={3}>
           <Input
             placeholder="What do you need"
             borderRadius="10"
             fontSize="14"
             w="100%"
+            value={appointmentName.payload}
+            isDisabled
             bgColor="white"
             variant="rounded"
             InputRightElement={
@@ -107,44 +100,19 @@ const ProviderChoosing = () => {
               />
             }
           />
-          <HStack space={2} mt={2}>
-            <Button
-              leftIcon={
-                <Icon name="star-sharp" as={Ionicons} color="#95C4CB" />
-              }
-              variant="outline"
-              size="sm"
-              borderColor="#95C4CB"
-              bgColor="white"
-              borderRadius="full">
-              <Text color="#95C4CB">Rating</Text>
-            </Button>
-            <Button
-              leftIcon={
-                <Icon name="pricetags-sharp" as={Ionicons} color="#95C4CB" />
-              }
-              variant="outline"
-              size="sm"
-              borderColor="#95C4CB"
-              bgColor="white"
-              borderRadius="full">
-              <Text color="#95C4CB">Discount</Text>
-            </Button>
-          </HStack>
         </VStack>
       </View>
       <ScrollView>
         <VStack space={3} alignItems="center" mt="3">
           {listProvider.map((service, index) => {
             const providerDetail = service?.provider;
-            const listServices = service?.services;
-            const distanceFar = listServices[0]?.distance.toFixed(1);
+            const distanceFar = service?.distance.toFixed(1);
             return (
               <Pressable
                 w="100%"
                 key={index}
                 borderColor="#87ADB2"
-                onPress={() => onMoveToChooseService(service._id)}>
+                onPress={() => onMoveToChooseService(service._id, distanceFar)}>
                 <VStack
                   w="100%"
                   space={2}
@@ -155,11 +123,11 @@ const ProviderChoosing = () => {
                     <Center p={2.5}>
                       <Image
                         source={{
-                          uri: providerDetail?.avatar,
+                          uri: service.picture,
                         }}
                         alt="Alternate Text"
                         size="lg"
-                        borderRadius={2}
+                        borderRadius={6}
                       />
                     </Center>
                     <VStack p={3}>
@@ -191,13 +159,7 @@ const ProviderChoosing = () => {
                         fontWeight={600}
                         fontSize={16}
                         fontFamily={'WorkSans-regular'}>
-                        {providerDetail?.name}
-                      </Text>
-                      <Text
-                        fontSize={12}
-                        mb={1}
-                        fontFamily={'WorkSans-regular'}>
-                        {functionRenderLabel(providerDetail?.category)}
+                        {service?.title}
                       </Text>
                       <HStack alignItems="center" space={1}>
                         <Icon
@@ -221,65 +183,32 @@ const ProviderChoosing = () => {
                         />
                         <Text>{providerDetail?.rating ?? 0}</Text>
                       </HStack>
+                      <HStack mt={1}>
+                        <Button size="sm" bgColor="#95C4CB" borderRadius="full">
+                          <Text color="white">
+                            {service?.price?.toLocaleString()} d/hour
+                          </Text>
+                        </Button>
+                      </HStack>
                     </VStack>
                   </HStack>
-                  <HStack space={3} alignItems="center">
-                    {listServices?.length > 0 &&
-                      listServices.map((item, index) => (
-                        <VStack
-                          style={{flexWrap: 'wrap'}}
-                          alignItems="flex-start"
-                          key={index}>
-                          <Center>
-                            <Image
-                              source={{
-                                uri: item?.picture,
-                              }}
-                              alt="Alternate Text"
-                              size="md"
-                              borderRadius={10}
-                            />
-                          </Center>
-                          {item?.isDiscount ? (
-                            <HStack
-                              alignItems="center"
-                              space={1}
-                              width="100%"
-                              flexWrap="wrap">
-                              <Text fontWeight={600} fontSize={12}>
-                                {parseFloat(item?.priceDiscount).toLocaleString(
-                                  'en-US',
-                                )}
-                                đ
-                              </Text>
-                              <Text fontSize={10} strikeThrough>
-                                {parseFloat(item?.price).toLocaleString(
-                                  'en-US',
-                                )}
-                                đ
-                              </Text>
-                            </HStack>
-                          ) : (
-                            <Text fontWeight={600} fontSize={12}>
-                              {parseFloat(item?.price).toLocaleString('en-US')}đ
-                            </Text>
-                          )}
-                          <HStack space={1} alignItems="center">
-                            <Icon
-                              as={Ionicons}
-                              size={2}
-                              name="star-sharp"
-                              color="#87ADB2"
-                            />
-                            <Text fontSize={12}>
-                              {item.ratingsAverage ?? 0}
-                            </Text>
-                          </HStack>
-                          <Text fontSize={12} style={{flexWrap: 'wrap'}}>
-                            {item.title}
-                          </Text>
-                        </VStack>
-                      ))}
+                  <HStack pl={2} space={3} alignItems="center">
+                    <Avatar
+                      bg="#238793"
+                      alignSelf="center"
+                      size="md"
+                      source={{
+                        uri: providerDetail.photo,
+                      }}
+                    />
+                    <VStack space={1}>
+                      <Text fontSize={16} fontWeight={600}>
+                        {providerDetail.name}
+                      </Text>
+                      <Text fontSize={14} color="grey">
+                        Provider
+                      </Text>
+                    </VStack>
                   </HStack>
                 </VStack>
               </Pressable>

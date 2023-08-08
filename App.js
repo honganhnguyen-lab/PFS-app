@@ -222,14 +222,17 @@ function App() {
             options={{headerShown: false}}
           />
           <Stack.Screen
-            name="ProviderList"
+            name="List Provider"
             component={ChooseProvider}
-            options={{headerShown: false}}
+            options={{headerShown: true}}
           />
           <Stack.Screen
             name="DetailProvider"
             component={DetailProvider}
             options={{headerShown: false}}
+            getId={({params}) => {
+              return params?.distance ?? '';
+            }}
           />
           <Stack.Screen
             name="UserProfile"
@@ -251,7 +254,6 @@ function App() {
             component={UpdateService}
             options={{headerShown: false}}
             getId={({params}) => {
-              console.log({params});
               return params.screenId;
             }}
           />

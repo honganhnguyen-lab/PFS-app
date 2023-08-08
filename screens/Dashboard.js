@@ -117,7 +117,7 @@ const DashboardScreen = () => {
 
   const onNavigateToAppointment = label => {
     dispatch(onSendNameServices(label));
-    navigation.navigate('ProviderList');
+    navigation.navigate('List Provider');
   };
   const getLocation = () => {
     Geolocation.getCurrentPosition(async info => {

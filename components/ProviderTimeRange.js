@@ -33,7 +33,6 @@ export const ProviderTimeRange = ({dataProvider}) => {
           fontSize="16"
           fontWeight={600}
           variant="filled"
-          isDisabled
           InputLeftElement={
             <Icon
               m="2"
@@ -62,7 +61,6 @@ export const ProviderTimeRange = ({dataProvider}) => {
             fontSize="16"
             fontWeight={600}
             variant="filled"
-            isDisabled
             InputLeftElement={
               <Icon
                 m="2"
@@ -85,7 +83,6 @@ export const ProviderTimeRange = ({dataProvider}) => {
             borderRadius="10"
             fontSize="16"
             fontWeight={600}
-            isDisabled
             variant="filled"
             InputLeftElement={
               <Icon

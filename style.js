@@ -75,10 +75,12 @@ export const styles = StyleSheet.create({
     fontWeight: 600,
   },
   statusBooking: {
-    backgroundColor: '#95C4CB',
+    backgroundColor: 'white',
+    borderRadius: 8,
   },
   statusBookingFocus: {
-    backgroundColor: 'white',
+    backgroundColor: '#F3F3F3',
+    borderRadius: 8,
   },
   backgroundImage: {
     resizeMode: 'cover',
@@ -91,14 +93,13 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: -50,
-    marginLeft: 20,
-    marginRight: 20,
+    width: '100%',
   },
   boxDiscount: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
-    marginLeft: 20,
-    marginRight: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#F5F5F5',
+    backgroundColor: 'white',
   },
 });

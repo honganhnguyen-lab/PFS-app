@@ -102,29 +102,34 @@ const BookingScreen = () => {
   return (
     <View style={styles.listServicesScreen}>
       <View mt={50}>
-        <HStack space={2} alignItems="center" p={3}>
-          <Divider bg="#87ADB2" thickness="4" mx="2" orientation="vertical" />
-          <Heading>Booking</Heading>
-        </HStack>
-        <Center w="100%" h={65} shadow={2} bg="white" p={3} rounded="lg">
-          <HStack space={3}>
+        <VStack space={3} alignItems="center" p={3}>
+          <Text style={{color: '#559FA7', fontWeight: 600, fontSize: 18}}>
+            Booking
+          </Text>
+          <Divider bg="#F4F4F4" thickness="2" mx="2" />
+        </VStack>
+        <Center
+          w="100%"
+          shadow={2}
+          bg="white"
+          p={1}
+          rounded="lg"
+          bgColor="#F3F3F3">
+          <HStack alignItems="center" justifyContent="center">
             <Button
-              w={100}
-              colorScheme="#59F5FF"
+              flex={1}
               onPress={() => setTypeBooking(0)}
               style={
                 typeBooking === 0
                   ? styles.statusBooking
                   : styles.statusBookingFocus
               }>
-              <Text
-                color={typeBooking === 0 ? '#316970' : 'black'}
-                fontWeight={600}>
+              <Text color={'#316970'} fontWeight={600}>
                 Upcoming
               </Text>
             </Button>
             <Button
-              w={100}
+              flex={1}
               colorScheme="success"
               size="lg"
               onPress={() => setTypeBooking(1)}
@@ -133,9 +138,7 @@ const BookingScreen = () => {
                   ? styles.statusBooking
                   : styles.statusBookingFocus
               }>
-              <Text
-                color={typeBooking === 1 ? '#316970' : 'black'}
-                fontWeight={600}>
+              <Text color={'#316970'} fontWeight={600}>
                 History
                 {loading}
               </Text>
