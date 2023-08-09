@@ -50,6 +50,7 @@ const BookingScreen = () => {
   const isFocused = useIsFocused();
 
   const userId = user.payload?.id ?? '';
+  console.log(user);
   const [loading, setLoading] = useState(false);
   const [typeBooking, setTypeBooking] = useState(0);
   const [listUpcomingAppointment, setListUpcomingAppointment] = useState([]);
@@ -77,8 +78,8 @@ const BookingScreen = () => {
 
       const selectListUpcomingAppointment = listFullAppointment?.filter(
         v =>
-          v.status === defineStatus.confirm ||
-          v.status === defineStatus.processing,
+          v.status === defineStatus.pending ||
+          v.status === defineStatus.confirm,
       );
 
       const selectListHistoryAppointment = listFullAppointment?.filter(
@@ -95,7 +96,6 @@ const BookingScreen = () => {
   useEffect(() => {
     if (isFocused) {
       onGetListBooking();
-      console.log('hello');
     }
   }, [isFocused]);
 

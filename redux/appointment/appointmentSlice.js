@@ -24,7 +24,7 @@ export const registerAppointment = createAsyncThunk(
         requestData,
       );
       const appointmentId = setAPIData.data?.data.newAppointmentId;
-      dispatch(updateAppointmentId(appointmentId));
+      return appointmentId;
     } catch (error) {
       console.log('err', error);
     }
@@ -91,6 +91,7 @@ export const appointmentSlice = createSlice({
         state.isLoading = false;
         state.appointmentId = action.payload;
       })
+
       .addCase(registerAppointment.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;

@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
   },
   listAppointScreen: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
   },
   detailScreen: {
     flex: 1,

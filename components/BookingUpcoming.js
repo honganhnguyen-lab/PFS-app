@@ -9,7 +9,7 @@ import {
   Badge,
 } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {SvgCss} from 'react-native-svg';
+import {Image, SvgCss} from 'react-native-svg';
 import {appointmentStatus, defineCategory} from '../CommonType';
 import {Linking} from 'react-native';
 
@@ -86,7 +86,7 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
                 </Badge>
               </HStack>
               <HStack space={3} pt={2} justifyContent="flex-start">
-                <Avatar bg="muted.100">
+                <Avatar bg="white">
                   <Icon as={Ionicons} name="calendar-outline" size="md" />
                 </Avatar>
                 <VStack space={2}>
@@ -103,7 +103,7 @@ export default BookingUpcoming = ({listUpcomingAppointment}) => {
                   <Avatar
                     bg="#95C4CB"
                     source={{
-                      uri: item.avatar && item.avatar,
+                      uri: infoProvider.photo && infoProvider.photo,
                     }}
                   />
 

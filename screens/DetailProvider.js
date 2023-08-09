@@ -76,12 +76,6 @@ const DetailProvider = ({route}) => {
   const [detailService, setDetailService] = useState({});
 
   const [isLoading, setIsLoading] = useState(false);
-  const [serviceChoosen, setServiceChoosen] = useState({});
-
-  const onProceedService = async () => {
-    dispatch(onChangePayment(serviceChoosen.price));
-    navigation.navigate('Appointment');
-  };
 
   const getDetailService = async () => {
     setIsLoading(true);
@@ -92,6 +86,11 @@ const DetailProvider = ({route}) => {
       console.log(err);
     }
     setIsLoading(false);
+  };
+
+  const onProceedService = async () => {
+    dispatch(onChangePayment(detailService.price));
+    navigation.navigate('Appointment');
   };
   useEffect(() => {
     getDetailService();

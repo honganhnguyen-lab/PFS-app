@@ -43,7 +43,6 @@ const TimeSlider = ({
 
   useEffect(() => {
     const value = parseTimeFromString(initialTime);
-    console.log('abc');
     slider.current.setNativeProps({value: value});
   }, []);
 

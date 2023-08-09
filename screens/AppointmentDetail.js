@@ -98,6 +98,11 @@ const AppointmentDetail = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log(
+      'set',
+
+      selectedDate && endTime && locationInput,
+    );
     if (selectedDate && endTime && locationInput) {
       setDisabled(false);
     } else {
