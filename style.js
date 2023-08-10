@@ -102,4 +102,17 @@ export const styles = StyleSheet.create({
     borderTopColor: '#F5F5F5',
     backgroundColor: 'white',
   },
+  btnNotClick: {
+    borderColor: '#238793',
+    borderWidth: 1,
+    borderRadius: 10,
+    width: '48%',
+    backgroundColor: 'white',
+  },
+  btnClick: {
+    backgroundColor: '#238793',
+    borderColor: 'white',
+    borderWidth: 1,
+    width: '48%',
+  },
 });

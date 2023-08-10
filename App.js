@@ -220,6 +220,9 @@ function App() {
             name="Appointment"
             component={AppointmentDetail}
             options={{headerShown: false}}
+            getId={({params}) => {
+              return params;
+            }}
           />
           <Stack.Screen
             name="List Provider"

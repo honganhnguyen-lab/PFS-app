@@ -124,16 +124,32 @@ const ProviderChoosing = () => {
                     rounded="lg"
                     bgColor="white">
                     <HStack w="100%" space={1} rounded="lg" key={service.id}>
-                      <Center p={2.5}>
-                        <Image
-                          source={{
-                            uri: service.picture,
-                          }}
-                          alt="Alternate Text"
-                          size="lg"
-                          borderRadius={6}
-                        />
-                      </Center>
+                      {service.picture ? (
+                        <Center p={2.5}>
+                          <Image
+                            source={{
+                              uri: service.picture,
+                            }}
+                            alt="Alternate Text"
+                            size="lg"
+                            borderRadius={6}
+                          />
+                        </Center>
+                      ) : (
+                        <Center p={2.5} width={100} height={100}>
+                          <Image
+                            resizeMode="contain"
+                            source={require('../assets/no-image.jpeg')}
+                            alt="Alternate Text"
+                            size="xl"
+                            style={{
+                              width: '100%',
+                              marginTop: 10,
+                            }}
+                          />
+                        </Center>
+                      )}
+
                       <VStack p={3}>
                         {service.isDiscount && (
                           <HStack space={2} alignItems="center">
@@ -187,15 +203,26 @@ const ProviderChoosing = () => {
                           />
                           <Text>{providerDetail?.rating ?? 0}</Text>
                         </HStack>
-                        <HStack mt={1}>
+                        <HStack mt={1} alignItems="center" space={1}>
                           <Button
                             size="sm"
                             bgColor="#95C4CB"
                             borderRadius="full">
                             <Text color="white">
-                              {service?.price?.toLocaleString()} d/hour
+                              {service?.priceDiscount
+                                ? service?.priceDiscount?.toLocaleString()
+                                : service?.price?.toLocaleString()}
+                              d/hour
                             </Text>
                           </Button>
+                          {service.priceDiscount && (
+                            <Text
+                              color="black"
+                              fontSize={12}
+                              style={{textDecorationLine: 'line-through'}}>
+                              {service?.price?.toLocaleString()} d/hour
+                            </Text>
+                          )}
                         </HStack>
                       </VStack>
                     </HStack>

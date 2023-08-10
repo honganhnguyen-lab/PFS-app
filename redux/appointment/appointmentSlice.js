@@ -58,15 +58,16 @@ export const appointmentSlice = createSlice({
       state.location.address = payload.payload.address;
     },
     onSendAppointmentDateTime: (state, payload) => {
-      const convertedPayload = moment(payload.payload, 'YYYY/MM/DD HH:mm');
-      state.appointmentDate = moment(convertedPayload).format('YYYY/MM/DD');
-      state.appointmentTime = moment(convertedPayload).format('HH:mm');
+      state.appointmentDate = moment(payload.payload).format('YYYY/MM/DD');
     },
     onSendDataProvider: (state, payload) => {
       state.providerId = payload.payload;
     },
     onSendDataService: (state, payload) => {
       state.serviceId = payload.payload;
+    },
+    onSendAppointmentStartTime: (state, payload) => {
+      state.appointmentTime = payload.payload;
     },
     onSendAppointmentEndTime: (state, payload) => {
       state.appointmentEndTime = payload.payload;
@@ -108,6 +109,7 @@ export const {
   onTriggerStatusAppointment,
   onChangePayment,
   onSendAppointmentEndTime,
+  onSendAppointmentStartTime,
   updateAppointmentId,
 } = appointmentSlice.actions;
 

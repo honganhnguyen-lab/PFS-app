@@ -20,9 +20,11 @@ import {
   FormControl,
   useDisclose,
   Square,
+  Radio,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {TouchableHighlight} from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -33,59 +35,51 @@ import {
 import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
-import moment from 'moment';
 import {
   registerAppointment,
+  onSendAppointmentStartTime,
   onSendAppointmentEndTime,
   onSendAppointmentDateTime,
 } from '../redux/appointment/appointmentSlice';
-import TimeSlider from '../components/TimeSlider';
+import {axiosConfig} from '../axios';
+import {LoadingScreen} from '../components/atoms/LoadingScreen';
 
-const AppointmentDetail = () => {
+const AppointmentDetail = ({route}) => {
   const dispatch = useDispatch();
   const location = useSelector(state => state.appointment.location);
+  const serviceId = useSelector(state => state.appointment.serviceId);
+  const detailService = route.params.detailService;
 
   const [locationInput, setLocationInput] = useState(location?.address ?? '');
+  const [listAvailableTime, setListAvailableTime] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [isModalNextStep, setIsModalNextStep] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [selectedDate, setSelectedDate] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [startTime, setStartTime] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [modalDuration, setModalDuration] = useState(false);
+  const [modalConfirm, setModalConfirm] = useState(false);
+  const [duration, setDuration] = useState('0.5');
+  const [showingDu, setShowingDu] = useState(0.5);
+  const [showingTime, setShowingTime] = useState('');
 
   const onChangeSelectedDate = date => {
     setSelectedDate(date);
     dispatch(onSendAppointmentDateTime(date));
   };
 
-  const timeStringToNumber = () => {
-    if (startTime?.length > 0) {
-      return 0;
-    }
-    const [hours, minutes] = startTime.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes;
-    const convertedValue = totalMinutes + 7 * 60;
-
-    return convertedValue;
+  const onChangeDuration = () => {
+    setShowingDu(Number(duration));
+    setModalDuration(false);
   };
-
   const handleSizeClick = () => {
     setModalVisible(!modalVisible);
   };
 
-  const handleNextStep = async () => {
-    await dispatch(registerAppointment());
+  const handleNextStep = () => {
+    dispatch(registerAppointment());
     navigation.navigate('Proceed');
   };
 
-  const onMoveToNextStep = () => {
-    setIsModalNextStep(false);
-  };
-
-  const onChooseProvider = () => {
-    setIsModalNextStep(false);
-    navigation.navigate('List Provider');
-  };
   const updateLocationDetail = location => {
     setLocationInput(location);
     dispatch(
@@ -95,20 +89,73 @@ const AppointmentDetail = () => {
     );
   };
 
+  const getListAvailableAppointment = async duration => {
+    setIsLoading(true);
+    try {
+      const itemsPerRow = 2;
+      const request = {duration, currentDate: selectedDate};
+      const availableTime = await axiosConfig.post(
+        `/api/v1/services/time/${serviceId}`,
+        request,
+      );
+      let rows = [];
+      const listTime = availableTime.data.data.availableTimeRange;
+      for (let i = 0; i < listTime.length; i += itemsPerRow) {
+        const mappingAvailable = listTime.map(item => ({
+          ...item,
+          clicked: false,
+        }));
+
+        const rowItems = mappingAvailable.slice(i, i + itemsPerRow);
+        rows.push(rowItems);
+      }
+      setListAvailableTime(rows);
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
+  };
+  const [clickedToChooseTime, setClickedToChooseTime] = useState(false);
+
+  const onChooseTime = (start, end, rowIndex, itemIndex) => {
+    setClickedToChooseTime(true);
+    setShowingTime(`${start}-${end}`);
+    dispatch(onSendAppointmentStartTime(start));
+    dispatch(onSendAppointmentEndTime(end));
+
+    const newList = listAvailableTime.map((item, rIndex) => {
+      const newRow = item.map((i, idx) => {
+        if (rIndex === rowIndex && idx === itemIndex) {
+          return {...i, clicked: true};
+        }
+        return {...i, clicked: false};
+      });
+      return newRow;
+    });
+
+    setListAvailableTime(newList);
+  };
   const navigation = useNavigation();
+  const totalPrice = () => {
+    if (detailService.priceDiscount) {
+      const total = detailService.priceDiscount * showingDu;
+      return `${total.toLocaleString()} VND`;
+    }
+    const total = detailService.price * showingDu;
+    return `${total.toLocaleString()} VND`;
+  };
 
   useEffect(() => {
-    console.log(
-      'set',
-
-      selectedDate && endTime && locationInput,
-    );
-    if (selectedDate && endTime && locationInput) {
+    if (selectedDate && clickedToChooseTime && locationInput) {
       setDisabled(false);
     } else {
       setDisabled(true);
     }
-  }, [selectedDate, endTime, locationInput]);
+  }, [selectedDate, clickedToChooseTime, locationInput]);
+
+  useEffect(() => {
+    getListAvailableAppointment(showingDu);
+  }, [showingDu, selectedDate, serviceId]);
 
   return (
     <View style={styles.listServicesScreen}>
@@ -128,7 +175,7 @@ const AppointmentDetail = () => {
         </HStack>
         <Divider bg="#F5F5F5" thickness="2" mx="2" />
       </View>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <VStack space={3} alignItems="center" mt="5">
           <Stack
             w="100%"
@@ -179,6 +226,7 @@ const AppointmentDetail = () => {
             bg="white"
             p={2}
             rounded="lg"
+            space={2}
             borderBottomColor="#F5F5F5"
             borderBottomWidth={1}>
             <HStack justifyContent="flex-start" space={2} alignItems="center">
@@ -187,27 +235,87 @@ const AppointmentDetail = () => {
                 APPOINTMENT TIME
               </Text>
             </HStack>
-            <TimeSlider
-              onTimeChanged={time => setStartTime(time)}
-              title="Start time"
-              initialTime="06:00"
-              minimumValue={14}
-            />
-
-            <TimeSlider
-              onTimeChanged={time => setEndTime(time)}
-              title="End time"
-              initialTime="12:00"
-            />
+            <Text fontSize={14} color={'#559FA7'} fontWeight={600}>
+              Duration
+            </Text>
+            <Pressable onPress={() => setModalDuration(true)}>
+              <HStack
+                pt={2}
+                justifyContent="center"
+                alignItems="center"
+                space={4}>
+                <Input
+                  placeholder=""
+                  borderRadius="10"
+                  fontSize="16"
+                  fontWeight={600}
+                  variant="filled"
+                  InputLeftElement={
+                    <Icon
+                      m="2"
+                      mr="3"
+                      size="6"
+                      color="#559FA7"
+                      as={Ionicons}
+                      name="time-sharp"
+                    />
+                  }
+                  InputRightElement={
+                    <Icon
+                      m="2"
+                      mr="3"
+                      size="6"
+                      color="#559FA7"
+                      as={Ionicons}
+                      name="pencil-sharp"
+                    />
+                  }>
+                  {showingDu} hour
+                </Input>
+              </HStack>
+            </Pressable>
+            <VStack space={2} mt={2}>
+              <Text fontSize={14} color={'#559FA7'} fontWeight={600}>
+                Schedule time
+              </Text>
+              {isLoading ? (
+                <LoadingScreen />
+              ) : (
+                <Stack space={2}>
+                  {listAvailableTime.map((row, rowIndex) => (
+                    <HStack key={rowIndex} justifyContent="space-between">
+                      {row.map((item, index) => (
+                        <Button
+                          key={index}
+                          style={
+                            item.clicked ? styles.btnClick : styles.btnNotClick
+                          }
+                          onPress={() =>
+                            onChooseTime(item.start, item.end, rowIndex, index)
+                          }
+                          rounded="lg">
+                          <Text
+                            fontSize={14}
+                            color={item.clicked ? 'white' : '#238793'}>
+                            {item.start} - {item.end}
+                          </Text>
+                        </Button>
+                      ))}
+                    </HStack>
+                  ))}
+                </Stack>
+              )}
+            </VStack>
           </Stack>
           <Button
             mt={10}
+            mb={10}
             bgColor={disabled ? 'grey' : '#316970'}
             width="100%"
             height={50}
             rounded={'md'}
             disabled={disabled}
-            onPress={handleNextStep}>
+            onPress={() => setModalConfirm(true)}>
             Booking now
           </Button>
         </VStack>
@@ -240,14 +348,169 @@ const AppointmentDetail = () => {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+      <Modal
+        isOpen={modalDuration}
+        onClose={() => setModalDuration(false)}
+        size={'full'}>
+        <Modal.Content>
+          <Modal.CloseButton />
+          <Modal.Header>Change duration</Modal.Header>
+          <Modal.Body>
+            <ScrollView>
+              <Radio.Group
+                onChange={value => setDuration(value)}
+                name="exampleGroup"
+                accessibilityLabel="favorite colorscheme">
+                <Radio colorScheme="emerald" value="0.5" my={1}>
+                  30 minutes
+                </Radio>
+                <Radio colorScheme="emerald" value="1" my={1}>
+                  1 hour
+                </Radio>
+                <Radio colorScheme="emerald" value="1.5" my={1}>
+                  1.5 hours
+                </Radio>
+                <Radio colorScheme="emerald" value="2" my={1}>
+                  2 hours
+                </Radio>
+                <Radio colorScheme="emerald" value="2.5" my={1}>
+                  2.5 hours
+                </Radio>
+                <Radio colorScheme="emerald" value="3" my={1}>
+                  3 hours
+                </Radio>
+                <Radio colorScheme="emerald" value="3.5" my={1}>
+                  3.5 hours
+                </Radio>
+                <Radio colorScheme="emerald" value="4" my={1}>
+                  4 hours
+                </Radio>
+                <Radio colorScheme="emerald" value="4.5" my={1}>
+                  4.5 hours
+                </Radio>
+                <Radio colorScheme="emerald" value="5" my={1}>
+                  5 hours
+                </Radio>
+              </Radio.Group>
+            </ScrollView>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button.Group space={2}>
+              <Button
+                variant="ghost"
+                colorScheme="blueGray"
+                onPress={() => {
+                  setModalDuration(false);
+                }}>
+                Cancel
+              </Button>
+              <Button onPress={onChangeDuration}>Update</Button>
+            </Button.Group>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+      <Modal
+        isOpen={modalConfirm}
+        onClose={() => setModalConfirm(false)}
+        size={'full'}>
+        <Modal.Content>
+          <Modal.Body>
+            <ScrollView>
+              <HStack justifyContent="center" alignItems="center" space={1}>
+                <Icon
+                  as={Ionicons}
+                  name="checkmark-circle"
+                  color="#559FA7"
+                  size="md"
+                />
+                <Text fontSize={20} color="#559FA7" fontWeight={600}>
+                  Confirmation
+                </Text>
+              </HStack>
+              <HStack
+                mt={4}
+                space={2}
+                alignItems="center"
+                justifyContent="center">
+                <Text
+                  fontSize={24}
+                  flex={1}
+                  fontWeight={600}
+                  alignItems="center"
+                  justifyContent="center">
+                  {detailService.title}
+                </Text>
+              </HStack>
+              <HStack space={4} alignItems="center">
+                <Icon as={Ionicons} name="location" color="#559FA7" size="md" />
+                <Text fontSize={16} flex={1}>
+                  {locationInput}
+                </Text>
+              </HStack>
+              <HStack space={4} mt={2} alignItems="center">
+                <HStack space={1}>
+                  <Icon as={Ionicons} name="cash" color="#559FA7" size="md" />
+                </HStack>
+                <Text fontSize={16} flex={1}>
+                  {detailService.priceDiscount
+                    ? detailService.price.toLocaleString()
+                    : detailService.price.toLocaleString()}
+                  VND/hour
+                </Text>
+              </HStack>
+              <HStack space={4} mt={2} alignItems="center">
+                <Icon as={Ionicons} name="calendar" color="#559FA7" size="md" />
+                <Text fontSize={16} flex={1}>
+                  {selectedDate}
+                </Text>
+              </HStack>
+              <HStack space={4} mt={2} alignItems="center">
+                <Icon as={Ionicons} name="time" color="#559FA7" size="md" />
+                <Text fontSize={16} flex={1}>
+                  {showingTime}
+                </Text>
+              </HStack>
+              <HStack space={4} mt={2} alignItems="center">
+                <Icon as={Ionicons} name="person" color="#559FA7" size="md" />
+                <Text fontSize={16} flex={1}>
+                  {detailService.providerId.name}
+                </Text>
+              </HStack>
+              <HStack space={4} mt={2} alignItems="center">
+                <Text fontSize={18} color="#559FA7" flex={0.3}>
+                  Total price:
+                </Text>
+                <Text fontSize={16} flex={0.7}>
+                  {totalPrice()}
+                </Text>
+              </HStack>
+            </ScrollView>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button.Group space={2}>
+              <Button
+                variant="ghost"
+                colorScheme="blueGray"
+                onPress={() => {
+                  setModalConfirm(false);
+                }}>
+                Cancel
+              </Button>
+              <Button onPress={handleNextStep} backgroundColor="#559FA7">
+                Booking
+              </Button>
+            </Button.Group>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
     </View>
   );
 };
 
-export default () => {
+export default ({route}) => {
   return (
     <NativeBaseProvider>
-      <AppointmentDetail />
+      <AppointmentDetail route={route} />
     </NativeBaseProvider>
   );
 };

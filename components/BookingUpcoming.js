@@ -15,7 +15,8 @@ import {Linking} from 'react-native';
 
 export default BookingUpcoming = ({listUpcomingAppointment}) => {
   const onCallProvider = phone => {
-    Linking.openURL(`tel:${phone}`);
+    console.log(phone);
+    Linking.openURL(`tel://${phone}`);
   };
 
   return (
