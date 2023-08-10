@@ -154,7 +154,7 @@ const ProviderDashboardScreen = () => {
             ...userDetail,
             location: {
               type: 'Point',
-              coordinates: [latitude, longtitude],
+              coordinates: [longtitude, latitude],
               address: address,
             },
           }),
@@ -176,11 +176,15 @@ const ProviderDashboardScreen = () => {
 
   useEffect(() => {
     getLocation();
-    onGetDetailProvider();
   }, []);
+
+  useEffect(() => {
+    if (isFocus) {
+      onGetDetailProvider();
+    }
+  }, [isFocus]);
   return (
     <View style={styles.dashboardContainer}>
-      <Text color="black">{address}</Text>
       {!userDetail || (isEmptyObj(userDetail) && <SkeletonView />)}
       <InfoBlock style={styles.infoArea} info={userDetail} address={address} />
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -227,7 +231,7 @@ const ProviderDashboardScreen = () => {
             <VStack space={2} p={4} bg="white" w="47%" rounded="md">
               <HStack justifyContent="space-between" alignItems="center">
                 <Text fontSize="20px" fontWeight={700} color={'#569FA7'}>
-                  Đ 1.5
+                  Đ {dataProvider.totalAmount ?? 0}
                 </Text>
                 <Avatar bg="#E0F0F2">
                   <Icon as={Ionicons} name="search" size="md" color="#0CB7DD" />

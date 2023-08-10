@@ -40,6 +40,7 @@ import {
   onSendAppointmentStartTime,
   onSendAppointmentEndTime,
   onSendAppointmentDateTime,
+  onChangePayment,
 } from '../redux/appointment/appointmentSlice';
 import {axiosConfig} from '../axios';
 import {LoadingScreen} from '../components/atoms/LoadingScreen';
@@ -138,11 +139,12 @@ const AppointmentDetail = ({route}) => {
   const navigation = useNavigation();
   const totalPrice = () => {
     if (detailService.priceDiscount) {
-      const total = detailService.priceDiscount * showingDu;
-      return `${total.toLocaleString()} VND`;
+      const totalDis = detailService.priceDiscount * showingDu;
+
+      return totalDis;
     }
     const total = detailService.price * showingDu;
-    return `${total.toLocaleString()} VND`;
+    return total;
   };
 
   useEffect(() => {
@@ -156,6 +158,10 @@ const AppointmentDetail = ({route}) => {
   useEffect(() => {
     getListAvailableAppointment(showingDu);
   }, [showingDu, selectedDate, serviceId]);
+
+  useEffect(() => {
+    dispatch(onChangePayment(totalPrice()));
+  }, [totalPrice]);
 
   return (
     <View style={styles.listServicesScreen}>
@@ -481,7 +487,7 @@ const AppointmentDetail = ({route}) => {
                   Total price:
                 </Text>
                 <Text fontSize={16} flex={0.7}>
-                  {totalPrice()}
+                  {totalPrice().toLocaleString()} VND
                 </Text>
               </HStack>
             </ScrollView>

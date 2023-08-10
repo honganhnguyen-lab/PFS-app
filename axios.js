@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const axiosConfig = axios.create({
   // baseURL: 'https://pfs.try0.xyz',
-  baseURL: 'http://192.168.9.247:4000',
+  baseURL: 'http://192.168.1.6:4000',
   timeout: 50000,
   headers: {
     Accept: '*/*',
@@ -15,6 +15,7 @@ export const bookingUri = '/api/v1/appointments/customer';
 export const listBookingProviderUri = '/api/v1/appointments/provider';
 export const getListServicesElasticUri = '/api/v1/services/elastic';
 export const getListServicesEachProvider = '/api/v1/users/';
+export const updateAppointment = '/api/v1/appointments/';
 export const getListServices = '/api/v1/services/distances/';
 export const getTransaction = '/api/v1/transaction/create_payment_url';
 export const registerAppointment = '/api/v1/appointments';

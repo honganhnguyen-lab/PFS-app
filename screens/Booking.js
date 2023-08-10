@@ -23,11 +23,12 @@ import {useIsFocused} from '@react-navigation/native';
 
 const SkeletonLoading = () => {
   return (
-    <Center mt={3}>
+    <Center pt={5}>
       <VStack
         w="100%"
         borderWidth="1"
         space={8}
+        mt={5}
         overflow="hidden"
         rounded="lg"
         _dark={{
@@ -36,7 +37,7 @@ const SkeletonLoading = () => {
         _light={{
           borderColor: 'coolGray.200',
         }}>
-        <Skeleton h="70" />
+        <Skeleton h="40" mt={4} />
 
         <Skeleton.Text px="4" />
         <Skeleton px="4" my="4" rounded="md" startColor="primary.100" />
@@ -50,7 +51,6 @@ const BookingScreen = () => {
   const isFocused = useIsFocused();
 
   const userId = user.payload?.id ?? '';
-  console.log(user);
   const [loading, setLoading] = useState(false);
   const [typeBooking, setTypeBooking] = useState(0);
   const [listUpcomingAppointment, setListUpcomingAppointment] = useState([]);

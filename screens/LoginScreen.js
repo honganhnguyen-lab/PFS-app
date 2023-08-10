@@ -100,30 +100,26 @@ const Example = () => {
 
   const onSignInButton = async () => {
     setLoading(true);
-    axiosConfig
-      .post('/api/v1/users/login', {
-        phoneNumber: phoneNumber,
-        password: password,
-      })
-      .then(async response => {
-        Toast.show({
-          type: 'success',
-          text1: 'Account verified',
-          text2: 'Welcome to PFS 👋',
-        });
-
-        navigation.navigate('Home');
-        dispatch(setDataUser(response.data.data.user));
-        await AsyncStorage.setItem('token', response.data.token);
-      })
-      .catch(error => {
-        if (error.response) {
-          Toast.show({
-            type: 'error',
-            text1: 'Wrong phone number or wrong password',
-          });
-        }
+    try {
+      const user = await axiosConfig.post('/api/v1/users/login', {
+        phoneNumber,
+        password,
       });
+      Toast.show({
+        type: 'success',
+        text1: 'Account verified',
+        text2: 'Welcome to PFS 👋',
+      });
+      dispatch(setDataUser(user.data.data.user));
+      navigation.navigate('Home');
+    } catch (err) {
+      console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: 'Wrong phone number or wrong password',
+      });
+    }
+
     setLoading(false);
   };
 

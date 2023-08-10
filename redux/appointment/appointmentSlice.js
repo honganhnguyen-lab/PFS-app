@@ -16,7 +16,7 @@ export const registerAppointment = createAsyncThunk(
       providerId: appointment.providerId,
       userId: userId,
       status: appointment.status,
-      price: appointment.price,
+      totalPrice: `${appointment.price}`,
     };
     try {
       const setAPIData = await axiosConfig.post(
@@ -58,7 +58,8 @@ export const appointmentSlice = createSlice({
       state.location.address = payload.payload.address;
     },
     onSendAppointmentDateTime: (state, payload) => {
-      state.appointmentDate = moment(payload.payload).format('YYYY/MM/DD');
+      state.appointmentDate = payload.payload;
+      console.log('payload.payload', payload.payload);
     },
     onSendDataProvider: (state, payload) => {
       state.providerId = payload.payload;
@@ -77,6 +78,7 @@ export const appointmentSlice = createSlice({
     },
     onChangePayment: (state, payload) => {
       state.price = payload.payload;
+      console.log('price', state.price);
     },
     updateAppointmentId: (state, action) => {
       state.appointmentId = action.payload;

@@ -89,7 +89,6 @@ const DetailProvider = ({route}) => {
   };
 
   const onProceedService = async () => {
-    dispatch(onChangePayment(detailService.price));
     navigation.navigate('Appointment', {detailService});
   };
   useEffect(() => {

@@ -173,6 +173,7 @@ const HomeTab = () => {
 function App() {
   const user = useSelector(state => state.auth.user);
   const userDetail = user.payload;
+  console.log('userDetail', userDetail);
   return (
     <>
       <NavigationContainer screenOptions={{unmountOnBlur: true}}>

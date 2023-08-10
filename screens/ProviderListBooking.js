@@ -55,6 +55,7 @@ const ProviderBookingScreen = () => {
   const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
   const userId = user.payload?.id ?? '';
+  const isRoleProvider = user.payload.role === 'provider';
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
   const [typeBooking, setTypeBooking] = useState(0);
@@ -63,11 +64,12 @@ const ProviderBookingScreen = () => {
   const [listPendingAppointment, setListPendingAppointment] = useState([]);
 
   const defineStatus = {
-    pending: 0,
-    confirm: 1,
-    reject: 2,
-    processing: 3,
-    done: 4,
+    notPayYet: 0,
+    pending: 1,
+    confirm: 2,
+    reject: 3,
+    processing: 4,
+    done: 5,
   };
 
   const onGetListBooking = async () => {
@@ -109,57 +111,57 @@ const ProviderBookingScreen = () => {
   return (
     <View style={styles.listServicesScreen}>
       <View mt={50}>
-        <HStack space={2} alignItems="center" p={3}>
-          <Divider bg="#87ADB2" thickness="4" mx="2" orientation="vertical" />
-          <Heading>Booking</Heading>
-        </HStack>
-        <Center w="100%" h={65} shadow={2} bg="white" p={3} rounded="lg">
-          <HStack space={3}>
+        <VStack space={3} alignItems="center" p={3}>
+          <Text style={{color: '#559FA7', fontWeight: 600, fontSize: 18}}>
+            Booking
+          </Text>
+          <Divider bg="#F4F4F4" thickness="2" mx="2" />
+        </VStack>
+        <Center
+          w="100%"
+          shadow={2}
+          bg="white"
+          p={1}
+          rounded="lg"
+          bgColor="#F3F3F3">
+          <HStack alignItems="center" justifyContent="center">
             <Button
-              w={100}
-              colorScheme="#59F5FF"
+              flex={1}
               onPress={() => setTypeBooking(0)}
               style={
                 typeBooking === 0
                   ? styles.statusBooking
                   : styles.statusBookingFocus
               }>
-              <Text
-                color={typeBooking === 0 ? '#316970' : 'black'}
-                fontWeight={600}>
+              <Text color={'#316970'} fontWeight={600}>
                 Upcoming
               </Text>
             </Button>
             <Button
-              w={100}
-              colorScheme="success"
-              size="lg"
+              flex={1}
               onPress={() => setTypeBooking(1)}
               style={
                 typeBooking === 1
                   ? styles.statusBooking
                   : styles.statusBookingFocus
               }>
-              <Text
-                color={typeBooking === 1 ? '#316970' : 'black'}
-                fontWeight={600}>
+              <Text color={'#316970'} fontWeight={600}>
                 Pending
-                {loading}
               </Text>
             </Button>
             <Button
-              w={100}
-              colorScheme="#59F5FF"
+              flex={1}
+              colorScheme="success"
+              size="lg"
               onPress={() => setTypeBooking(2)}
               style={
                 typeBooking === 2
                   ? styles.statusBooking
                   : styles.statusBookingFocus
               }>
-              <Text
-                color={typeBooking === 2 ? '#316970' : 'black'}
-                fontWeight={600}>
+              <Text color={'#316970'} fontWeight={600}>
                 History
+                {loading}
               </Text>
             </Button>
           </HStack>
@@ -174,6 +176,7 @@ const ProviderBookingScreen = () => {
             {typeBooking === 0 && (
               <BookingUpcoming
                 listUpcomingAppointment={listUpcomingAppointment}
+                isRoleProvider={isRoleProvider}
               />
             )}
             {typeBooking === 1 && (
@@ -186,6 +189,7 @@ const ProviderBookingScreen = () => {
               <BookingHistory
                 listHistoryAppointment={listHistoryAppointment}
                 isProvider
+                isRoleProvider={isRoleProvider}
               />
             )}
           </VStack>

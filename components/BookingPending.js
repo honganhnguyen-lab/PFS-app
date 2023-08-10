@@ -14,25 +14,28 @@ import {SvgCss} from 'react-native-svg';
 import {appointmentStatus, defineCategory} from '../CommonType';
 import {Linking} from 'react-native';
 import Toast from 'react-native-toast-message';
-import {axiosConfig, getListServicesEachProvider} from '../axios';
+import {
+  axiosConfig,
+  getListServicesEachProvider,
+  updateAppointment,
+} from '../axios';
+import {useState} from 'react';
 
 export default BookingPending = ({listPendingAppointment}) => {
   const user = useSelector(state => state.auth.user);
   const userDetail = user.payload;
+  const [loading, setLoading] = useState(false);
   const onCallProvider = phone => {
     Linking.openURL(`tel:${phone}`);
   };
 
-  const updateStatusAppointment = async value => {
+  const updateStatusAppointment = async (id, value) => {
     setLoading(true);
     const setAPIData = {
       status: value,
     };
     try {
-      await axiosConfig.patch(
-        `${getListServicesEachProvider}${userDetail.id}`,
-        setAPIData,
-      );
+      await axiosConfig.patch(`${updateAppointment}${id}`, setAPIData);
       Toast.show({
         type: 'success',
         text1: 'Updated success',
@@ -44,7 +47,6 @@ export default BookingPending = ({listPendingAppointment}) => {
         text1: err,
       });
     }
-    setModalVisible(false);
     setLoading(false);
   };
 
@@ -55,12 +57,8 @@ export default BookingPending = ({listPendingAppointment}) => {
         listPendingAppointment?.map(item => {
           const infoService = item?.serviceId ?? {};
           const infoProvider = item?.providerId ?? {};
-          const renderStatusLabel = appointmentStatus.find(
-            status => status.value === item.status,
-          );
-          const renderIcon = defineCategory.find(
-            cate => cate.status === infoService.category,
-          )?.icon;
+          const infoCustomer = item?.userId ?? {};
+          const totalPrice = item.totalPrice;
           return (
             <VStack
               space={2}
@@ -70,7 +68,12 @@ export default BookingPending = ({listPendingAppointment}) => {
               rounded="lg"
               key={item._id}>
               <HStack space={3} pt={2} justifyContent="flex-start">
-                <Avatar bg="success.800"></Avatar>
+                <Avatar
+                  bg="#238793"
+                  source={{
+                    uri: infoService.picture,
+                  }}
+                />
                 <VStack space={2}>
                   <Text fontWeight={600} fontSize={16}>
                     {infoService.title}
@@ -87,7 +90,7 @@ export default BookingPending = ({listPendingAppointment}) => {
                       Price:
                     </Text>
                     <Text color="#6F767E" fontSize={16} fontWeight={600}>
-                      {item.totalPrice} VND
+                      {totalPrice.toLocaleString()} VND
                     </Text>
                   </HStack>
                 </VStack>
@@ -123,7 +126,7 @@ export default BookingPending = ({listPendingAppointment}) => {
 
                   <VStack space={2}>
                     <Text fontWeight={600} fontSize={16}>
-                      {infoProvider.name}
+                      {infoCustomer.name}
                     </Text>
                     <Text color="#6F767E" fontSize={16}>
                       Customer
@@ -159,7 +162,8 @@ export default BookingPending = ({listPendingAppointment}) => {
                 <Button
                   w={120}
                   bg="#316970"
-                  onPress={() => updateStatusAppointment(2)}>
+                  isLoading={loading}
+                  onPress={() => updateStatusAppointment(item._id, 2)}>
                   <Text color={'white'} fontWeight={600}>
                     Accept
                   </Text>
@@ -169,7 +173,7 @@ export default BookingPending = ({listPendingAppointment}) => {
                   bg="white"
                   variant="outline"
                   borderColor="#316970"
-                  onPress={() => updateStatusAppointment(3)}>
+                  onPress={() => updateStatusAppointment(item._id, 3)}>
                   <Text color={'#316970'} fontWeight={600}>
                     Decline
                   </Text>

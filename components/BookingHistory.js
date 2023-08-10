@@ -8,14 +8,45 @@ import {
   Avatar,
   Stack,
   Badge,
+  Input,
+  View,
 } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {acIcon} from '../assets/icon';
-import {SvgCss} from 'react-native-svg';
-import {styles} from '../style';
+
 import {appointmentStatus, defineCategory} from '../CommonType';
+import Stars from 'react-native-stars';
+import {useState} from 'react';
+import Toast from 'react-native-toast-message';
+import {axiosConfig, updateAppointment} from '../axios';
 
 export default BookingHistory = ({listHistoryAppointment, isProvider}) => {
+  const [ratingVal, setRatingVal] = useState(2.5);
+  const [comment, setComment] = useState('');
+  const [loading, setLoading] = useState(false);
+  const onChangeComment = value => {
+    setComment(value);
+  };
+  const updateRatingAppointment = async id => {
+    setLoading(true);
+    const setAPIData = {
+      rating: ratingVal,
+      comment: comment,
+    };
+    try {
+      await axiosConfig.patch(`${updateAppointment}${id}`, setAPIData);
+      Toast.show({
+        type: 'success',
+        text1: 'Thank you for your rating',
+      });
+    } catch (err) {
+      console.log(err);
+      Toast.show({
+        type: 'error',
+        text1: err,
+      });
+    }
+    setLoading(false);
+  };
   return (
     <VStack w="100%" space={4}>
       {listHistoryAppointment &&
@@ -52,7 +83,12 @@ export default BookingHistory = ({listHistoryAppointment, isProvider}) => {
                 </Badge>
               </HStack>
               <HStack space={3} pt={2}>
-                <Avatar bg="#238793"></Avatar>
+                <Avatar
+                  bg="#238793"
+                  source={{
+                    uri: infoService.picture,
+                  }}
+                />
                 <VStack space={2}>
                   <Text fontWeight={600} fontSize={16}>
                     {infoService.title}
@@ -67,7 +103,7 @@ export default BookingHistory = ({listHistoryAppointment, isProvider}) => {
                       fontSize={16}
                       fontWeight={600}
                       style={{textAlign: 'right'}}>
-                      {item.totalPrice}
+                      {item.totalPrice.toLocaleString()} đ
                     </Text>
                   </HStack>
                   <HStack
@@ -113,6 +149,95 @@ export default BookingHistory = ({listHistoryAppointment, isProvider}) => {
                     </Button>
                   </HStack>
                 </>
+              )}
+
+              <Text fontSize={16} fontWeight={600}>
+                {!item.rating ? 'Give rating && comment' : 'Your rating'}
+              </Text>
+              {!item.rating ? (
+                <VStack justifyContent="flex-start">
+                  <Stars
+                    update={val => {
+                      setRatingVal(val);
+                    }}
+                    default={2.5}
+                    count={5}
+                    half={true}
+                    starSize={50}
+                    fullStar={
+                      <Icon
+                        as={Ionicons}
+                        name="star"
+                        size="lg"
+                        style={{color: '#FFC700'}}
+                      />
+                    }
+                    emptyStar={
+                      <Icon
+                        as={Ionicons}
+                        style={{color: '#FFC700'}}
+                        name="star-outline"
+                        size="lg"
+                      />
+                    }
+                    halfStar={
+                      <Icon
+                        as={Ionicons}
+                        style={{color: '#FFC700'}}
+                        name="star-half"
+                        size="lg"
+                      />
+                    }
+                  />
+                  <View mt={2}>
+                    <Input
+                      placeholder="Give comment"
+                      value={comment}
+                      size="lg"
+                      onChangeText={onChangeComment}
+                    />
+                  </View>
+                  <Button
+                    mt={4}
+                    mb={4}
+                    isLoading={loading}
+                    onPress={() => updateRatingAppointment(item._id)}>
+                    <Text color={'white'} fontWeight={600}>
+                      Rate this appointment
+                    </Text>
+                  </Button>
+                </VStack>
+              ) : (
+                <Stars
+                  display={Number(item.rating)}
+                  count={5}
+                  half={true}
+                  starSize={50}
+                  fullStar={
+                    <Icon
+                      as={Ionicons}
+                      name="star"
+                      size="lg"
+                      style={{color: '#FFC700'}}
+                    />
+                  }
+                  emptyStar={
+                    <Icon
+                      as={Ionicons}
+                      style={{color: '#FFC700'}}
+                      name="star-outline"
+                      size="lg"
+                    />
+                  }
+                  halfStar={
+                    <Icon
+                      as={Ionicons}
+                      style={{color: '#FFC700'}}
+                      name="star-half"
+                      size="lg"
+                    />
+                  }
+                />
               )}
             </VStack>
           );
