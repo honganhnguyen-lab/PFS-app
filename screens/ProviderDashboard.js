@@ -26,18 +26,24 @@ import {
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
+import axios from 'axios';
 
 import {ImageBackground} from 'react-native';
 import {InfoBlock} from '../components/Info';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+
 import {useSelector} from 'react-redux';
+import {setDataUser} from '../redux/auth/authSlice';
 
 import {BarChartCustom} from '../components/BarChart';
 import {axiosConfig, getListServicesEachProvider} from '../axios';
 import {ProviderTimeRange} from '../components/ProviderTimeRange';
 import TimeSlider from '../components/TimeSlider';
+import {useIsFocused} from '@react-navigation/native';
+import Geolocation from '@react-native-community/geolocation';
 
 const SkeletonView = () => (
   <VStack
@@ -86,6 +92,12 @@ const ProviderDashboardScreen = () => {
   const [endTime, setEndTime] = useState('');
   const initialRef = useRef(null);
   const finalRef = useRef(null);
+  const isFocus = useIsFocused();
+  const [skipPermissionRequests, setSkipPermissionRequests] = useState(false);
+  const [authorizationLevel, setAuthorizationLevel] = useState('auto');
+  const [locationProvider, setLocationProvider] = useState('auto');
+  const [address, setAddress] = useState('');
+  const dispatch = useDispatch();
 
   const onGetDetailProvider = async () => {
     setLoading(true);
@@ -126,13 +138,51 @@ const ProviderDashboardScreen = () => {
     setModalVisible(false);
     setLoading(false);
   };
+
+  const getLocation = () => {
+    Geolocation.getCurrentPosition(async info => {
+      const latitude = info.coords.latitude;
+      const longtitude = info.coords.longitude;
+
+      try {
+        const locationData = await axios.get(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${longtitude},${latitude}.json?access_token=pk.eyJ1IjoicXVhbnplbjgiLCJhIjoiY2xrcXJmcjN2MXAzYzNlcGxld2lyMTU1MyJ9.PmJmE5O1pyUlzIvAuWXs_g`,
+        );
+        const address = locationData.data?.features[0]?.place_name ?? '';
+        dispatch(
+          setDataUser({
+            ...userDetail,
+            location: {
+              type: 'Point',
+              coordinates: [latitude, longtitude],
+              address: address,
+            },
+          }),
+        );
+        setAddress(address);
+      } catch (err) {
+        console.log('err', err);
+      }
+    });
+  };
+
   useEffect(() => {
+    Geolocation.setRNConfiguration({
+      skipPermissionRequests,
+      authorizationLevel,
+      locationProvider,
+    });
+  }, [skipPermissionRequests, authorizationLevel, locationProvider]);
+
+  useEffect(() => {
+    getLocation();
     onGetDetailProvider();
-  }, [userDetail]);
+  }, []);
   return (
     <View style={styles.dashboardContainer}>
+      <Text color="black">{address}</Text>
       {!userDetail || (isEmptyObj(userDetail) && <SkeletonView />)}
-      <InfoBlock style={styles.infoArea} info={userDetail} />
+      <InfoBlock style={styles.infoArea} info={userDetail} address={address} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack space={1} mt="7">
           <Text fontSize={16} color={'#559FA7'} fontWeight={600}>
@@ -142,7 +192,7 @@ const ProviderDashboardScreen = () => {
             <VStack space={2} p={4} bg="white" w="47%" rounded="md">
               <HStack justifyContent="space-between" alignItems="center">
                 <Text fontSize="20px" fontWeight={700} color={'#569FA7'}>
-                  {dataProvider.appointmentNumber}
+                  {dataProvider.appointmentNumber ?? 0}
                 </Text>
                 <Avatar bg="#E0F0F2">
                   <Icon as={Ionicons} name="search" size="md" color="#0CB7DD" />

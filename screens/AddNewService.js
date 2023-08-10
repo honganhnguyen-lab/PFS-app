@@ -58,7 +58,9 @@ const AddNewService = () => {
   const onClose = () => {
     setIsOpen(false);
   };
-
+  const user = useSelector(state => state.auth.user);
+  const userDetail = user.payload;
+  console.log('userDetail', userDetail.location);
   const createNewService = async values => {
     setIsLoading(true);
     const formData = new FormData();
@@ -69,19 +71,24 @@ const AddNewService = () => {
     });
     formData.append('title', values.title);
     formData.append('description', values.description);
-    formData.append('category', values.category);
+    formData.append('category', Number(values.category));
     formData.append('price', values.price);
     formData.append('priceDiscount', values.priceDiscount);
     formData.append('providerId', values.providerId);
     try {
-      await axiosConfig.post('api/v1/services', formData, {
+      const newService = await axiosConfig.post('api/v1/services', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Add the content type header for FormData
         },
       });
+      const newServiceId = newService.data.data.service;
+      console.log('newService', newService);
+      await axiosConfig.patch(`api/v1/services/${newServiceId.id}`, {
+        location: userDetail.location,
+      });
       Toast.show({
         type: 'success',
-        text1: 'Updated success',
+        text1: 'Add new success',
       });
       navigation.navigate('Services');
     } catch (error) {
@@ -106,7 +113,7 @@ const AddNewService = () => {
               image: '',
               price: '',
               priceDiscount: '',
-              providerId: '6485d103e299ea61cf412742',
+              providerId: userDetail.id,
             }}
             onSubmit={values => createNewService(values)}>
             {({handleChange, handleBlur, handleSubmit, values}) => (
@@ -192,7 +199,7 @@ const AddNewService = () => {
                     )}
                   </Center>
                 </Pressable>
-                <Text>Price</Text>
+                <Text>Price per hour</Text>
                 <Input
                   variant="outline"
                   padding={3}
@@ -203,7 +210,7 @@ const AddNewService = () => {
                   onBlur={handleBlur('price')}
                   placeholder="Enter text..."
                 />
-                <Text>Price discount</Text>
+                <Text>Price discount per hour</Text>
                 <Input
                   variant="outline"
                   padding={3}
@@ -219,9 +226,10 @@ const AddNewService = () => {
                   bgColor="#559FA7"
                   rounded="xl"
                   size="lg"
+                  isLoading={isLoading}
                   onPress={handleSubmit}
                   spinnerPlacement="end"
-                  isLoadingText="Sign in">
+                  isLoadingText="Add new">
                   Submit
                 </Button>
               </VStack>

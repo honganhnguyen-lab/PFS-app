@@ -103,7 +103,6 @@ const ProviderBookingScreen = () => {
   useEffect(() => {
     if (isFocused) {
       onGetListBooking();
-      console.log('hello');
     }
   }, [isFocused]);
 

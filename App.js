@@ -34,6 +34,7 @@ import ProviderServicesList from './screens/ProviderServicesList';
 import AddNewService from './screens/AddNewService';
 import ProceedScreen from './screens/ProceedScreen';
 import UpdateService from './screens/UpdateService';
+import OTPVerify from './screens/OTPVerify';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -184,6 +185,11 @@ function App() {
           <Stack.Screen
             name="Login"
             component={LoginScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="VerifyOTP"
+            component={OTPVerify}
             options={{headerShown: false}}
           />
           <Stack.Screen

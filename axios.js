@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 export const axiosConfig = axios.create({
-  baseURL: 'https://pfs.try0.xyz',
-  // baseURL: 'http://192.168.1.2:4000',
-  timeout: 30000,
+  // baseURL: 'https://pfs.try0.xyz',
+  baseURL: 'http://192.168.9.247:4000',
+  timeout: 50000,
   headers: {
     Accept: '*/*',
     'Content-Type': 'application/json',

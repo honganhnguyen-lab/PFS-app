@@ -70,17 +70,20 @@ const ProviderServicesList = () => {
       const response = await axiosConfig.get(
         `${getListServicesEachProvider}${userDetail.id}/services`,
       );
+
+      console.log('fsfds', response.data.data.services);
       setListServices(response.data.data.services);
     } catch (err) {
       console.log(err);
     }
+
     setIsLoading(false);
   };
 
   const removeService = async id => {
     setIsLoading(true);
     try {
-      axiosConfig.delete(`api/v1/services/${id}`);
+      await axiosConfig.delete(`api/v1/services/${id}`);
       Toast.show({
         type: 'success',
         text1: 'Delete success',
@@ -104,6 +107,7 @@ const ProviderServicesList = () => {
   };
 
   useEffect(() => {
+    console.log('isFocused', isFocused);
     if (isFocused) {
       getListServices();
     }
