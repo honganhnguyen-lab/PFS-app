@@ -42,6 +42,7 @@ const ProviderChoosing = () => {
 
   const onGetListProvider = async () => {
     setIsLoading(true);
+    console.log(location.coordinates);
     try {
       const response = await axiosConfig.get(
         `${getListServices}${location.coordinates?.join(',')}`,
@@ -52,6 +53,7 @@ const ProviderChoosing = () => {
         },
       );
       setListProvider(response.data.data.services);
+      console.log('response.data.data.services', response.data.data.services);
     } catch (err) {
       console.log(err);
     }
@@ -104,6 +106,8 @@ const ProviderChoosing = () => {
           <VStack space={3} alignItems="center" mt="3">
             {listProvider.map((service, index) => {
               const providerDetail = service?.provider;
+              console.log('providerDetail', providerDetail);
+              console.log('service', service);
               const distanceFar = service?.distance.toFixed(1);
               return (
                 <Pressable
@@ -227,14 +231,17 @@ const ProviderChoosing = () => {
                       </VStack>
                     </HStack>
                     <HStack pl={2} space={3} alignItems="center">
-                      <Avatar
-                        bg="#238793"
-                        alignSelf="center"
-                        size="md"
-                        source={{
-                          uri: providerDetail.photo,
-                        }}
-                      />
+                      {providerDetail?.photo && (
+                        <Avatar
+                          bg="#238793"
+                          alignSelf="center"
+                          size="md"
+                          source={{
+                            uri: providerDetail.photo,
+                          }}
+                        />
+                      )}
+
                       <VStack space={1}>
                         <Text fontSize={16} fontWeight={600}>
                           {providerDetail.name}

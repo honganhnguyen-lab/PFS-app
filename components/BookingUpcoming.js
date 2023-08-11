@@ -61,6 +61,7 @@ export default BookingUpcoming = ({
           const renderStatusLabel = appointmentStatus.find(
             status => status.value === item.status,
           );
+          console.log(infoService);
           return (
             <VStack
               space={2}
@@ -92,7 +93,7 @@ export default BookingUpcoming = ({
                       Price:
                     </Text>
                     <Text color="#6F767E" fontSize={16} fontWeight={600}>
-                      {infoService.price.toLocaleString()} VND
+                      {`${infoService.price}`.toLocaleString()} VND
                     </Text>
                   </HStack>
                 </VStack>

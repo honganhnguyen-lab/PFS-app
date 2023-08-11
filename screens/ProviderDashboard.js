@@ -230,14 +230,19 @@ const ProviderDashboardScreen = () => {
             </VStack>
             <VStack space={2} p={4} bg="white" w="47%" rounded="md">
               <HStack justifyContent="space-between" alignItems="center">
-                <Text fontSize="20px" fontWeight={700} color={'#569FA7'}>
-                  Đ {dataProvider.totalAmount ?? 0}
+                <Text fontSize={18} fontWeight={700} color={'#569FA7'}>
+                  {dataProvider.totalAmount
+                    ? Number(dataProvider.totalAmount).toLocaleString()
+                    : 0}
+                  VND
                 </Text>
-                <Avatar bg="#E0F0F2">
-                  <Icon as={Ionicons} name="search" size="md" color="#0CB7DD" />
-                </Avatar>
               </HStack>
-              <Text fontFamily={'WorkSans-regular'}> Total Earning</Text>
+              <HStack justifyContent="space-between" alignItems="center">
+                <Avatar bg="#E0F0F2" size="sm">
+                  <Icon as={Ionicons} name="cash" size="md" color="#0CB7DD" />
+                </Avatar>
+                <Text> Total Earning</Text>
+              </HStack>
             </VStack>
           </HStack>
         </VStack>
