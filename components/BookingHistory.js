@@ -116,7 +116,7 @@ export default BookingHistory = ({listHistoryAppointment, isProvider}) => {
                       fontSize={16}
                       fontWeight={600}
                       style={{textAlign: 'right'}}>
-                      70 Trung Van
+                      {item.location.address}
                     </Text>
                   </HStack>
                 </VStack>
