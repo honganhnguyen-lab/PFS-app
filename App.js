@@ -1,4 +1,4 @@
-import * as React from 'react';
+import {useEffect} from 'react';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -35,6 +35,7 @@ import AddNewService from './screens/AddNewService';
 import ProceedScreen from './screens/ProceedScreen';
 import UpdateService from './screens/UpdateService';
 import OTPVerify from './screens/OTPVerify';
+import {socket} from './socket';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -42,6 +43,10 @@ const Tab = createBottomTabNavigator();
 const HomeTab = () => {
   const user = useSelector(state => state.auth.user);
   const userDetail = user.payload;
+
+  useEffect(() => {
+    globalThis.socket = socket.connect();
+  }, []);
 
   return (
     <Tab.Navigator
@@ -178,15 +183,16 @@ function App() {
       <NavigationContainer screenOptions={{unmountOnBlur: true}}>
         <Stack.Navigator>
           <Stack.Screen
-            name="Home"
-            component={HomeTab}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
             name="Login"
             component={LoginScreen}
             options={{headerShown: false}}
           />
+          <Stack.Screen
+            name="Home"
+            component={HomeTab}
+            options={{headerShown: false}}
+          />
+
           <Stack.Screen
             name="VerifyOTP"
             component={OTPVerify}

@@ -16,6 +16,7 @@ import {
   Pressable,
   isEmptyObj,
   Skeleton,
+  useToast,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -35,6 +36,8 @@ import {
   onSendLocation,
   onSendNameServices,
 } from '../redux/appointment/appointmentSlice';
+
+import {setListNoti} from '../redux/noti/notiSlice';
 
 import {
   acIcon,
@@ -59,6 +62,8 @@ const SkeletonView = () => (
 
 const DashboardScreen = () => {
   const user = useSelector(state => state.auth.user);
+  // const notiList = useSelector(state => state.noti.listNoti);
+
   const [userDetail, setUserDetail] = useState({});
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -165,6 +170,19 @@ const DashboardScreen = () => {
     getLocation();
     getDetailProfile();
   }, [user]);
+
+  useEffect(() => {
+    globalThis.socket.on('connect', () => {
+      console.log('connect socket');
+    });
+
+    const id = '645712d80aad142527005bb9';
+
+    globalThis.socket.on(`noti-appointment-success_${id}`, data => {
+      console.log('Received message:', data.content);
+      dispatch(setListNoti([data.content]));
+    });
+  }, []);
 
   return (
     <View style={styles.dashboardContainer}>

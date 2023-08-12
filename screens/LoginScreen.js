@@ -27,6 +27,7 @@ import {axiosConfig} from '../axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ImageBackground} from 'react-native';
 import {styles} from '../style';
+import {Socket} from 'socket.io-client';
 
 const Example = () => {
   const navigation = useNavigation();
@@ -105,11 +106,13 @@ const Example = () => {
         phoneNumber,
         password,
       });
+      Socket;
       Toast.show({
         type: 'success',
         text1: 'Account verified',
         text2: 'Welcome to PFS 👋',
       });
+
       dispatch(setDataUser(user.data.data.user));
       navigation.navigate('Home');
     } catch (err) {
