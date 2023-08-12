@@ -107,7 +107,6 @@ const ProviderServicesList = () => {
   };
 
   useEffect(() => {
-    console.log('isFocused', isFocused);
     if (isFocused) {
       getListServices();
     }

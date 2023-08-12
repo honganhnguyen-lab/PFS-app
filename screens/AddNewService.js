@@ -60,7 +60,6 @@ const AddNewService = () => {
   };
   const user = useSelector(state => state.auth.user);
   const userDetail = user.payload;
-  console.log('userDetail', userDetail.location);
   const createNewService = async values => {
     setIsLoading(true);
     const formData = new FormData();
@@ -82,7 +81,7 @@ const AddNewService = () => {
         },
       });
       const newServiceId = newService.data.data.service;
-      console.log('newService', newService);
+
       await axiosConfig.patch(`api/v1/services/${newServiceId.id}`, {
         location: userDetail.location,
       });

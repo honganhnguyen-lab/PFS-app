@@ -459,7 +459,7 @@ const AppointmentDetail = ({route}) => {
                 </HStack>
                 <Text fontSize={16} flex={1}>
                   {detailService.priceDiscount
-                    ? detailService.price.toLocaleString()
+                    ? detailService.priceDiscount.toLocaleString()
                     : detailService.price.toLocaleString()}
                   VND/hour
                 </Text>

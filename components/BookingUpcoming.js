@@ -22,7 +22,6 @@ export default BookingUpcoming = ({
   isRoleProvider,
 }) => {
   const onCallProvider = phone => {
-    console.log(phone);
     Linking.openURL(`tel://${phone}`);
   };
   const [loading, setLoading] = useState(false);
@@ -61,7 +60,6 @@ export default BookingUpcoming = ({
           const renderStatusLabel = appointmentStatus.find(
             status => status.value === item.status,
           );
-          console.log(infoService);
           return (
             <VStack
               space={2}

@@ -78,7 +78,6 @@ export const appointmentSlice = createSlice({
     },
     onChangePayment: (state, payload) => {
       state.price = payload.payload;
-      console.log('price', state.price);
     },
     updateAppointmentId: (state, action) => {
       state.appointmentId = action.payload;

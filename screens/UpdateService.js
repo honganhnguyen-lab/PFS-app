@@ -90,7 +90,7 @@ const UpdateService = ({route}) => {
           'Content-Type': 'multipart/form-data', // Add the content type header for FormData
         },
       });
-      console.log('formData', formData);
+
       Toast.show({
         type: 'success',
         text1: 'Updated success',
