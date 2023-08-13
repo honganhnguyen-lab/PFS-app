@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const axiosConfig = axios.create({
   // baseURL: 'https://pfs.try0.xyz',
-  baseURL: 'http://192.168.1.7:4000',
+  baseURL: 'http://192.168.1.3:4000',
   timeout: 50000,
   headers: {
     Accept: '*/*',

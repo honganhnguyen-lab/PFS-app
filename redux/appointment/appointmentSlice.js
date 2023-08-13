@@ -16,6 +16,7 @@ export const registerAppointment = createAsyncThunk(
       providerId: appointment.providerId,
       userId: userId,
       status: appointment.status,
+      paymentMethod: appointment.paymentMethod,
       totalPrice: `${appointment.price}`,
     };
     try {
@@ -48,6 +49,7 @@ export const appointmentSlice = createSlice({
     status: 0,
     price: 0,
     appointmentId: 0,
+    paymentMethod: 'cash',
   },
   reducers: {
     onSendNameServices: (state, payload) => {
@@ -59,7 +61,6 @@ export const appointmentSlice = createSlice({
     },
     onSendAppointmentDateTime: (state, payload) => {
       state.appointmentDate = payload.payload;
-      console.log('payload.payload', payload.payload);
     },
     onSendDataProvider: (state, payload) => {
       state.providerId = payload.payload;
@@ -78,6 +79,9 @@ export const appointmentSlice = createSlice({
     },
     onChangePayment: (state, payload) => {
       state.price = payload.payload;
+    },
+    onChangePaymentMethod: (state, payload) => {
+      state.paymentMethod = payload.payload;
     },
     updateAppointmentId: (state, action) => {
       state.appointmentId = action.payload;
@@ -111,6 +115,7 @@ export const {
   onChangePayment,
   onSendAppointmentEndTime,
   onSendAppointmentStartTime,
+  onChangePaymentMethod,
   updateAppointmentId,
 } = appointmentSlice.actions;
 

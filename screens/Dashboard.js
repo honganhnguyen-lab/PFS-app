@@ -62,7 +62,7 @@ const SkeletonView = () => (
 
 const DashboardScreen = () => {
   const user = useSelector(state => state.auth.user);
-  // const notiList = useSelector(state => state.noti.listNoti);
+  const notiList = useSelector(state => state.noti.listNoti);
 
   const [userDetail, setUserDetail] = useState({});
   const navigation = useNavigation();
@@ -172,17 +172,46 @@ const DashboardScreen = () => {
   }, [user]);
 
   useEffect(() => {
-    globalThis.socket.on('connect', () => {
-      console.log('connect socket');
-    });
+    if (globalThis.socket) {
+      globalThis.socket.on('connect', () => {
+        console.log('connect socket');
+      });
 
-    const id = '645712d80aad142527005bb9';
+      const id = user.id;
+      const handleNotification = data => {
+        console.log('Received message:', data.content);
+        dispatch(
+          setListNoti(prevNotiList => prevNotiList.concat(data.content)),
+        );
+        console.log('Updated notiList:', notiList);
+      };
 
-    globalThis.socket.on(`noti-appointment-success_${id}`, data => {
-      console.log('Received message:', data.content);
-      dispatch(setListNoti([data.content]));
-    });
-  }, []);
+      globalThis.socket.on(`noti-appointment-success_${id}`, data => {
+        console.log('Received message:', data.content);
+        handleNotification(data);
+      });
+      globalThis.socket.on(`request_appointment_${id}`, data => {
+        console.log('Received message:', data.content);
+        handleNotification(data);
+      });
+      globalThis.socket.on(`noti-appointment-success_${id}`, data => {
+        console.log('Received message:', data.content);
+        handleNotification(data);
+      });
+      globalThis.socket.on(`noti-appointment-decline_${id}`, data => {
+        console.log('Received message:', data.content);
+        handleNotification(data);
+      });
+      globalThis.socket.on(`noti-appointment-finish_${id}`, data => {
+        console.log('Received message:', data.content);
+        handleNotification(data);
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    console.log('fd', notiList);
+  }, [notiList]);
 
   return (
     <View style={styles.dashboardContainer}>

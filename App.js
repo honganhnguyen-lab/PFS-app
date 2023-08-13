@@ -36,12 +36,14 @@ import ProceedScreen from './screens/ProceedScreen';
 import UpdateService from './screens/UpdateService';
 import OTPVerify from './screens/OTPVerify';
 import {socket} from './socket';
+import {Badge, VStack} from 'native-base';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeTab = () => {
   const user = useSelector(state => state.auth.user);
+  const notiList = useSelector(state => state.noti.listNoti);
   const userDetail = user.payload;
 
   useEffect(() => {
@@ -147,6 +149,8 @@ const HomeTab = () => {
             fontWeight: 600,
           },
           tabBarAllowFontScaling: false,
+          tabBarBadge:
+            notiList && notiList.length > 0 ? notiList.length : undefined,
         })}
       />
 

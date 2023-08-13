@@ -21,6 +21,7 @@ import {
   useDisclose,
   Square,
   Radio,
+  Actionsheet,
 } from 'native-base';
 import {styles} from '../style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -41,14 +42,18 @@ import {
   onSendAppointmentEndTime,
   onSendAppointmentDateTime,
   onChangePayment,
+  onChangePaymentMethod,
 } from '../redux/appointment/appointmentSlice';
 import {axiosConfig} from '../axios';
 import {LoadingScreen} from '../components/atoms/LoadingScreen';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 const AppointmentDetail = ({route}) => {
   const dispatch = useDispatch();
   const location = useSelector(state => state.appointment.location);
   const serviceId = useSelector(state => state.appointment.serviceId);
+  const paymentMethod = useSelector(state => state.appointment.paymentMethod);
+  console.log('paymentMethod', paymentMethod);
   const detailService = route.params.detailService;
 
   const [locationInput, setLocationInput] = useState(location?.address ?? '');
@@ -62,6 +67,15 @@ const AppointmentDetail = ({route}) => {
   const [duration, setDuration] = useState('0.5');
   const [showingDu, setShowingDu] = useState(0.5);
   const [showingTime, setShowingTime] = useState('');
+  const {isOpen, onOpen, onClose} = useDisclose();
+
+  const [method, setMethod] = useState('cash');
+
+  const onClickChangeMethod = value => {
+    setMethod(value);
+    dispatch(onChangePaymentMethod(value));
+    onClose();
+  };
 
   const onChangeSelectedDate = date => {
     setSelectedDate(date);
@@ -78,7 +92,11 @@ const AppointmentDetail = ({route}) => {
 
   const handleNextStep = () => {
     dispatch(registerAppointment());
-    navigation.navigate('Proceed');
+    if (method === 'cash') {
+      navigation.navigate('Home');
+    } else {
+      navigation.navigate('Proceed');
+    }
   };
 
   const updateLocationDetail = location => {
@@ -117,6 +135,14 @@ const AppointmentDetail = ({route}) => {
     setIsLoading(false);
   };
   const [clickedToChooseTime, setClickedToChooseTime] = useState(false);
+
+  const onShowError = () => {
+    Toast.show({
+      type: 'error',
+      text1:
+        'This timerange have just been booked by someone else, please try another time range',
+    });
+  };
 
   const onChooseTime = (start, end, rowIndex, itemIndex) => {
     setClickedToChooseTime(true);
@@ -313,17 +339,54 @@ const AppointmentDetail = ({route}) => {
               )}
             </VStack>
           </Stack>
-          <Button
+
+          <VStack
+            space={2}
+            alignItems="center"
+            width="100%"
             mt={10}
             mb={10}
-            bgColor={disabled ? 'grey' : '#316970'}
-            width="100%"
-            height={50}
-            rounded={'md'}
-            disabled={disabled}
-            onPress={() => setModalConfirm(true)}>
-            Booking now
-          </Button>
+            pt={2}
+            rounded="lg"
+            borderTopWidth={1}
+            borderTopColor="#316970">
+            <HStack
+              justifyContent="space-between"
+              alignItems="center"
+              width="100%">
+              <Text fontWeight={600} fontSize={14}>
+                PAYMENT METHOD
+              </Text>
+              <Button
+                width={40}
+                borderColor={'#316970'}
+                borderWidth={1}
+                backgroundColor="white"
+                onPress={onOpen}
+                rounded="lg"
+                leftIcon={
+                  <Icon
+                    as={Ionicons}
+                    name={method === 'cash' ? 'cash' : 'card'}
+                    color="#316970"
+                    size="sm"
+                  />
+                }>
+                <Text fontSize={14} color="#316970">
+                  {method.toLocaleUpperCase()}
+                </Text>
+              </Button>
+            </HStack>
+            <Button
+              bgColor={disabled ? 'grey' : '#316970'}
+              width="100%"
+              height={50}
+              rounded={'md'}
+              disabled={disabled}
+              onPress={() => setModalConfirm(true)}>
+              Booking now
+            </Button>
+          </VStack>
         </VStack>
       </ScrollView>
       <Modal isOpen={modalVisible} onClose={setModalVisible} size={'lg'}>
@@ -465,6 +528,14 @@ const AppointmentDetail = ({route}) => {
                 </Text>
               </HStack>
               <HStack space={4} mt={2} alignItems="center">
+                <HStack space={1}>
+                  <Icon as={Ionicons} name="cash" color="#559FA7" size="md" />
+                </HStack>
+                <Text fontSize={16} flex={1}>
+                  {paymentMethod}
+                </Text>
+              </HStack>
+              <HStack space={4} mt={2} alignItems="center">
                 <Icon as={Ionicons} name="calendar" color="#559FA7" size="md" />
                 <Text fontSize={16} flex={1}>
                   {selectedDate}
@@ -509,6 +580,22 @@ const AppointmentDetail = ({route}) => {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
+      <Actionsheet isOpen={isOpen} onClose={onClose} size="full">
+        <Actionsheet.Content alignItems={'center'} justifyContent="center">
+          <Actionsheet.Item onPress={() => onClickChangeMethod('cash')}>
+            <HStack justifyContent="center" alignItems="center" space={3}>
+              <Icon as={Ionicons} name="cash" color="#316970" />
+              <Text fontSize={16}>Cash</Text>
+            </HStack>
+          </Actionsheet.Item>
+          <Actionsheet.Item onPress={() => onClickChangeMethod('vnpay')}>
+            <HStack justifyContent="center" alignItems="center" space={3}>
+              <Icon as={Ionicons} name="card" color="#316970" />
+              <Text fontSize={16}>VNPAY</Text>
+            </HStack>
+          </Actionsheet.Item>
+        </Actionsheet.Content>
+      </Actionsheet>
     </View>
   );
 };
