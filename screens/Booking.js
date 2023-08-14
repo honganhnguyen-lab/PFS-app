@@ -79,7 +79,8 @@ const BookingScreen = () => {
       const selectListUpcomingAppointment = listFullAppointment?.filter(
         v =>
           v.status === defineStatus.pending ||
-          v.status === defineStatus.confirm,
+          v.status === defineStatus.confirm ||
+          (v.status === defineStatus.notPayYet && v.paymentMethod === 'cash'),
       );
 
       const selectListHistoryAppointment = listFullAppointment?.filter(

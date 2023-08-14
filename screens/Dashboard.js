@@ -26,6 +26,7 @@ import {ImageBackground} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
+import {io} from 'socket.io-client';
 
 import {SvgCss} from 'react-native-svg';
 
@@ -122,7 +123,7 @@ const DashboardScreen = () => {
 
   const onNavigateToAppointment = label => {
     dispatch(onSendNameServices(label));
-    navigation.navigate('List Provider');
+    navigation.navigate('List Services');
   };
   const getLocation = () => {
     Geolocation.getCurrentPosition(async info => {
@@ -171,47 +172,32 @@ const DashboardScreen = () => {
     getDetailProfile();
   }, [user]);
 
-  useEffect(() => {
-    if (globalThis.socket) {
-      globalThis.socket.on('connect', () => {
-        console.log('connect socket');
-      });
-
-      const id = user.id;
-      const handleNotification = data => {
-        console.log('Received message:', data.content);
-        dispatch(
-          setListNoti(prevNotiList => prevNotiList.concat(data.content)),
-        );
-        console.log('Updated notiList:', notiList);
-      };
-
-      globalThis.socket.on(`noti-appointment-success_${id}`, data => {
-        console.log('Received message:', data.content);
-        handleNotification(data);
-      });
-      globalThis.socket.on(`request_appointment_${id}`, data => {
-        console.log('Received message:', data.content);
-        handleNotification(data);
-      });
-      globalThis.socket.on(`noti-appointment-success_${id}`, data => {
-        console.log('Received message:', data.content);
-        handleNotification(data);
-      });
-      globalThis.socket.on(`noti-appointment-decline_${id}`, data => {
-        console.log('Received message:', data.content);
-        handleNotification(data);
-      });
-      globalThis.socket.on(`noti-appointment-finish_${id}`, data => {
-        console.log('Received message:', data.content);
-        handleNotification(data);
-      });
-    }
-  }, [user]);
+  const thisSocket = globalThis.socket;
 
   useEffect(() => {
-    console.log('fd', notiList);
-  }, [notiList]);
+    thisSocket.on('connect', () => {
+      console.log('connect socket');
+    });
+
+    const id = user.payload.id;
+
+    thisSocket.on(`noti-appointment-success_${id}`, data => {
+      console.log('Received message:', data.content);
+      dispatch(setListNoti(data.content));
+    });
+    thisSocket.on(`request_appointment_${id}`, data => {
+      console.log('Received message:', data.content);
+      dispatch(setListNoti(data.content));
+    });
+    thisSocket.on(`noti-appointment-decline_${id}`, data => {
+      console.log('Received message:', data.content);
+      dispatch(setListNoti(data.content));
+    });
+    thisSocket.on(`noti-appointment-finish_${id}`, data => {
+      console.log('Received message:', data.content);
+      dispatch(setListNoti(data.content));
+    });
+  }, [thisSocket]);
 
   return (
     <View style={styles.dashboardContainer}>

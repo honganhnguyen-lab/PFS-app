@@ -7,7 +7,7 @@ export const notiSlice = createSlice({
   },
   reducers: {
     setListNoti: (state, payload) => {
-      state.listNoti = payload.payload;
+      state.listNoti.push(payload.payload);
     },
   },
 });

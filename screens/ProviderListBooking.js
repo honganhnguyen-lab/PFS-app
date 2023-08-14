@@ -87,7 +87,9 @@ const ProviderBookingScreen = () => {
           v.status === defineStatus.processing,
       );
       const selectListPendingAppointment = listFullAppointment?.filter(
-        v => v.status === defineStatus.pending,
+        v =>
+          v.status === defineStatus.pending ||
+          (v.status === defineStatus.notPayYet && v.paymentMethod === 'cash'),
       );
 
       const selectListHistoryAppointment = listFullAppointment?.filter(

@@ -116,7 +116,7 @@ const DetailProvider = ({route}) => {
               p={2}
               height={200}
               mt={10}>
-              <Pressable onPress={() => navigation.navigate('List Provider')}>
+              <Pressable onPress={() => navigation.navigate('List Services')}>
                 <Avatar bg="white">
                   <Icon
                     as={Ionicons}

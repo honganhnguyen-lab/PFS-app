@@ -9,7 +9,6 @@ import {
   Badge,
 } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Image, SvgCss} from 'react-native-svg';
 import {appointmentStatus, defineCategory} from '../CommonType';
 import {Linking} from 'react-native';
 import {axiosConfig, updateAppointment} from '../axios';
@@ -92,6 +91,23 @@ export default BookingUpcoming = ({
                     </Text>
                     <Text color="#6F767E" fontSize={16} fontWeight={600}>
                       {`${infoService.price}`.toLocaleString()} VND
+                    </Text>
+                  </HStack>
+                  <HStack
+                    justifyContent="flex-start"
+                    alignItems="center"
+                    space={1}>
+                    <Icon as={Ionicons} name="cash-outline" />
+                    <Text
+                      color="#6F767E"
+                      fontSize={16}
+                      style={{textAlign: 'right'}}>
+                      Payment method:
+                    </Text>
+                    <Text color="#6F767E" fontSize={16} fontWeight={600}>
+                      {item.paymentMethod
+                        ? item.paymentMethod.toLocaleUpperCase()
+                        : ''}
                     </Text>
                   </HStack>
                 </VStack>

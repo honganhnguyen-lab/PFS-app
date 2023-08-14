@@ -36,7 +36,6 @@ import ProceedScreen from './screens/ProceedScreen';
 import UpdateService from './screens/UpdateService';
 import OTPVerify from './screens/OTPVerify';
 import {socket} from './socket';
-import {Badge, VStack} from 'native-base';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -241,7 +240,7 @@ function App() {
             }}
           />
           <Stack.Screen
-            name="List Provider"
+            name="List Services"
             component={ChooseProvider}
             options={{headerShown: true}}
           />

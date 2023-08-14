@@ -25,6 +25,7 @@ export const defineCategory = [
 ];
 
 export const appointmentStatus = [
+  {value: 0, label: 'Requesting', color: 'warning'},
   {value: 1, label: 'Requesting', color: 'warning'},
   {value: 2, label: 'Confirmed', color: 'success'},
   {value: 3, label: 'Rejected', color: 'danger'},

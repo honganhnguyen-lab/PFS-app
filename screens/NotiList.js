@@ -28,6 +28,7 @@ import {LoadingScreen} from '../components/atoms/LoadingScreen';
 const NotiList = () => {
   const dispatch = useDispatch();
   const notiList = useSelector(state => state.noti.listNoti);
+  console.log('notiList', notiList);
 
   const onRemoveNoti = () => {
     dispatch(setListNoti([]));
@@ -48,7 +49,7 @@ const NotiList = () => {
         <ScrollView>
           <VStack space={2}>
             {notiList ? (
-              <Stack>
+              <Stack height={500}>
                 {notiList.map((item, index) => (
                   <HStack
                     justifyContent="space-between"
@@ -92,14 +93,14 @@ const NotiList = () => {
                         </Text>
                       </VStack>
                     </HStack>
-                    <VStack space={2} alignItems="center" flex={0.1}>
+                    <HStack space={2} alignItems="center" flex={0.1}>
                       <Icon
                         as={Ionicons}
                         name="ellipse"
                         size="sm"
                         color="#569FA7"
                       />
-                    </VStack>
+                    </HStack>
                   </HStack>
                 ))}
               </Stack>
