@@ -16,13 +16,13 @@ services to meet their needs. A customer review and rating system was integrated
  - ElasticSearch
 
 Design:
-  - FrontEnd layer: https://postimg.cc/PLg0Q7RP
-  - Backend layer: https://postimg.cc/qhQSH77C
+  - FrontEnd layer:![ScreenShot]https://postimg.cc/PLg0Q7RP
+  - Backend layer: ![ScreenShot]https://postimg.cc/qhQSH77C
 
 Application
   - For user:
-    https://postimg.cc/yW1Wmr4f
-    https://postimg.cc/K1BZSnhk
+    ![ScreenShot]https://postimg.cc/yW1Wmr4f
+    ![ScreenShot]https://postimg.cc/K1BZSnhk
   - For provider:
-    https://postimg.cc/HjndsGCC
-    https://postimg.cc/sBjb6SjR
+    ![ScreenShot]https://postimg.cc/HjndsGCC
+    ![ScreenShot]https://postimg.cc/sBjb6SjR
